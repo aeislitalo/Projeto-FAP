@@ -1,0 +1,17 @@
+// Importa o módulo 'path' para manipulação de caminhos de arquivos
+let path = require('path');
+
+// Exporta um objeto com configurações de caminho
+module.exports = {
+    // Caminho para o arquivo de configuração do banco de dados
+    'config': path.resolve(__dirname, 'build', 'database', 'config', 'config_database.js'),
+    
+    // Caminho para a pasta que contém os modelos
+    'models-path': path.resolve(__dirname, 'build', 'database', 'models'),
+    
+    // Caminho para a pasta de migrações do banco de dados
+    'migrations-path': path.resolve(__dirname, 'src', 'database', 'migrations'),
+    
+    // Caminho para a pasta de seeders do banco de dados
+    'seeders-path': path.resolve(__dirname, 'src', 'database', 'seeders')
+}
