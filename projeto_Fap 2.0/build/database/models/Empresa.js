@@ -11,19 +11,32 @@ class Empresa extends sequelize_1.Model {
     // Método estático para preencher os dados da empresa
     static preencherDados(empresaDados) {
         return {
-            nome: empresaDados.nome, // Recebe o nome da empresa
-            cnpj: empresaDados.cnpj, // Recebe o CNPJ da empresa
-            pais: empresaDados.pais, // Recebe o país da empresa
-            estado: empresaDados.estado, // Recebe o estado da empresa
-            cidade: empresaDados.cidade, // Recebe a cidade da empresa
-            bairro: empresaDados.bairro, // Recebe o bairro da empresa
-            rua: empresaDados.rua, // Recebe a rua da empresa
-            numero: empresaDados.numero, // Recebe o número da empresa
-            cep: empresaDados.cep, // Recebe o CEP da empresa
-            email: empresaDados.email, // Recebe o email da empresa
-            senha: empresaDados.senha, // Recebe a senha da empresa
-            contato: empresaDados.contato, // Recebe o contato da empresa
+            nome: empresaDados.nome.trim(), // Recebe o nome da empresa
+            cnpj: empresaDados.cnpj.trim(), // Recebe o CNPJ da empresa
+            pais: empresaDados.pais.trim(), // Recebe o país da empresa
+            estado: empresaDados.estado.trim(), // Recebe o estado da empresa
+            cidade: empresaDados.cidade.trim(), // Recebe a cidade da empresa
+            bairro: empresaDados.bairro.trim(), // Recebe o bairro da empresa
+            rua: empresaDados.rua.trim(), // Recebe a rua da empresa
+            numero: empresaDados.numero.trim(), // Recebe o número da empresa
+            cep: empresaDados.cep.trim(), // Recebe o CEP da empresa
+            email: empresaDados.email.trim(), // Recebe o email da empresa
+            senha: empresaDados.senha.trim(), // Recebe a senha da empresa
+            contato: empresaDados.contato.trim(), // Recebe o contato da empresa
         };
+    }
+    static async FazerLogin(model, email, senha) {
+        let empresa = await model.findOne({ where: { email } }); // Busca a empresa pelo email
+        // Verifica se a empresa foi encontrada
+        if (!empresa) {
+            throw new Error("Email não existe.");
+        }
+        // Verifica se a senha está correta
+        if (empresa.senha !== senha) {
+            throw new Error("Senha incorreta.");
+        }
+        // Retorna a empresa se o login for bem-sucedido
+        return empresa;
     }
 }
 // Inicializa o modelo Empresa

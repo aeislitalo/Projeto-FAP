@@ -11,8 +11,8 @@ const Empresa_1 = __importDefault(require("./Empresa")); // Importa o modelo Emp
 class Demanda extends sequelize_1.Model {
     // Método estático para formatar uma string de data no formato 'dd/mm/yyyy'
     static formatarData(dateString) {
-        const [day, month, year] = dateString.split('/'); // Divide a string em dia, mês e ano
-        return new Date(`${year}-${month}-${day}`); // Retorna um objeto Date
+        const [dia, mes, ano] = dateString.split('/'); // Divide a string em dia, mês e ano
+        return new Date(`${ano}-${mes}-${dia}`); // Retorna um objeto Date
     }
     // Método estático para preencher os dados da demanda
     static preencherDemanda(dataFinalFormatada, id, demanda) {
@@ -23,6 +23,25 @@ class Demanda extends sequelize_1.Model {
             empresaId: id, // Recebe o ID da empresa
             titulo: demanda.titulo // Recebe o título da demanda
         };
+    }
+    // Método estático assíncrono para visualizar os projetos (demandas) de uma empresa
+    static async visualizarMeusProjetos(idEmpresa) {
+        // Busca uma empresa no banco de dados utilizando o método 'findByPk' (find by primary key)
+        // O 'include' permite trazer as demandas associadas à empresa através do relacionamento
+        let empresa = await Empresa_1.default.findByPk(idEmpresa, {
+            include: [
+                {
+                    model: this, // O model atual ('Demanda') é incluído como parte da consulta
+                    as: 'demandas' // Define o alias 'demandas' para o relacionamento, já definido no modelo
+                }
+            ]
+        });
+        // Verifica se a empresa foi encontrada, caso contrário, lança um erro
+        if (!empresa) {
+            throw new Error('Empresa não encontrada'); // Lança um erro se a empresa não existir
+        }
+        // Retorna a empresa encontrada com suas demandas associadas
+        return empresa;
     }
 }
 // Inicializa o modelo Demanda

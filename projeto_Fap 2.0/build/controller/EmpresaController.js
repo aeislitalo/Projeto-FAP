@@ -17,6 +17,18 @@ class EmpresaController {
             next(error); // Passa o erro para o middleware de tratamento de erros
         }
     }
+    //Método para realizar o login
+    async postLoginEmpresa(req, resp, next) {
+        try {
+            let email = req.body.email.trim();
+            let senha = req.body.senha.trim();
+            let { status, mensagem } = await this.servico.postLoginEmpresa(email, senha);
+            resp.status(status).json(mensagem);
+        }
+        catch (error) {
+            next(error);
+        }
+    }
     // Método para mostrar todas as empresas
     async getMostrarEmpresas(req, resp, next) {
         try {
@@ -61,6 +73,7 @@ class EmpresaController {
             next(error); // Passa o erro para o middleware de tratamento de erros
         }
     }
+    /////////////////////////////////// CHAMADA METODOS //////////////////////////////////////////////////////////////
     // Método para cadastrar uma nova demanda para uma empresa
     async postCadastrarDemanda(req, resp, next) {
         try {

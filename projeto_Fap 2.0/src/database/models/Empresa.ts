@@ -1,9 +1,11 @@
-import { Model } from "sequelize"; // Importa a classe Model do Sequelize
+import { Model, ModelStatic } from "sequelize"; // Importa a classe Model do Sequelize
 import db from "."; // Importa a instância do banco de dados
 import sequelize from "sequelize"; // Importa o Sequelize
+import EmpresaRequestDTO from "../../dto/EmpresaRequestDTO";
 
 // Define a classe Empresa que estende Model
 class Empresa extends Model {
+
     declare id: number; // Declaração do campo id
     declare nome: string; // Declaração do campo nome
     declare cnpj: string; // Declaração do campo cnpj
@@ -11,6 +13,7 @@ class Empresa extends Model {
     declare estado: string; // Declaração do campo estado
     declare cidade: string; // Declaração do campo cidade
     declare bairro: string; // Declaração do campo bairro
+    declare numero: string; // Declaração do campo numero
     declare rua: string; // Declaração do campo rua
     declare cep: string; // Declaração do campo cep
     declare email: string; // Declaração do campo email
@@ -18,22 +21,41 @@ class Empresa extends Model {
     declare contato: string; // Declaração do campo contato
 
     // Método estático para preencher os dados da empresa
-    static preencherDados(empresaDados: any) {
+    static preencherDados(empresaDados:EmpresaRequestDTO) {
         return {
-            nome: empresaDados.nome, // Recebe o nome da empresa
-            cnpj: empresaDados.cnpj, // Recebe o CNPJ da empresa
-            pais: empresaDados.pais, // Recebe o país da empresa
-            estado: empresaDados.estado, // Recebe o estado da empresa
-            cidade: empresaDados.cidade, // Recebe a cidade da empresa
-            bairro: empresaDados.bairro, // Recebe o bairro da empresa
-            rua: empresaDados.rua, // Recebe a rua da empresa
-            numero: empresaDados.numero, // Recebe o número da empresa
-            cep: empresaDados.cep, // Recebe o CEP da empresa
-            email: empresaDados.email, // Recebe o email da empresa
-            senha: empresaDados.senha, // Recebe a senha da empresa
-            contato: empresaDados.contato, // Recebe o contato da empresa
+            nome: empresaDados.getNome(), // Recebe o nome da empresa
+            cnpj: empresaDados.getCnpj(), // Recebe o CNPJ da empresa
+            pais: empresaDados.getPais(), // Recebe o país da empresa
+            estado: empresaDados.getEstado(), // Recebe o estado da empresa
+            cidade: empresaDados.getCidade(), // Recebe a cidade da empresa
+            bairro: empresaDados.getBairro(), // Recebe o bairro da empresa
+            rua: empresaDados.getRua(), // Recebe a rua da empresa
+            numero: empresaDados.getNumero(), // Recebe o número da empresa
+            cep: empresaDados.getCep(), // Recebe o CEP da empresa
+            email: empresaDados.getEmail(), // Recebe o email da empresa
+            senha: empresaDados.getSenha(), // Recebe a senha da empresa
+            contato: empresaDados.getContato(), // Recebe o contato da empresa
         };
+
     }
+    static async FazerLogin(model: ModelStatic<Empresa>, email: string, senha: string,): Promise<Empresa | null> {
+        let empresa = await model.findOne({ where: { email } }); // Busca a empresa pelo email
+        // Verifica se a empresa foi encontrada
+        if (!empresa) {
+            throw new Error("Email não existe.");
+        }
+        // Verifica se a senha está correta
+        if (empresa.senha !== senha) {
+            throw new Error("Senha incorreta.");
+        }
+        // Retorna a empresa se o login for bem-sucedido
+        return empresa;
+    }
+
+
+
+
+
 }
 
 // Inicializa o modelo Empresa

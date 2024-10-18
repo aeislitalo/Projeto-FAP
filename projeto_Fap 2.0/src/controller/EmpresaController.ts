@@ -3,11 +3,13 @@ import EmpresaService from "../service/EmpresaService"; // Importa a classe Empr
 
 class EmpresaController {
     private servico = new EmpresaService(); // Cria uma instância do serviço de empresa
-
+  
     // Método para cadastrar uma nova empresa
     async postCadastrarEmpresa(req: Request, resp: Response, next: NextFunction) {
         try {
+            
             // Chama o método post do serviço e desestrutura o resultado
+
             let { status, mensagem } = await this.servico.post(req.body);
             resp.status(status).json(mensagem); // Retorna a resposta com o status e a mensagem
         } catch (error) {
@@ -58,7 +60,7 @@ class EmpresaController {
             next(error); // Passa o erro para o middleware de tratamento de erros
         }
     }
-
+    /////////////////////////////////// CHAMADA METODOS DE DEMANDAS //////////////////////////////////////////////////////////////
     // Método para cadastrar uma nova demanda para uma empresa
     async postCadastrarDemanda(req: Request, resp: Response, next: NextFunction) {
         try {
@@ -78,6 +80,15 @@ class EmpresaController {
             resp.status(status).json(mensagem); // Retorna a resposta com o status e a mensagem
         } catch (error) {
             next(error); // Passa o erro para o middleware de tratamento de erros
+        }
+    }
+    async getMostraEmpresaPorDemanda(req: Request, resp: Response, next: NextFunction){
+        try {
+            let parametroURL = Number(req.params.id); // Obtém o parâmetro ID da URL e converte para número
+            let { status, mensagem } = await this.servico.getMostrarEmpresasPertencenteHaDemanda(parametroURL);// Chama o método para mostrar empresa da demanda
+            resp.status(status).json(mensagem); // Retorna a resposta com o status e a mensagem
+        } catch (error) {
+            next(error);
         }
     }
 
@@ -121,6 +132,26 @@ class EmpresaController {
             resp.status(status).json(mensagem); // Retorna a resposta com o status e a mensagem
         } catch (error) {
             next(error); // Passa o erro para o middleware de tratamento de erros
+        }
+    }
+
+    ////////////////////////////// LOGIN EMPRESA//////////////////////////////////////////////////////////////
+    // Método para realizar o login da empresa
+    async postLoginEmpresa(req: Request, resp: Response, next: NextFunction) {
+        try {
+            // Extrai o email e a senha do corpo da requisição e remove espaços em branco nas extremidades
+            let email = req.body.email.trim();
+            let senha = req.body.senha.trim();
+
+            // Chama o serviço responsável por validar o login, passando o email e a senha como parâmetros
+            // O serviço retorna um objeto com o status HTTP e uma mensagem de resposta
+            let { status, mensagem } = await this.servico.postLoginEmpresa(email, senha);
+
+            // Envia a resposta ao cliente com o código de status apropriado e a mensagem em formato JSON
+            resp.status(status).json(mensagem);
+        } catch (error) {
+            // Em caso de erro, o middleware de tratamento de erros é chamado, passando o erro adiante
+            next(error);
         }
     }
 }

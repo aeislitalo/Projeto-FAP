@@ -23,6 +23,9 @@ class Empresa {
         this.senha = senha;
         this.cep = cep;
     }
+    async acharEmpresaEmail(email:string){
+        
+    }
 
     cadastrarProjeto(): void {}
 

@@ -1,4 +1,4 @@
-import { Model } from "sequelize"; // Importa a classe Model do Sequelize
+import { Model, ModelStatic } from "sequelize"; // Importa a classe Model do Sequelize
 import db from "."; // Importa a instância do banco de dados
 import sequelize from "sequelize"; // Importa o Sequelize
 import Empresa from "./Empresa"; // Importa o modelo Empresa
@@ -14,8 +14,8 @@ class Demanda extends Model {
 
     // Método estático para formatar uma string de data no formato 'dd/mm/yyyy'
     static formatarData(dateString: string): Date {
-        const [day, month, year] = dateString.split('/'); // Divide a string em dia, mês e ano
-        return new Date(`${year}-${month}-${day}`); // Retorna um objeto Date
+        const [dia, mes, ano] = dateString.split('/'); // Divide a string em dia, mês e ano
+        return new Date(`${ano}-${mes}-${dia}`); // Retorna um objeto Date
     }
 
     // Método estático para preencher os dados da demanda
@@ -27,6 +27,45 @@ class Demanda extends Model {
             empresaId: id, // Recebe o ID da empresa
             titulo: demanda.titulo // Recebe o título da demanda
         };
+    }
+    // Método estático assíncrono para visualizar os projetos (demandas) de uma empresa
+    static async visualizarMeusProjetos(idEmpresa: number) {
+        // Busca uma empresa no banco de dados utilizando o método 'findByPk' (find by primary key)
+        // O 'include' permite trazer as demandas associadas à empresa através do relacionamento
+        let empresa = await Empresa.findByPk(idEmpresa, {
+            include: [
+                {
+                    model: this, // O model atual ('Demanda') é incluído como parte da consulta
+                    as: 'demandas' // Define o alias 'demandas' para o relacionamento, já definido no modelo
+                }
+            ]
+        });
+
+        // Verifica se a empresa foi encontrada, caso contrário, lança um erro
+        if (!empresa) {
+            throw new Error('Empresa não encontrada'); // Lança um erro se a empresa não existir
+        }
+
+        // Retorna a empresa encontrada com suas demandas associadas
+        return empresa;
+    }
+    static async visualizarEmpresasDemandas(idDemanda:number){
+        let demanda = await this.findByPk(idDemanda, {
+            include: [
+                {
+                    model: Empresa, // O model atual ('Empresa') é incluído como parte da consulta
+                    as: 'empresa' // Define o alias 'empresa' para o relacionamento, já definido no modelo
+                }
+            ]
+        });
+
+        // Verifica se a demanda foi encontrada, caso contrário, lança um erro
+        if (!demanda) {
+            throw new Error('Demanda não encontrada'); // Lança um erro se a demanda não existir
+        }
+
+        // Retorna a demanda encontrada com suas demandas associadas
+        return demanda;
     }
 }
 
