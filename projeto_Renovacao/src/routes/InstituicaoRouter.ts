@@ -7,6 +7,6 @@ let API = new InstituicaoController();
 let instituicaoRota = Router();
 
 // Define as rotas para as operações de instituicao
-instituicaoRota.get('/instituicao', API.getMostrarInstituicoes.bind(API));
+instituicaoRota.get('/instituicoes', API.getMostrarInstituicoes.bind(API));
 
 export default instituicaoRota;

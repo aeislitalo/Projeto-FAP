@@ -38,19 +38,7 @@ class Empresa extends Model {
         };
 
     }
-    static async FazerLogin(model: ModelStatic<Empresa>, email: string, senha: string,): Promise<Empresa | null> {
-        let empresa = await model.findOne({ where: { email } }); // Busca a empresa pelo email
-        // Verifica se a empresa foi encontrada
-        if (!empresa) {
-            throw new Error("Email não existe.");
-        }
-        // Verifica se a senha está correta
-        if (empresa.senha !== senha) {
-            throw new Error("Senha incorreta.");
-        }
-        // Retorna a empresa se o login for bem-sucedido
-        return empresa;
-    }
+    
 
 
 

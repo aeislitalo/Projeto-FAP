@@ -15,6 +15,10 @@ class InstituicaoService{
         
         return resp(200,instituicoes); // Retorna uma resposta com o status 200 (OK)
     }
+
+    async postCadastrarIntituicao(reqBody:any){
+        
+    }
 }
 
 export default InstituicaoService;
