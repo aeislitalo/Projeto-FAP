@@ -18,7 +18,7 @@ class EmpresaService extends MetodosTratamento {
         this.tratarSenha(reqBody.senha.trim());
 
         // Cria uma instância de 'EmpresaRequestDTO' usando os dados do corpo da requisição (reqBody)
-        let empresaReqDTO = this.criarObjetoEmpresaDTO(reqBody);
+        let empresaReqDTO = this.criarObjetoEmpresaInstituicaoDTO(reqBody);
         // Chama o método estático 'preencherDados' da classe 'Empresa' para preencher os dados da empresa
         // A partir do DTO, que encapsula as informações necessárias para a criação no banco
         await this.model.create(Empresa.preencherDados(empresaReqDTO)); // Cria a empresa no banco de dados
@@ -41,7 +41,7 @@ class EmpresaService extends MetodosTratamento {
             return resp(200, empresaEncontrada);
         } catch (error:any) {
             // lanca o erro capturado
-            return resp(400, { message: error.message || 'Erro desconhecido.' }); // Responde com uma mensagem de erro
+            return resp(400, { message: error.message || 'Erro desconhecido.' }); 
         }
     }
     //////////////////////////////////////////////// LOGIN //////////////////////////////////////////////////////////
@@ -61,7 +61,7 @@ class EmpresaService extends MetodosTratamento {
         let empresaDB = await this.acharEmpresaPorId(idEmpresa); // Busca a empresa pelo ID
 
         // Cria uma instância de 'EmpresaRequestDTO' usando os dados do corpo da requisição (reqBody)
-        let empresaReqDTO = this.criarObjetoEmpresaDTO(reqBody)
+        let empresaReqDTO = this.criarObjetoEmpresaInstituicaoDTO(reqBody);
 
         await empresaDB.update(Empresa.preencherDados(empresaReqDTO)); // Atualiza os dados da empresa
         return resp(200, empresaDB); // Retorna a empresa atualizada
@@ -69,7 +69,7 @@ class EmpresaService extends MetodosTratamento {
 
     // Método para mudar a senha de uma empresa
     async patch(idEmpresa: number, empresaNovaSenha: any) {
-        this.tratarSenha(empresaNovaSenha.senha.trim());
+        this.tratarSenha(empresaNovaSenha.nova_senha.trim());
         let empresaDB = await this.acharEmpresaPorId(idEmpresa); // Busca a empresa pelo ID
         await empresaDB.update({
             senha: empresaNovaSenha.nova_senha // Atualiza a senha da empresa
@@ -83,7 +83,7 @@ class EmpresaService extends MetodosTratamento {
     async deletar(idEmpresa: number) {
         let empresaDeletada = await this.acharEmpresaPorId(idEmpresa); // Busca a empresa pelo ID
         await empresaDeletada.destroy(); // Deleta a empresa
-        return resp(200, { message: 'Empresa deletada com sucesso' }); // Retorna sucesso
+        return resp(200, { mensagem: 'Empresa deletada com sucesso' }); // Retorna sucesso
     }
     //////////////////////////////////////////////// METODOS PARA DEMANDA //////////////////////////////////////////////////////////////////////////
     // Método para cadastrar uma nova demanda

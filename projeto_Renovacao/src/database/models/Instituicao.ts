@@ -1,6 +1,7 @@
 import { Model, ModelStatic } from "sequelize"; // Importa a classe Model do Sequelize
 import db from "."; // Importa a instância do banco de dados
 import sequelize from "sequelize"; // Importa o Sequelize
+import EmpresaInstituicaoRequestDTO from "../../dto/EmpresaInstituicaoRequestDTO";
 
 class Instituicao extends Model{
     declare id: number; // Declaração do campo id
@@ -16,6 +17,25 @@ class Instituicao extends Model{
     declare email: string; // Declaração do campo email
     declare senha: string; // Declaração do campo senha
     declare contato: string; // Declaração do campo contato
+
+    // Método estático para preencher os dados da empresa
+    static preencherDados(empresaDados:EmpresaInstituicaoRequestDTO) {
+        return {
+            nome: empresaDados.getNome(), // Recebe o nome da empresa
+            cnpj: empresaDados.getCnpj(), // Recebe o CNPJ da empresa
+            pais: empresaDados.getPais(), // Recebe o país da empresa
+            estado: empresaDados.getEstado(), // Recebe o estado da empresa
+            cidade: empresaDados.getCidade(), // Recebe a cidade da empresa
+            bairro: empresaDados.getBairro(), // Recebe o bairro da empresa
+            rua: empresaDados.getRua(), // Recebe a rua da empresa
+            numero: empresaDados.getNumero(), // Recebe o número da empresa
+            cep: empresaDados.getCep(), // Recebe o CEP da empresa
+            email: empresaDados.getEmail(), // Recebe o email da empresa
+            senha: empresaDados.getSenha(), // Recebe a senha da empresa
+            contato: empresaDados.getContato(), // Recebe o contato da empresa
+        };
+
+    }
 }
 
 Instituicao.init({

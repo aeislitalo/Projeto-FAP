@@ -2,19 +2,25 @@ import Validacao from "validator";
 import Empresa from "../database/models/Empresa"; // Importa o modelo Empresa
 import Demanda from "../database/models/Demanda"; // Importa o modelo Demanda
 import { ModelStatic } from "sequelize"; // Importa ModelStatic do Sequelize
-import EmpresaRequestDTO from "../dto/EmpresaRequestDTO";
+import EmpresaRequestDTO from "../dto/EmpresaInstituicaoRequestDTO";
 import EmpresaResponsetDTO from "../dto/EmpresaResponseDTO";
+import Instituicao from "../database/models/Instituicao";
 abstract class MetodosTratamentoAuxiliares{
  // Define modelos estáticos para as classes Empresa e Demanda
  protected model: ModelStatic<Empresa> = Empresa;
  protected modelDemanda: ModelStatic<Demanda> = Demanda;
-
+ protected modelInstituicao:ModelStatic<Instituicao> = Instituicao;
     /////////////////////////////////////////////////// Métodos Auxiliares //////////////////////////////////////////////////////////////////
     // Métodos auxiliares para encontrar Empresa e Demanda
     protected async acharEmpresaPorId(idEmpresa: number): Promise<Empresa> {
         let empresa = await this.model.findByPk(idEmpresa);
         if (!empresa) throw new Error('Empresa não encontrada');
         return empresa;
+    }
+    protected async acharInstituicaoPorId(idInstituicao: number): Promise<Empresa> {
+        let instituicao= await this.modelInstituicao.findByPk(idInstituicao);
+        if (!instituicao) throw new Error('Empresa não encontrada');
+        return instituicao;
     }
 
     protected async acharDemandaPorId(idDemanda: number): Promise<Demanda> {
@@ -41,7 +47,7 @@ abstract class MetodosTratamentoAuxiliares{
     }
      
         // Os dados são trimados (removidos espaços em branco nas pontas) para garantir consistência
-    protected criarObjetoEmpresaDTO(reqBody:any):EmpresaRequestDTO{
+    protected criarObjetoEmpresaInstituicaoDTO(reqBody:any):EmpresaRequestDTO{
         return new EmpresaRequestDTO(
             reqBody.nome.trim(),      // Nome da empresa
             reqBody.cnpj.trim(),      // CNPJ da empresa

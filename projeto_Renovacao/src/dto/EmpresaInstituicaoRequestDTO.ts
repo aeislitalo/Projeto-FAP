@@ -1,4 +1,4 @@
- class EmpresaRequestDTO{
+ class EmpresaInstituicaoRequestDTO{
     private nome: string;
     private cnpj: string; 
     private pais: string; 
@@ -79,4 +79,4 @@
 
 }
 
-export default EmpresaRequestDTO;
+export default EmpresaInstituicaoRequestDTO;
