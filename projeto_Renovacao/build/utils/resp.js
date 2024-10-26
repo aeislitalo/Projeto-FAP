@@ -7,3 +7,4 @@ let resp = (status, msg) => ({
 });
 // Exporta a função resp para que possa ser utilizada em outras partes do código
 exports.default = resp;
+//# sourceMappingURL=resp.js.map

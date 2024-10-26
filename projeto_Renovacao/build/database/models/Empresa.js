@@ -8,36 +8,6 @@ const _1 = __importDefault(require(".")); // Importa a instância do banco de da
 const sequelize_2 = __importDefault(require("sequelize")); // Importa o Sequelize
 // Define a classe Empresa que estende Model
 class Empresa extends sequelize_1.Model {
-    // Método estático para preencher os dados da empresa
-    static preencherDados(empresaDados) {
-        return {
-            nome: empresaDados.nome.trim(), // Recebe o nome da empresa
-            cnpj: empresaDados.cnpj.trim(), // Recebe o CNPJ da empresa
-            pais: empresaDados.pais.trim(), // Recebe o país da empresa
-            estado: empresaDados.estado.trim(), // Recebe o estado da empresa
-            cidade: empresaDados.cidade.trim(), // Recebe a cidade da empresa
-            bairro: empresaDados.bairro.trim(), // Recebe o bairro da empresa
-            rua: empresaDados.rua.trim(), // Recebe a rua da empresa
-            numero: empresaDados.numero.trim(), // Recebe o número da empresa
-            cep: empresaDados.cep.trim(), // Recebe o CEP da empresa
-            email: empresaDados.email.trim(), // Recebe o email da empresa
-            senha: empresaDados.senha.trim(), // Recebe a senha da empresa
-            contato: empresaDados.contato.trim(), // Recebe o contato da empresa
-        };
-    }
-    static async FazerLogin(model, email, senha) {
-        let empresa = await model.findOne({ where: { email } }); // Busca a empresa pelo email
-        // Verifica se a empresa foi encontrada
-        if (!empresa) {
-            throw new Error("Email não existe.");
-        }
-        // Verifica se a senha está correta
-        if (empresa.senha !== senha) {
-            throw new Error("Senha incorreta.");
-        }
-        // Retorna a empresa se o login for bem-sucedido
-        return empresa;
-    }
 }
 // Inicializa o modelo Empresa
 Empresa.init({
@@ -103,3 +73,4 @@ Empresa.init({
     tableName: 'empresa', // Define o nome da tabela no banco de dados
 });
 exports.default = Empresa; // Exporta o modelo Empresa
+//# sourceMappingURL=Empresa.js.map

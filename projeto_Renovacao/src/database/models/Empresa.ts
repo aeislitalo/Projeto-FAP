@@ -1,28 +1,26 @@
 import { Model, ModelStatic } from "sequelize"; // Importa a classe Model do Sequelize
 import db from "."; // Importa a instância do banco de dados
 import sequelize from "sequelize"; // Importa o Sequelize
-import EmpresaRequestDTO from "../../dto/EmpresaInstituicaoRequestDTO";
+import Demanda from "./Demanda"; // Importa o modelo Demanda
 
 // Define a classe Empresa que estende Model
 class Empresa extends Model {
+    // Declaração dos campos do modelo
+    declare id: number; // Identificador único da empresa
+    declare nome: string; // Nome da empresa
+    declare cnpj: string; // CNPJ da empresa
+    declare pais: string; // País da empresa
+    declare estado: string; // Estado da empresa
+    declare cidade: string; // Cidade da empresa
+    declare bairro: string; // Bairro da empresa
+    declare numero: string; // Número da empresa
+    declare rua: string; // Rua da empresa
+    declare cep: string; // CEP da empresa
+    declare email: string; // E-mail da empresa
+    declare senha: string; // Senha da empresa
+    declare contato: string; // Contato da empresa
 
-    declare id: number; // Declaração do campo id
-    declare nome: string; // Declaração do campo nome
-    declare cnpj: string; // Declaração do campo cnpj
-    declare pais: string; // Declaração do campo pais
-    declare estado: string; // Declaração do campo estado
-    declare cidade: string; // Declaração do campo cidade
-    declare bairro: string; // Declaração do campo bairro
-    declare numero: string; // Declaração do campo numero
-    declare rua: string; // Declaração do campo rua
-    declare cep: string; // Declaração do campo cep
-    declare email: string; // Declaração do campo email
-    declare senha: string; // Declaração do campo senha
-    declare contato: string; // Declaração do campo contato
-    
-
-
-
+    declare demandas?: Demanda[]; // Relação opcional com demandas
 }
 
 // Inicializa o modelo Empresa
@@ -89,4 +87,5 @@ Empresa.init({
     tableName: 'empresa', // Define o nome da tabela no banco de dados
 });
 
-export default Empresa; // Exporta o modelo Empresa
+// Exporta o modelo Empresa
+export default Empresa;

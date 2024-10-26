@@ -152,8 +152,6 @@ class EmpresaController {
     // Método para realizar o login da empresa
     async postLoginEmpresa(req: Request, resp: Response, next: NextFunction) {
         try {
-
-
             // Chama o serviço responsável por validar o login, passando o email e a senha como parâmetros
             // O serviço retorna um objeto com o status HTTP e uma mensagem de resposta
             let { status, mensagem } = await this.servico.postLoginEmpresa(req.body.email.trim(), req.body.senha.trim());
@@ -165,6 +163,8 @@ class EmpresaController {
             next(error);
         }
     }
+
+    
 }
 
 export default EmpresaController; // Exporta a classe EmpresaController

@@ -17,18 +17,6 @@ class EmpresaController {
             next(error); // Passa o erro para o middleware de tratamento de erros
         }
     }
-    //Método para realizar o login
-    async postLoginEmpresa(req, resp, next) {
-        try {
-            let email = req.body.email.trim();
-            let senha = req.body.senha.trim();
-            let { status, mensagem } = await this.servico.postLoginEmpresa(email, senha);
-            resp.status(status).json(mensagem);
-        }
-        catch (error) {
-            next(error);
-        }
-    }
     // Método para mostrar todas as empresas
     async getMostrarEmpresas(req, resp, next) {
         try {
@@ -43,8 +31,7 @@ class EmpresaController {
     // Método para atualizar os dados de uma empresa
     async putMudarDadosEmpresas(req, resp, next) {
         try {
-            let parametroURL = Number(req.params.id); // Obtém o parâmetro ID da URL e converte para número
-            let { status, mensagem } = await this.servico.put(parametroURL, req.body); // Chama o método put do serviço
+            let { status, mensagem } = await this.servico.put(Number(req.params.id), req.body); // Chama o método put do serviço
             resp.status(status).json(mensagem); // Retorna a resposta com o status e a mensagem
         }
         catch (error) {
@@ -54,8 +41,7 @@ class EmpresaController {
     // Método para mudar a senha de uma empresa
     async patchMudarSenha(req, resp, next) {
         try {
-            let parametroURL = Number(req.params.id); // Obtém o parâmetro ID da URL e converte para número
-            let { status, mensagem } = await this.servico.patch(parametroURL, req.body); // Chama o método patch do serviço
+            let { status, mensagem } = await this.servico.patch(Number(req.params.id), req.body); // Chama o método patch do serviço
             resp.status(status).json(mensagem); // Retorna a resposta com o status e a mensagem
         }
         catch (error) {
@@ -65,20 +51,27 @@ class EmpresaController {
     // Método para deletar uma empresa
     async deletarEmpresa(req, resp, next) {
         try {
-            let parametroURL = Number(req.params.id); // Obtém o parâmetro ID da URL e converte para número
-            let { status, mensagem } = await this.servico.deletar(parametroURL); // Chama o método deletar do serviço
+            let { status, mensagem } = await this.servico.deletar(Number(req.params.id)); // Chama o método deletar do serviço
             resp.status(status).json(mensagem); // Retorna a resposta com o status e a mensagem
         }
         catch (error) {
             next(error); // Passa o erro para o middleware de tratamento de erros
         }
     }
-    /////////////////////////////////// CHAMADA METODOS //////////////////////////////////////////////////////////////
+    async postMostrarEmpresasComPrimeirasLetras(req, resp, next) {
+        try {
+            let { status, mensagem } = await this.servico.MostrarEmpresasHaPartirDasPrimeirasLetras(req.body.letras.trim()); // Chama o método 
+            resp.status(status).json(mensagem); // Retorna a resposta com o status e a mensagem
+        }
+        catch (error) {
+            next(error); // Passa o erro para o middleware de tratamento de erros
+        }
+    }
+    /////////////////////////////////// CHAMADA METODOS DE DEMANDAS //////////////////////////////////////////////////////////////
     // Método para cadastrar uma nova demanda para uma empresa
     async postCadastrarDemanda(req, resp, next) {
         try {
-            let parametroURL = Number(req.params.id); // Obtém o parâmetro ID da URL e converte para número
-            let { status, mensagem } = await this.servico.postCadastrarDemanda(parametroURL, req.body); // Chama o método para cadastrar demanda
+            let { status, mensagem } = await this.servico.postCadastrarDemanda(Number(req.params.id), req.body); // Chama o método para cadastrar demanda
             resp.status(status).json(mensagem); // Retorna a resposta com o status e a mensagem
         }
         catch (error) {
@@ -88,12 +81,20 @@ class EmpresaController {
     // Método para mostrar as demandas de uma empresa
     async getMostrarDemandasEmpresas(req, resp, next) {
         try {
-            let parametroURL = Number(req.params.id); // Obtém o parâmetro ID da URL e converte para número
-            let { status, mensagem } = await this.servico.getMostrarDemandasEmpresas(parametroURL); // Chama o método para mostrar demandas da empresa
+            let { status, mensagem } = await this.servico.getMostrarDemandasEmpresas(Number(req.params.id)); // Chama o método para mostrar demandas da empresa
             resp.status(status).json(mensagem); // Retorna a resposta com o status e a mensagem
         }
         catch (error) {
             next(error); // Passa o erro para o middleware de tratamento de erros
+        }
+    }
+    async getMostraEmpresaPorDemanda(req, resp, next) {
+        try {
+            let { status, mensagem } = await this.servico.getMostrarEmpresasPertencenteHaDemanda(Number(req.params.id)); // Chama o método para mostrar empresa da demanda
+            resp.status(status).json(mensagem); // Retorna a resposta com o status e a mensagem
+        }
+        catch (error) {
+            next(error);
         }
     }
     // Método para mostrar todas as demandas
@@ -109,8 +110,7 @@ class EmpresaController {
     // Método para atualizar uma demanda
     async putAtualizarDemanda(req, resp, next) {
         try {
-            let parametroURL = Number(req.params.id); // Obtém o parâmetro ID da URL e converte para número
-            let { status, mensagem } = await this.servico.putAtualizarDemanda(parametroURL, req.body); // Chama o método para atualizar a demanda
+            let { status, mensagem } = await this.servico.putAtualizarDemanda(Number(req.params.id), req.body); // Chama o método para atualizar a demanda
             resp.status(status).json(mensagem); // Retorna a resposta com o status e a mensagem
         }
         catch (error) {
@@ -120,8 +120,7 @@ class EmpresaController {
     // Método para mudar a data de uma demanda
     async patchMudarData(req, resp, next) {
         try {
-            let parametroURL = Number(req.params.id); // Obtém o parâmetro ID da URL e converte para número
-            let { status, mensagem } = await this.servico.patchMudarData(parametroURL, req.body); // Chama o método para mudar a data da demanda
+            let { status, mensagem } = await this.servico.patchMudarData(Number(req.params.id), req.body); // Chama o método para mudar a data da demanda
             resp.status(status).json(mensagem); // Retorna a resposta com o status e a mensagem
         }
         catch (error) {
@@ -131,13 +130,37 @@ class EmpresaController {
     // Método para deletar uma demanda
     async deletarDemanda(req, resp, next) {
         try {
-            let parametroURL = Number(req.params.id); // Obtém o parâmetro ID da URL e converte para número
-            let { status, mensagem } = await this.servico.deletarDemandaServico(parametroURL); // Chama o método para deletar a demanda
+            let { status, mensagem } = await this.servico.deletarDemandaServico(Number(req.params.id)); // Chama o método para deletar a demanda
             resp.status(status).json(mensagem); // Retorna a resposta com o status e a mensagem
         }
         catch (error) {
             next(error); // Passa o erro para o middleware de tratamento de erros
         }
     }
+    async postMostrarDemandasComPrimeirasLetras(req, resp, next) {
+        try {
+            let { status, mensagem } = await this.servico.MostrarDemandasHaPartirDasPrimeirasLetras(req.body.letras.trim()); // Chama o método 
+            resp.status(status).json(mensagem); // Retorna a resposta com o status e a mensagem
+        }
+        catch (error) {
+            next(error); // Passa o erro para o middleware de tratamento de erros
+        }
+    }
+    ////////////////////////////// LOGIN EMPRESA//////////////////////////////////////////////////////////////
+    // Método para realizar o login da empresa
+    async postLoginEmpresa(req, resp, next) {
+        try {
+            // Chama o serviço responsável por validar o login, passando o email e a senha como parâmetros
+            // O serviço retorna um objeto com o status HTTP e uma mensagem de resposta
+            let { status, mensagem } = await this.servico.postLoginEmpresa(req.body.email.trim(), req.body.senha.trim());
+            // Envia a resposta ao cliente com o código de status apropriado e a mensagem em formato JSON
+            resp.status(status).json(mensagem);
+        }
+        catch (error) {
+            // Em caso de erro, o middleware de tratamento de erros é chamado, passando o erro adiante
+            next(error);
+        }
+    }
 }
 exports.default = EmpresaController; // Exporta a classe EmpresaController
+//# sourceMappingURL=EmpresaController.js.map

@@ -43,6 +43,22 @@ class Demanda extends sequelize_1.Model {
         // Retorna a empresa encontrada com suas demandas associadas
         return empresa;
     }
+    static async visualizarEmpresasDemandas(idDemanda) {
+        let demanda = await this.findByPk(idDemanda, {
+            include: [
+                {
+                    model: Empresa_1.default, // O model atual ('Empresa') é incluído como parte da consulta
+                    as: 'empresa' // Define o alias 'empresa' para o relacionamento, já definido no modelo
+                }
+            ]
+        });
+        // Verifica se a demanda foi encontrada, caso contrário, lança um erro
+        if (!demanda) {
+            throw new Error('Demanda não encontrada'); // Lança um erro se a demanda não existir
+        }
+        // Retorna a demanda encontrada com suas demandas associadas
+        return demanda;
+    }
 }
 // Inicializa o modelo Demanda
 Demanda.init({
@@ -98,3 +114,4 @@ Demanda.belongsTo(Empresa_1.default, {
     as: 'empresa' // Define um alias para o relacionamento
 });
 exports.default = Demanda; // Exporta o modelo Demanda
+//# sourceMappingURL=Demanda.js.map

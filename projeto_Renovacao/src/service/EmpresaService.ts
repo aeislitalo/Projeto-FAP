@@ -1,11 +1,13 @@
-import Empresa from "../database/models/Empresa"; // Importa o modelo Empresa
+
 import resp from "../utils/resp"; // Importa uma função utilitária de resposta
 import Demanda from "../database/models/Demanda"; // Importa o modelo Demanda
 import MetodosTratamento from "./MetodosTratamentoAuxiliares"; // Importa métodos auxiliares para tratamento
 import { Op } from "sequelize"; // Importa operadores do Sequelize
 
+
 class EmpresaService extends MetodosTratamento {
 
+    
     // Método para criar uma nova empresa
     async post(reqBody: any) {
         // Valida o formato do email utilizando o método 'tratarEmail', que verifica se o email é válido
@@ -13,10 +15,10 @@ class EmpresaService extends MetodosTratamento {
 
         // Valida a senha utilizando o método 'tratarSenha', que verifica se a senha atende aos critérios (letra e número)
         this.tratarSenha(reqBody.senha.trim());
-
+       
         // Cria uma instância de 'EmpresaRequestDTO' usando os dados do corpo da requisição (reqBody)
-        let empresaReqDTO = this.criarObjetoEmpresaInstituicaoDTO(reqBody);
-        
+        let empresaReqDTO = await this.tratarEndereco(reqBody, reqBody.cep.trim());
+
         // Chama o método estático 'preencherDados' da classe 'Empresa' para preencher os dados da empresa
         // A partir do DTO, que encapsula as informações necessárias para a criação no banco
         await this.model.create(this.preencherDados(empresaReqDTO)); // Cria a empresa no banco de dados
@@ -32,15 +34,15 @@ class EmpresaService extends MetodosTratamento {
             // Verifica se o email e a senha são válidos
             this.tratarEmail(email);
             this.tratarSenha(senha);
-            
+
             // Realiza o login e busca a empresa
             let empresaEncontrada = await this.fazerLoginEmpresa(email, senha);
-    
+
             // Retorna uma resposta de sucesso com a empresa encontrada
             return resp(200, empresaEncontrada);
         } catch (error: any) {
             // Lança o erro capturado
-            return resp(400, { mensagem: error.message || 'Erro desconhecido.' }); 
+            return resp(400, { mensagem: error.message || 'Erro desconhecido.' });
         }
     }
     //////////////////////////////////////////////// LOGIN //////////////////////////////////////////////////////////
@@ -48,24 +50,28 @@ class EmpresaService extends MetodosTratamento {
     // Método para obter todas as empresas
     async get() {
         let empresas = await this.model.findAll(); // Busca todas as empresas
-        
+
         // Mapeia os resultados para o formato do DTO
         let empresasDTO = empresas.map((empresa) => this.getEmpresasDto(empresa));
-        
+
         return resp(200, empresasDTO); // Retorna uma resposta com o status 200 (OK)
     }
 
     // Método para atualizar os dados de uma empresa
     async put(idEmpresa: number, reqBody: any) {
-        this.tratarEmail(reqBody.email.trim()); // Valida o email
-        this.tratarSenha(reqBody.senha.trim()); // Valida a senha
-        
+        if (reqBody.email) {
+            this.tratarEmail(reqBody.email.trim()); // Valida o email
+        }
+        if (reqBody.senha) {
+            this.tratarSenha(reqBody.senha.trim()); // Valida a senha
+        }
+
         let empresaDB = await this.acharEmpresaPorId(idEmpresa); // Busca a empresa pelo ID
 
         // Cria uma instância de 'EmpresaRequestDTO' usando os dados do corpo da requisição (reqBody)
-        let empresaReqDTO = this.criarObjetoEmpresaInstituicaoDTO(reqBody);
+        let empresaReqDTO = this.tratarEndereco(reqBody, reqBody.cep.trim());
 
-        await empresaDB.update(this.preencherDados(empresaReqDTO)); // Atualiza os dados da empresa
+        await empresaDB.update(this.preencherDados(await empresaReqDTO)); // Atualiza os dados da empresa
         return resp(200, empresaDB); // Retorna a empresa atualizada
     }
 
@@ -73,7 +79,7 @@ class EmpresaService extends MetodosTratamento {
     async patch(idEmpresa: number, empresaNovaSenha: any) {
         this.tratarSenha(empresaNovaSenha.nova_senha.trim()); // Valida a nova senha
         let empresaDB = await this.acharEmpresaPorId(idEmpresa); // Busca a empresa pelo ID
-        
+
         await empresaDB.update({
             senha: empresaNovaSenha.nova_senha // Atualiza a senha da empresa
         });
@@ -98,21 +104,21 @@ class EmpresaService extends MetodosTratamento {
                 }
             }
         });
-        
+
         let empresasDTO = empresas.map((empresa) => this.getEmpresasDto(empresa)); // Mapeia resultados para DTO
-        
+
         if (empresasDTO.length == 0) {
             return resp(200, "Empresa's não existe!!!"); // Retorna mensagem se não houver empresas
         } else {
             return resp(200, empresasDTO); // Retorna empresas encontradas
         }
     }
-    
+
     //////////////////////////////////////////////// METODOS PARA DEMANDA //////////////////////////////////////////////////////////////////////////
 
     // Método para cadastrar uma nova demanda
     async postCadastrarDemanda(id: number, demanda: any) {
-        let dataFinal = Demanda.formatarData(demanda.data_final); // Formata a data final
+        let dataFinal = Demanda.formatarData(demanda.dataFinal); // Formata a data final
         let demandaCriacao = await this.modelDemanda.create(Demanda.preencherDemanda(dataFinal, id, demanda)); // Cria a nova demanda
         return resp(201, demandaCriacao); // Retorna a demanda criada
     }
@@ -122,8 +128,8 @@ class EmpresaService extends MetodosTratamento {
         // Chama o método estático 'visualizarMeusProjetos' da classe Demanda,
         // que recebe o ID da empresa e busca suas demandas relacionadas.
         let empresa = await Demanda.visualizarMeusProjetos(idEmpresa);
-
-        return resp(200, empresa); // Retorna a empresa com suas demandas
+        
+        return resp(200,{empresa: this.getEmpresasDemandaDto(empresa)}); // Retorna a empresa com suas demandas
     }
 
     // Método para mostrar todas as demandas
@@ -178,7 +184,7 @@ class EmpresaService extends MetodosTratamento {
                 }
             }
         });
-  
+
         if (demandas.length == 0) {
             return resp(200, "Demandas's não encontrada!!!"); // Retorna mensagem se não houver demandas
         } else {

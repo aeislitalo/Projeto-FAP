@@ -11,8 +11,19 @@ instituicaoRota.get('/instituicoes', API.getMostrarInstituicoes.bind(API));
 instituicaoRota.post('/instituicoes', API.postCadastrarInstituicao.bind(API));
 instituicaoRota.put('/instituicoes/:id',API.putAtualizarInstituicao.bind(API));
 instituicaoRota.patch('/instituicoes/:id',API.patchAtualizarSenhaInstituicao.bind(API));
-instituicaoRota.delete('/instituicoes/:id',API.deletarInstittuicao.bind(API));
-instituicaoRota.post('/instituicoesLogin',API.loginControllerInstittuicao.bind(API));
-instituicaoRota.post('/instituicoes/:id/cursos',API.postCadatrarCursos.bind(API));
+instituicaoRota.delete('/instituicoes/:id',API.deletarInstituicao.bind(API));
+
+/////////////////////////////////LOGIN/////////////////////////////////////////
+instituicaoRota.post('/instituicoesLogin',API.loginControllerInstituicao.bind(API));
+/////////////////////////////////LOGIN/////////////////////////////////////////
+
+
+/////////////////////////////////LOGIN/////////////////////////////////////////
+instituicaoRota.post('/instituicoes/cursos/:id',API.postCadastrarCursos.bind(API));
+instituicaoRota.get('/instituicoes/cursos/:id', API.getMostrarTodosOsCursosDeDeterminadaInstituicao.bind(API));
+instituicaoRota.get('/instituicoes/cursos', API.getMostrarCursos.bind(API));
+instituicaoRota.get('/instituicoesCursos/:id', API.getMostrarInstituicaoPertencenteAoCurso.bind(API));
+instituicaoRota.patch('/instituicoes/cursos/:id', API.patchMudarNome.bind(API));
+instituicaoRota.delete('/instituicoes/cursos/:id', API.deletarCurso.bind(API));
 
 export default instituicaoRota;

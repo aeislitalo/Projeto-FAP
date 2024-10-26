@@ -9,3 +9,4 @@ const app_1 = __importDefault(require("./app"));
 let port = 3333;
 // Inicia o servidor, escutando na porta especificada
 app_1.default.listen(port, () => console.log("Servidor Rodando!!"));
+//# sourceMappingURL=server.js.map

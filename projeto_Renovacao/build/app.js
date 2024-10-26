@@ -20,3 +20,4 @@ app.use((err, req, resp, next) => {
 });
 // Exporta a aplicação para que possa ser utilizada em outros arquivos
 exports.default = app;
+//# sourceMappingURL=app.js.map

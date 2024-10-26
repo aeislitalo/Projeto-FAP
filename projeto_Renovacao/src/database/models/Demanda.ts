@@ -45,7 +45,8 @@ class Demanda extends Model {
         if (!empresa) {
             throw new Error('Empresa não encontrada'); // Lança um erro se a empresa não existir
         }
-
+        
+        
         // Retorna a empresa encontrada com suas demandas associadas
         return empresa;
     }

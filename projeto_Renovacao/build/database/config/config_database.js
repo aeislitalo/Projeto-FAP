@@ -12,3 +12,4 @@ let config = {
     }
 };
 module.exports = config;
+//# sourceMappingURL=config_database.js.map
