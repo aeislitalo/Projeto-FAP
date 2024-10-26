@@ -8,8 +8,11 @@ let instituicaoRota = Router();
 
 // Define as rotas para as operações de instituicao
 instituicaoRota.get('/instituicoes', API.getMostrarInstituicoes.bind(API));
-instituicaoRota.post('/instituicao', API.postCadastrarInstituicao.bind(API));
-instituicaoRota.put('/instituicao/:id',API.putAtualizarInstituicao.bind(API));
-instituicaoRota.patch('/instituicao/:id',API.patchAtualizarSenhaInstituicao.bind(API));
-instituicaoRota.delete('/instituicao/:id',API.deletarInstittuicao.bind(API));
+instituicaoRota.post('/instituicoes', API.postCadastrarInstituicao.bind(API));
+instituicaoRota.put('/instituicoes/:id',API.putAtualizarInstituicao.bind(API));
+instituicaoRota.patch('/instituicoes/:id',API.patchAtualizarSenhaInstituicao.bind(API));
+instituicaoRota.delete('/instituicoes/:id',API.deletarInstittuicao.bind(API));
+instituicaoRota.post('/instituicoesLogin',API.loginControllerInstittuicao.bind(API));
+instituicaoRota.post('/instituicoes/:id/cursos',API.postCadatrarCursos.bind(API));
+
 export default instituicaoRota;

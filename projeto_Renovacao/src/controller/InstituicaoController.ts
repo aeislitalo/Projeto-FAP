@@ -1,66 +1,78 @@
-import { Request, Response, NextFunction } from "express"; // Importa os tipos Request, Response e NextFunction do Express
-import InstituicaoService from "../service/InstituicaoService"; // Importa a classe InstituicaoService, que contém a lógica de negócio
+import { Request, Response, NextFunction } from "express";
+import InstituicaoService from "../service/InstituicaoService";
 
 class InstituicaoController {
-    private servico = new InstituicaoService(); // Instancia a classe de serviço para poder utilizar seus métodos
+    private servico = new InstituicaoService();
 
     // Método para mostrar todas as instituições
     async getMostrarInstituicoes(req: Request, resp: Response, next: NextFunction) {
         try {
-            // Chama o método get do serviço e desestrutura o resultado
-            let { status, mensagem } = await this.servico.get();
-            resp.status(status).json(mensagem); // Retorna a resposta com o status HTTP e a mensagem
+            const { status, mensagem } = await this.servico.get();
+            resp.status(status).json(mensagem);
         } catch (error) {
-            next(error); // Passa o erro para o middleware de tratamento de erros
+            next(error);
         }
     }
 
     // Método para cadastrar uma nova instituição
     async postCadastrarInstituicao(req: Request, resp: Response, next: NextFunction) {
         try {
-            // Chama o método postCadastrarIntituicao do serviço e desestrutura o resultado
-            let { status, mensagem } = await this.servico.postCadastrarIntituicao(req.body);
-            resp.status(status).json(mensagem); // Retorna a resposta com o status HTTP e a mensagem
+            const { status, mensagem } = await this.servico.postCadastrarInstituicao(req.body);
+            resp.status(status).json(mensagem);
         } catch (error) {
-            next(error); // Passa o erro para o middleware de tratamento de erros
+            next(error);
         }
     }
 
     // Método para atualizar uma instituição existente
     async putAtualizarInstituicao(req: Request, resp: Response, next: NextFunction) {
         try {
-            let idInstituicao = Number(req.params.id); // Converte o ID da instituição de string para número
-            // Chama o método putAtualizarIntituicao do serviço e desestrutura o resultado
-            let { status, mensagem } = await this.servico.putAtualizarIntituicao(idInstituicao, req.body);
-            resp.status(status).json(mensagem); // Retorna a resposta com o status HTTP e a mensagem
+            const { status, mensagem } = await this.servico.putAtualizarInstituicao(Number(req.params.id), req.body);
+            resp.status(status).json(mensagem);
         } catch (error) {
-            next(error); // Passa o erro para o middleware de tratamento de erros
+            next(error);
         }
     }
 
     // Método para atualizar a senha de uma instituição
     async patchAtualizarSenhaInstituicao(req: Request, resp: Response, next: NextFunction) {
         try {
-            let idInstituicao = Number(req.params.id); // Converte o ID da instituição de string para número
-            // Chama o método patchMudarSenhaInstituicao do serviço e desestrutura o resultado
-            let { status, mensagem } = await this.servico.patchMudarSenhaInstituicao(idInstituicao, req.body);
-            resp.status(status).json(mensagem); // Retorna a resposta com o status HTTP e a mensagem
+            const { status, mensagem } = await this.servico.patchMudarSenhaInstituicao(Number(req.params.id), req.body);
+            resp.status(status).json(mensagem);
         } catch (error) {
-            next(error); // Passa o erro para o middleware de tratamento de erros
+            next(error);
         }
     }
 
     // Método para deletar uma instituição
-    async deletarInstittuicao(req: Request, resp: Response, next: NextFunction) {
+    async deletarInstituicao(req: Request, resp: Response, next: NextFunction) {
         try {
-            let idInstituicao = Number(req.params.id); // Converte o ID da instituição de string para número
-            // Chama o método deletarInstituicao do serviço e desestrutura o resultado
-            let { status, mensagem } = await this.servico.deletarInstituicao(idInstituicao);
-            resp.status(status).json(mensagem); // Retorna a resposta com o status HTTP e a mensagem de sucesso
+            const { status, mensagem } = await this.servico.deletarInstituicao(Number(req.params.id));
+            resp.status(status).json(mensagem);
         } catch (error) {
-            next(error); // Passa o erro para o middleware de tratamento de erros
+            next(error);
+        }
+    }
+
+    // Método para login da instituição
+    async loginControllerInstituicao(req: Request, resp: Response, next: NextFunction) {
+        try {
+            const { status, mensagem } = await this.servico.loginInstituicao(req.body.email.trim(), req.body.senha.trim());
+            resp.status(status).json(mensagem);
+        } catch (error) {
+            next(error);
+        }
+    }
+
+    // Método para cadastrar curso na instituição
+    async postCadastrarCursos(req: Request, resp: Response, next: NextFunction) {
+        try {
+            const { status, mensagem } = await this.servico.cadastrarCursoInstituicao(Number(req.params.id), req.body.nome);
+            resp.status(status).json(mensagem);
+        } catch (error) {
+            next(error);
         }
     }
 }
 
-export default InstituicaoController; // Exporta a classe InstituicaoController para ser usada em outras partes da aplicação
+export default InstituicaoController;

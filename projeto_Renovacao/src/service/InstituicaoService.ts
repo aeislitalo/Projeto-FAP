@@ -1,56 +1,80 @@
-import Instituicao from "../database/models/Instituicao"; // Importa o modelo de Instituição do banco de dados
-import resp from "../utils/resp"; // Importa uma função utilitária para responder às requisições
-import MetodosTratamentoAuxiliares from "./MetodosTratamentoAuxiliares"; // Importa uma classe com métodos auxiliares de tratamento
+import { ModelStatic } from "sequelize";
+import Curso from "../database/models/Curso";
+import resp from "../utils/resp";
+import MetodosTratamentoAuxiliares from "./MetodosTratamentoAuxiliares";
 
-class InstituicaoService extends MetodosTratamentoAuxiliares { // A classe InstituicaoService herda métodos auxiliares de MetodosTratamentoAuxiliares
+class InstituicaoService extends MetodosTratamentoAuxiliares {
+    private modelCurso: ModelStatic<Curso> = Curso;
 
     // Método para obter todas as instituições
     async get() {
-        let instituicoes = await this.modelInstituicao.findAll(); // Busca todas as instituições no banco de dados usando o modelo
-
-        return resp(200, instituicoes); // Retorna uma resposta com o status 200 (OK) e as instituições encontradas
+        const instituicoes = await this.modelInstituicao.findAll();
+        return resp(200, instituicoes);
     }
 
     // Método para cadastrar uma nova instituição
-    async postCadastrarIntituicao(reqBody: any) {
-        this.tratarEmail(reqBody.email.trim()); // Faz o tratamento do campo de e-mail, removendo espaços em branco
-        this.tratarSenha(reqBody.senha.trim()); // Faz o tratamento do campo de senha
+    async postCadastrarInstituicao(reqBody: any) {
+        this.tratarEmail(reqBody.email.trim());
+        this.tratarSenha(reqBody.senha.trim());
 
-        let instituicaoReqDTO = this.criarObjetoEmpresaInstituicaoDTO(reqBody); // Cria um objeto DTO com os dados da instituição a partir do corpo da requisição
-        await this.modelInstituicao.create(Instituicao.preencherDados(instituicaoReqDTO)); // Insere a nova instituição no banco de dados
-        return resp(201, instituicaoReqDTO); // Retorna uma resposta com o status 201 (Criado) e os dados da instituição cadastrada
+        const instituicaoReqDTO = this.criarObjetoEmpresaInstituicaoDTO(reqBody);
+        await this.modelInstituicao.create(this.preencherDados(instituicaoReqDTO));
+        return resp(201, instituicaoReqDTO);
     }
 
     // Método para atualizar uma instituição existente
-    async putAtualizarIntituicao(idInstituicao: number, reqBody: any) {
-        this.tratarEmail(reqBody.email.trim()); // Faz o tratamento do campo de e-mail, removendo espaços em branco
-        this.tratarSenha(reqBody.senha.trim()); // Faz o tratamento do campo de senha
+    async putAtualizarInstituicao(idInstituicao: number, reqBody: any) {
+        this.tratarEmail(reqBody.email.trim());
+        this.tratarSenha(reqBody.senha.trim());
 
-        let instituicaoDB = await this.acharInstituicaoPorId(idInstituicao); // Busca a instituição no banco de dados pelo ID
-        let instituicaoReqDTO = this.criarObjetoEmpresaInstituicaoDTO(reqBody); // Cria um objeto DTO com os novos dados da instituição
+        const instituicaoDB = await this.acharInstituicaoPorId(idInstituicao);
+        const instituicaoReqDTO = this.criarObjetoEmpresaInstituicaoDTO(reqBody);
 
-        await instituicaoDB.update(Instituicao.preencherDados(instituicaoReqDTO)); // Atualiza a instituição no banco de dados com os novos dados
-        return resp(200, instituicaoDB); // Retorna uma resposta com o status 200 (OK) e os dados da instituição atualizada
+        await instituicaoDB.update(this.preencherDados(instituicaoReqDTO));
+        return resp(200, instituicaoDB);
     }
 
     // Método para alterar apenas a senha de uma instituição
     async patchMudarSenhaInstituicao(idInstituicao: number, instituicaoNovaSenha: any) {
+        this.tratarSenha(instituicaoNovaSenha.nova_senha.trim());
+        const instituicaoDB = await this.acharInstituicaoPorId(idInstituicao);
 
-        this.tratarSenha(instituicaoNovaSenha.nova_senha.trim()); // Faz o tratamento da nova senha
-
-        let instituicaoDB = await this.acharInstituicaoPorId(idInstituicao); // Busca a instituição no banco de dados pelo ID
-        await instituicaoDB.update({
-            senha: instituicaoNovaSenha.nova_senha // Atualiza a senha da instituição
-        });
-        return resp(200, instituicaoDB); // Retorna uma resposta com o status 200 (OK) e os dados da instituição com a senha alterada
+        await instituicaoDB.update({ senha: instituicaoNovaSenha.nova_senha });
+        return resp(200, instituicaoDB);
     }
 
     // Método para deletar uma instituição
-    async deletarInstituicao(idEmpresa: number) {
-        let empresaDeletada = await this.acharInstituicaoPorId(idEmpresa); // Busca a instituição pelo ID no banco de dados
-        await empresaDeletada.destroy(); // Deleta a instituição do banco de dados
-        return resp(200, { mensagem: 'Instituição deletada com sucesso' }); // Retorna uma resposta com o status 200 (OK) e uma mensagem de sucesso
+    async deletarInstituicao(idInstituicao: number) {
+        const instituicaoDeletada = await this.acharInstituicaoPorId(idInstituicao);
+        await instituicaoDeletada.destroy();
+        return resp(200, 'Instituição deletada com sucesso');
+    }
+/////////////////////////////////LOGIN/////////////////////////////////////////
+
+    // Método para login da instituição
+    async loginInstituicao(email: string, senha: string) {
+        try {
+            this.tratarEmail(email);
+            this.tratarSenha(senha);
+            const instituicaoEncontrada = await this.fazerLoginInstituicao(email, senha);
+            return resp(200, instituicaoEncontrada);
+        } catch (error: any) {
+            return resp(400, { mensagem: error.message || 'Erro desconhecido.' });
+        }
+    }
+/////////////////////////////////LOGIN/////////////////////////////////////////
+
+
+/////////////////////////////////METODOS CURSO/////////////////////////////////////////
+
+    // Método para cadastrar curso na instituição
+    async cadastrarCursoInstituicao(idInstituicao: number, nomeCurso: string) {
+        const curso = await this.modelCurso.create({
+            nome: nomeCurso,
+            instituicaoId: idInstituicao
+        });
+        return resp(200, curso);
     }
 }
 
-export default InstituicaoService; // Exporta a classe InstituicaoService como módulo padrão
+export default InstituicaoService;

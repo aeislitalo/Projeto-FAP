@@ -1,4 +1,4 @@
-import { Model, ModelStatic } from "sequelize"; // Importa a classe Model do Sequelize
+import { Model} from "sequelize"; // Importa a classe Model do Sequelize
 import db from "."; // Importa a instância do banco de dados
 import sequelize from "sequelize"; // Importa o Sequelize
 import Empresa from "./Empresa"; // Importa o modelo Empresa
