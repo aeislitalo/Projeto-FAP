@@ -20,7 +20,7 @@ class Empresa extends Model {
     declare senha: string; // Senha da empresa
     declare contato: string; // Contato da empresa
 
-    declare demandas?: Demanda[]; // Relação opcional com demandas
+    
 }
 
 // Inicializa o modelo Empresa

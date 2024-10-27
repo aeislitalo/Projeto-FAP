@@ -3,7 +3,7 @@ import resp from "../utils/resp"; // Importa uma função utilitária de respost
 import Demanda from "../database/models/Demanda"; // Importa o modelo Demanda
 import MetodosTratamento from "./MetodosTratamentoAuxiliares"; // Importa métodos auxiliares para tratamento
 import { Op } from "sequelize"; // Importa operadores do Sequelize
-
+import DTOHelper from "../utils/DTOHelp";
 
 class EmpresaService extends MetodosTratamento {
 
@@ -35,11 +35,9 @@ class EmpresaService extends MetodosTratamento {
             this.tratarEmail(email);
             this.tratarSenha(senha);
 
-            // Realiza o login e busca a empresa
-            let empresaEncontrada = await this.fazerLoginEmpresa(email, senha);
-
             // Retorna uma resposta de sucesso com a empresa encontrada
-            return resp(200, empresaEncontrada);
+            
+            return resp(200, DTOHelper.getEmpresasDto( await this.fazerLoginEmpresa(email, senha)));
         } catch (error: any) {
             // Lança o erro capturado
             return resp(400, { mensagem: error.message || 'Erro desconhecido.' });
@@ -52,7 +50,7 @@ class EmpresaService extends MetodosTratamento {
         let empresas = await this.model.findAll(); // Busca todas as empresas
 
         // Mapeia os resultados para o formato do DTO
-        let empresasDTO = empresas.map((empresa) => this.getEmpresasDto(empresa));
+        let empresasDTO = empresas.map((empresa) => DTOHelper.getEmpresasDto(empresa));
 
         return resp(200, empresasDTO); // Retorna uma resposta com o status 200 (OK)
     }
@@ -95,17 +93,17 @@ class EmpresaService extends MetodosTratamento {
     }
 
     // Método para mostrar empresas a partir das primeiras letras do nome
-    async MostrarEmpresasHaPartirDasPrimeirasLetras(letras: string) {
+    async MostrarEmpresasHaPartirDasPrimeirasLetras(busca: string) {
         // Faz uma busca no banco de dados procurando empresas cujo nome começa com as letras fornecidas
         let empresas = await this.model.findAll({
             where: {
                 nome: {
-                    [Op.like]: `${letras}%` // Utiliza o operador LIKE para encontrar nomes que começam com as letras especificadas
+                    [Op.like]: `${busca}%` // Utiliza o operador LIKE para encontrar nomes que começam com as letras especificadas
                 }
             }
         });
 
-        let empresasDTO = empresas.map((empresa) => this.getEmpresasDto(empresa)); // Mapeia resultados para DTO
+        let empresasDTO = empresas.map((empresa) => DTOHelper.getEmpresasDto(empresa)); // Mapeia resultados para DTO
 
         if (empresasDTO.length == 0) {
             return resp(200, "Empresa's não existe!!!"); // Retorna mensagem se não houver empresas
@@ -127,9 +125,7 @@ class EmpresaService extends MetodosTratamento {
     async getMostrarDemandasEmpresas(idEmpresa: number) {
         // Chama o método estático 'visualizarMeusProjetos' da classe Demanda,
         // que recebe o ID da empresa e busca suas demandas relacionadas.
-        let empresa = await Demanda.visualizarMeusProjetos(idEmpresa);
-        
-        return resp(200,{empresa: this.getEmpresasDemandaDto(empresa)}); // Retorna a empresa com suas demandas
+        return resp(200, await Demanda.visualizarMeusProjetos(idEmpresa)); // Retorna a empresa com suas demandas
     }
 
     // Método para mostrar todas as demandas
@@ -175,12 +171,12 @@ class EmpresaService extends MetodosTratamento {
     }
 
     // Método para mostrar demandas a partir das primeiras letras do título
-    async MostrarDemandasHaPartirDasPrimeirasLetras(letras: string) {
+    async MostrarDemandasHaPartirDasPrimeirasLetras(busca: string) {
         // Faz uma busca no banco de dados procurando demandas cujo nome começa com as letras fornecidas
         let demandas = await this.modelDemanda.findAll({
             where: {
                 titulo: {
-                    [Op.like]: `${letras}%` // Utiliza o operador LIKE para encontrar títulos que começam com as letras especificadas
+                    [Op.like]: `${busca}%` // Utiliza o operador LIKE para encontrar títulos que começam com as letras especificadas
                 }
             }
         });

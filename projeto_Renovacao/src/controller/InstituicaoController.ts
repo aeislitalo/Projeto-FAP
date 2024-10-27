@@ -66,7 +66,15 @@ class InstituicaoController {
             next(error); // Passa o erro para o middleware de tratamento de erros
         }
     }
-
+    // Método de busca por caracter
+    async buscarInstituicoesPorCaracter(req: Request, resp: Response, next: NextFunction){
+        try {
+            const { status, mensagem } = await this.servico.buscarInstituicoesHaPartirDasPrimeirasLetras(req.body.busca.trim()); // Realiza o login da instituição
+            resp.status(status).json(mensagem); // Retorna a resposta com status e mensagem
+        } catch (error) {
+            next(error); // Passa o erro para o middleware de tratamento de erros
+        }
+    }
     ///////////////////////////////////METODOS CURSO////////////////////////////////////////////
 
     // Método para cadastrar curso na instituição

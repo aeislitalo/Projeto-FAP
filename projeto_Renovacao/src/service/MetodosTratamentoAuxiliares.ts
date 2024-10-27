@@ -3,23 +3,24 @@ import Empresa from "../database/models/Empresa"; // Importa o modelo Empresa
 import Demanda from "../database/models/Demanda"; // Importa o modelo Demanda
 import { ModelStatic } from "sequelize"; // Importa ModelStatic do Sequelize
 import EmpresaInstituicaoRequestDTO from "../dto/EmpresaDTO/EmpresaInstituicaoRequestDTO"; // Importa o DTO de requisição para Empresa
-import EmpresaResponsetDTO from "../dto/EmpresaDTO/IEmpresaResponseDTO "; // Importa o DTO de resposta para Empresa
-import EmpresaDemandaResponsetDTO from "../dto/EmpresaDTO/IEmpresaDemandaResponseDTO"; // Importa o DTO de resposta para Empresa
-import InstituicaoResponsetDTO from "../dto/InstituicaoDTO/I_InstituicaoResponseDTO "; // Importa o DTO de resposta para Instituicao
+import EmpresaInstituicaoResponsetDTO from "../dto/EmpresaDTO/EmpresaInstituicaoResponsetDTO"; // Importa o DTO de resposta para Empresa
 import CursoResponseDTO from "../dto/CursoDTO/ICursoResponseDTO"; // Importa o DTO de resposta para Empresa
 import CursoRequestDTO from "../dto/CursoDTO/CursoRequestDTO"; // Importa o DTO de resposta para Empresa
 import Instituicao from "../database/models/Instituicao"; // Importa o modelo Instituicao
 import EnderecoService from "./EnderecoService";
 import Curso from "../database/models/Curso"; // Importa o modelo Empresa
-import IDemandaResponseDTO from "../dto/EmpresaDTO/IDemandaResponseDTO";
+
 
 // Classe abstrata que contém métodos auxiliares para o tratamento de dados relacionados a empresas e instituições
-abstract class MetodosTratamentoAuxiliares {
+abstract class MetodosTratamentoAuxiliares  {
+    
+       
     protected model: ModelStatic<Empresa> = Empresa;
     protected modelDemanda: ModelStatic<Demanda> = Demanda;
     protected modelInstituicao: ModelStatic<Instituicao> = Instituicao;
     protected enderecoService = new EnderecoService(); // Ajustei a instância para o padrão PascalCase
     protected modelCurso: ModelStatic<Curso> = Curso;
+    protected demanda = new Demanda();
 
     // Método para encontrar uma Empresa pelo ID
     protected async acharEmpresaPorId(idEmpresa: number): Promise<Empresa> {
@@ -29,7 +30,7 @@ abstract class MetodosTratamentoAuxiliares {
     }
 
     // Método para encontrar uma Instituição pelo ID
-    protected async acharInstituicaoPorId(idInstituicao: number): Promise<Empresa> {
+    protected async acharInstituicaoPorId(idInstituicao: number): Promise<Instituicao> {
         let instituicao = await this.modelInstituicao.findByPk(idInstituicao); // Busca a instituição pelo ID
         if (!instituicao) throw new Error('Instituição não encontrada'); // Lança erro se não encontrar
         return instituicao; // Retorna a instituição encontrada
@@ -91,49 +92,6 @@ abstract class MetodosTratamentoAuxiliares {
         );
     }
 
-    // Método auxiliar para formatar os dados da empresa para retorno ao cliente
-    protected getEmpresasDto(empresa: Empresa): EmpresaResponsetDTO {
-        // Cria e retorna um objeto que representa a resposta da empresa com os campos id, nome e email
-        return {
-            id: empresa.id,       // Acessa o ID da empresa fornecida como parâmetro
-            nome: empresa.nome,   // Acessa o nome da empresa fornecida como parâmetro
-            email: empresa.email   // Acessa o email da empresa fornecida como parâmetro
-        };
-    }
-
-    // Método auxiliar para formatar os dados da empresa e suas demandas para retorno ao cliente
-    protected getEmpresasDemandaDto(empresa: Empresa): EmpresaDemandaResponsetDTO {
-        // Cria e retorna um objeto que representa a resposta da empresa com os campos id, nome, email e demandas
-        return {
-            id: empresa.id,       // Acessa o ID da empresa fornecida como parâmetro
-            nome: empresa.nome,   // Acessa o nome da empresa fornecida como parâmetro
-            email: empresa.email, // Acessa o email da empresa fornecida como parâmetro
-            demandas: empresa.demandas ? empresa.demandas.map(demanda => this.getDemandaDTO(demanda)) : [] // Chama a função diretamente para mapear as demandas
-        };
-    }
-
-    // Método auxiliar para formatar os dados da instituição para retorno ao cliente
-    protected getInstituicoesDto(empresa: Instituicao): InstituicaoResponsetDTO {
-        // Cria e retorna um objeto que representa a resposta da instituição com os campos id, nome e email
-        return {
-            id: empresa.id,       // Acessa o ID da instituição fornecida como parâmetro
-            nome: empresa.nome,   // Acessa o nome da instituição fornecida como parâmetro
-            email: empresa.email  // Acessa o email da instituição fornecida como parâmetro
-        };
-    }
-
-    // Método auxiliar para formatar os dados de uma demanda para retorno ao cliente
-    protected getDemandaDTO(demanda: Demanda): IDemandaResponseDTO {
-        // Cria e retorna um objeto que representa a resposta da demanda com os campos id, titulo, descricao, dataEnvio e dataFinal
-        return {
-            id: demanda.id,        // Acessa o ID da demanda fornecida como parâmetro
-            titulo: demanda.titulo, // Acessa o título da demanda fornecida como parâmetro
-            descricao: demanda.descricao, // Acessa a descrição da demanda fornecida como parâmetro
-            dataEnvio: demanda.dataEnvio, // Acessa a data de envio da demanda fornecida como parâmetro
-            dataFinal: demanda.dataFinal // Acessa a data final da demanda fornecida como parâmetro
-        };
-    }
-
     // Método para preencher os dados antes de salvar no banco de dados
     protected preencherDados(Dados: EmpresaInstituicaoRequestDTO) {
         return {
@@ -153,7 +111,7 @@ abstract class MetodosTratamentoAuxiliares {
     }
 
     // Método para realizar login da empresa
-    protected async fazerLoginEmpresa(email: string, senha: string): Promise<EmpresaResponsetDTO> {
+    protected async fazerLoginEmpresa(email: string, senha: string): Promise<Empresa> {
         // Busca a empresa pelo email fornecido
         let empresa = await this.model.findOne({ where: { email } });
 
@@ -168,11 +126,11 @@ abstract class MetodosTratamentoAuxiliares {
         }
 
         // Retorna a empresa se o login for bem-sucedido, convertendo-a para o formato DTO
-        return this.getEmpresasDto(empresa);
+        return empresa;
     }
 
     // Método para realizar login da instituição
-    protected async fazerLoginInstituicao(email: string, senha: string): Promise<InstituicaoResponsetDTO> {
+    protected async fazerLoginInstituicao(email: string, senha: string): Promise<Instituicao> {
         // Busca a instituição pelo email fornecido
         let instituicao = await this.modelInstituicao.findOne({ where: { email } });
 
@@ -187,7 +145,7 @@ abstract class MetodosTratamentoAuxiliares {
         }
 
         // Retorna a instituição se o login for bem-sucedido, convertendo-a para o formato DTO
-        return this.getInstituicoesDto(instituicao);
+        return instituicao;
     }
 
    // Método para criar um objeto CursoRequestDTO a partir do ID da instituição e do nome do curso.

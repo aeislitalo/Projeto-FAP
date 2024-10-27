@@ -2,24 +2,22 @@ import { Model } from "sequelize"; // Importa a classe Model do Sequelize
 import db from "."; // Importa a instância do banco de dados
 import sequelize from "sequelize"; // Importa o Sequelize
 import Instituicao from "./Instituicao"; // Importa o modelo Instituicao
-
+import DTOHelper from "../../utils/DTOHelp";
 // Define a classe Curso que estende Model
 class Curso extends Model {
-    // Método não implementado para o relacionamento com Instituicao (removeria esse método)
-    Instituicao(Instituicao: any) {
-        throw new Error("Method not implemented.");
-    }
-    
+
+
+
     // Declarações de atributos da classe Curso com tipos definidos
     declare id: number; // Declaração do atributo id como número
     declare nome: string; // Declaração do atributo nome como string
     declare instituicaoId: number; // Declaração do atributo instituicaoId como número
-
+    declare instituicao: Instituicao;
     // Método estático assíncrono para visualizar os Cursos de uma instituição
     static async visualizarCursos(idInstituicao: number) {
         // Busca uma instituição no banco de dados utilizando o método 'findByPk' (find by primary key)
         // O 'include' permite trazer os cursos associados à instituição através do relacionamento
-        let cursos = await Instituicao.findByPk(idInstituicao, {
+        let instituicao = await Instituicao.findByPk(idInstituicao, {
             include: [
                 {
                     model: this, // O model atual ('Curso') é incluído como parte da consulta
@@ -29,17 +27,19 @@ class Curso extends Model {
         });
 
         // Verifica se a instituicao foi encontrada, caso contrário, lança um erro
-        if (!cursos) {
+        if (!instituicao) {
             throw new Error('Instituicao não encontrada'); // Lança um erro se a instituicao não existir
         }
 
+
         // Retorna a instituicao encontrada com seus Cursos associadas
-        return cursos;
+        return { instituicao: DTOHelper.getInstituicoesDto(instituicao), 
+            cursos: DTOHelper.getCursosDto(instituicao.getDataValue('Cursos')) };
     }
 
     // Método estático assíncrono para visualizar a Instituição associada a um curso
     static async visualizarInstituicaoCurso(idCurso: number) {
-        let instituicao = await this.findByPk(idCurso, {
+        let curso = await this.findByPk(idCurso, {
             include: [
                 {
                     model: Instituicao, // Inclui o modelo Instituicao na consulta
@@ -47,13 +47,14 @@ class Curso extends Model {
                 }
             ]
         });
-        
+
         // Verifica se o curso foi encontrado, caso contrário, lança um erro
-        if (!instituicao) {
+        if (!curso) {
             throw new Error('Curso não encontrado'); // Lança um erro se o curso não existir
         }
-        
-        return instituicao; // Retorna a instituição encontrada associada ao curso
+        // Retorna a instituicao associada ao curso encontrado
+        return { curso: DTOHelper.getCursosDto(curso), 
+            instituicao: DTOHelper.getInstituicoesDto(curso.getDataValue('Instituicao')) };
     }
 }
 

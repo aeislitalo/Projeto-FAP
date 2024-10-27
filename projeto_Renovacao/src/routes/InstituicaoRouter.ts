@@ -14,7 +14,7 @@ instituicaoRota.patch('/instituicoes/:id',API.patchAtualizarSenhaInstituicao.bin
 instituicaoRota.delete('/instituicoes/:id',API.deletarInstituicao.bind(API));
 
 /////////////////////////////////LOGIN/////////////////////////////////////////
-instituicaoRota.post('/instituicoesLogin',API.loginControllerInstituicao.bind(API));
+instituicaoRota.post('/instituicoes/login',API.loginControllerInstituicao.bind(API));
 /////////////////////////////////LOGIN/////////////////////////////////////////
 
 
@@ -22,7 +22,8 @@ instituicaoRota.post('/instituicoesLogin',API.loginControllerInstituicao.bind(AP
 instituicaoRota.post('/instituicoes/cursos/:id',API.postCadastrarCursos.bind(API));
 instituicaoRota.get('/instituicoes/cursos/:id', API.getMostrarTodosOsCursosDeDeterminadaInstituicao.bind(API));
 instituicaoRota.get('/instituicoes/cursos', API.getMostrarCursos.bind(API));
-instituicaoRota.get('/instituicoesCursos/:id', API.getMostrarInstituicaoPertencenteAoCurso.bind(API));
+instituicaoRota.get('/cursos/instituicoes/:id', API.getMostrarInstituicaoPertencenteAoCurso.bind(API));
+instituicaoRota.post('/instituicoes/busca', API.buscarInstituicoesPorCaracter.bind(API));
 instituicaoRota.patch('/instituicoes/cursos/:id', API.patchMudarNome.bind(API));
 instituicaoRota.delete('/instituicoes/cursos/:id', API.deletarCurso.bind(API));
 

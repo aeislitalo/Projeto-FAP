@@ -12,10 +12,10 @@ empresaRota.get('/empresas', API.getMostrarEmpresas.bind(API)); // Rota para lis
 empresaRota.put('/empresas/:id', API.putMudarDadosEmpresas.bind(API)); // Rota para atualizar dados de uma empresa pelo ID
 empresaRota.patch('/empresas/:id', API.patchMudarSenha.bind(API)); // Rota para mudar a senha de uma empresa pelo ID
 empresaRota.delete('/empresas/:id', API.deletarEmpresa.bind(API)); // Rota para deletar uma empresa pelo ID
-empresaRota.post('/empresasLetras',API.postMostrarEmpresasComPrimeirasLetras.bind(API));
+empresaRota.post('/empresas/busca',API.postMostrarEmpresasComPrimeirasLetras.bind(API));
 ///////////////////////////////////////////////////////// ROTAS DEMANDA /////////////////////////////////////////////////////////////////////////////////////////////////////
 empresaRota.post('/demandas/:id', API.postCadastrarDemanda.bind(API)); // Rota para cadastrar uma demanda associada a uma empresa
-empresaRota.post('/demandasLetras',API.postMostrarDemandasComPrimeirasLetras.bind(API));
+empresaRota.post('/demandas/busca',API.postMostrarDemandasComPrimeirasLetras.bind(API));
 empresaRota.get('/empresaDemandas/:id', API.getMostrarDemandasEmpresas.bind(API)); // Rota para mostrar as demandas de uma empresa pelo ID
 empresaRota.get('/demandas', API.getMostrarDemandas.bind(API)); // Rota para listar todas as demandas
 empresaRota.put('/demandas/:id', API.putAtualizarDemanda.bind(API)); // Rota para atualizar uma demanda pelo ID

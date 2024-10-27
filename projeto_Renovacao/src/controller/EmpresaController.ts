@@ -60,7 +60,7 @@ class EmpresaController {
     }
    async postMostrarEmpresasComPrimeirasLetras(req: Request, resp: Response, next: NextFunction){
     try {
-        let { status, mensagem } = await this.servico.MostrarEmpresasHaPartirDasPrimeirasLetras(req.body.letras.trim()); // Chama o método 
+        let { status, mensagem } = await this.servico.MostrarEmpresasHaPartirDasPrimeirasLetras(req.body.busca.trim()); // Chama o método 
         resp.status(status).json(mensagem); // Retorna a resposta com o status e a mensagem
     } catch (error) {
         next(error); // Passa o erro para o middleware de tratamento de erros
@@ -142,7 +142,7 @@ class EmpresaController {
     }
     async postMostrarDemandasComPrimeirasLetras(req: Request, resp: Response, next: NextFunction){
         try {
-            let { status, mensagem } = await this.servico.MostrarDemandasHaPartirDasPrimeirasLetras(req.body.letras.trim()); // Chama o método 
+            let { status, mensagem } = await this.servico.MostrarDemandasHaPartirDasPrimeirasLetras(req.body.busca.trim()); // Chama o método 
             resp.status(status).json(mensagem); // Retorna a resposta com o status e a mensagem
         } catch (error) {
             next(error); // Passa o erro para o middleware de tratamento de erros

@@ -1,6 +1,7 @@
 import { Model, ModelStatic } from "sequelize"; // Importa a classe Model do Sequelize
 import db from "."; // Importa a instância do banco de dados
 import sequelize from "sequelize"; // Importa o Sequelize
+import Curso from "./Curso";
 
 class Instituicao extends Model{
     declare id: number; // Declaração do campo id
@@ -16,6 +17,7 @@ class Instituicao extends Model{
     declare email: string; // Declaração do campo email
     declare senha: string; // Declaração do campo senha
     declare contato: string; // Declaração do campo contato
+    
 }
 
 Instituicao.init({
