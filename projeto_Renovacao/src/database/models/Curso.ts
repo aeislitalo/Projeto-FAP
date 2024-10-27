@@ -34,7 +34,7 @@ class Curso extends Model {
 
         // Retorna a instituicao encontrada com seus Cursos associadas
         return { instituicao: DTOHelper.getInstituicoesDto(instituicao), 
-            cursos: DTOHelper.getCursosDto(instituicao.getDataValue('Cursos')) };
+            cursos: DTOHelper.getCursosListaDto(instituicao.getDataValue('Cursos')) };
     }
 
     // Método estático assíncrono para visualizar a Instituição associada a um curso

@@ -7,24 +7,19 @@ let API = new InstituicaoController();
 let instituicaoRota = Router();
 
 // Define as rotas para as operações de instituicao
-instituicaoRota.get('/instituicoes', API.getMostrarInstituicoes.bind(API));
-instituicaoRota.post('/instituicoes', API.postCadastrarInstituicao.bind(API));
-instituicaoRota.put('/instituicoes/:id',API.putAtualizarInstituicao.bind(API));
-instituicaoRota.patch('/instituicoes/:id',API.patchAtualizarSenhaInstituicao.bind(API));
-instituicaoRota.delete('/instituicoes/:id',API.deletarInstituicao.bind(API));
+instituicaoRota.get('/', API.getMostrarInstituicoes.bind(API));
+instituicaoRota.post('/', API.postCadastrarInstituicao.bind(API));
+instituicaoRota.put('/:id',API.putAtualizarInstituicao.bind(API));
+instituicaoRota.patch('/:id',API.patchAtualizarSenhaInstituicao.bind(API));
+instituicaoRota.delete('/:id',API.deletarInstituicao.bind(API));
+instituicaoRota.get('/cursos/:id', API.getMostrarTodosOsCursosDeDeterminadaInstituicao.bind(API));
+instituicaoRota.get('/busca', API.buscarInstituicoesPorCaracter.bind(API));
 
 /////////////////////////////////LOGIN/////////////////////////////////////////
-instituicaoRota.post('/instituicoes/login',API.loginControllerInstituicao.bind(API));
+instituicaoRota.post('/login',API.loginControllerInstituicao.bind(API));
 /////////////////////////////////LOGIN/////////////////////////////////////////
 
 
-/////////////////////////////////LOGIN/////////////////////////////////////////
-instituicaoRota.post('/instituicoes/cursos/:id',API.postCadastrarCursos.bind(API));
-instituicaoRota.get('/instituicoes/cursos/:id', API.getMostrarTodosOsCursosDeDeterminadaInstituicao.bind(API));
-instituicaoRota.get('/instituicoes/cursos', API.getMostrarCursos.bind(API));
-instituicaoRota.get('/cursos/instituicoes/:id', API.getMostrarInstituicaoPertencenteAoCurso.bind(API));
-instituicaoRota.post('/instituicoes/busca', API.buscarInstituicoesPorCaracter.bind(API));
-instituicaoRota.patch('/instituicoes/cursos/:id', API.patchMudarNome.bind(API));
-instituicaoRota.delete('/instituicoes/cursos/:id', API.deletarCurso.bind(API));
+
 
 export default instituicaoRota;

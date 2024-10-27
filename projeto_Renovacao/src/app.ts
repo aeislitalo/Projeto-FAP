@@ -9,6 +9,7 @@ let app = express();
 // Middleware para analisar o corpo das requisições em formato JSON
 app.use(express.json());
 
+
 // Utiliza as rotas importadas
 app.use(router);
 

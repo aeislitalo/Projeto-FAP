@@ -3,7 +3,6 @@ import Empresa from "../database/models/Empresa"; // Importa o modelo Empresa
 import Demanda from "../database/models/Demanda"; // Importa o modelo Demanda
 import { ModelStatic } from "sequelize"; // Importa ModelStatic do Sequelize
 import EmpresaInstituicaoRequestDTO from "../dto/EmpresaDTO/EmpresaInstituicaoRequestDTO"; // Importa o DTO de requisição para Empresa
-import EmpresaInstituicaoResponsetDTO from "../dto/EmpresaDTO/EmpresaInstituicaoResponsetDTO"; // Importa o DTO de resposta para Empresa
 import CursoResponseDTO from "../dto/CursoDTO/ICursoResponseDTO"; // Importa o DTO de resposta para Empresa
 import CursoRequestDTO from "../dto/CursoDTO/CursoRequestDTO"; // Importa o DTO de resposta para Empresa
 import Instituicao from "../database/models/Instituicao"; // Importa o modelo Instituicao

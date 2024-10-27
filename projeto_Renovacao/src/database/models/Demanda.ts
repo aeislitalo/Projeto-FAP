@@ -52,7 +52,7 @@ class Demanda extends Model {
             throw new Error('Empresa não encontrada'); // Lança um erro se a empresa não existir
         }
           // Retorna a empresa encontrada com suas demandas associadas
-        return { empresa: DTOHelper.getEmpresasDto(empresa), demanda:  DTOHelper.getDemandaListaDTO(empresa.getDataValue('demandas'))};
+        return { empresa: DTOHelper.getEmpresasDto(empresa), demandas:  DTOHelper.getDemandaListaDTO(empresa.getDataValue('demandas'))};
       
         
     }

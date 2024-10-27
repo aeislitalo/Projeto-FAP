@@ -9,7 +9,7 @@ class EmpresaService extends MetodosTratamento {
 
     
     // Método para criar uma nova empresa
-    async post(reqBody: any) {
+    async postCadastrarEmpresa(reqBody: any) {
         // Valida o formato do email utilizando o método 'tratarEmail', que verifica se o email é válido
         this.tratarEmail(reqBody.email.trim());
 
@@ -106,87 +106,23 @@ class EmpresaService extends MetodosTratamento {
         let empresasDTO = empresas.map((empresa) => DTOHelper.getEmpresasDto(empresa)); // Mapeia resultados para DTO
 
         if (empresasDTO.length == 0) {
-            return resp(200, "Empresa's não existe!!!"); // Retorna mensagem se não houver empresas
+            return resp(200, {erro: "Empresa's não existe!!!"}); // Retorna mensagem se não houver empresas
         } else {
             return resp(200, empresasDTO); // Retorna empresas encontradas
         }
     }
 
-    //////////////////////////////////////////////// METODOS PARA DEMANDA //////////////////////////////////////////////////////////////////////////
-
-    // Método para cadastrar uma nova demanda
-    async postCadastrarDemanda(id: number, demanda: any) {
-        let dataFinal = Demanda.formatarData(demanda.dataFinal); // Formata a data final
-        let demandaCriacao = await this.modelDemanda.create(Demanda.preencherDemanda(dataFinal, id, demanda)); // Cria a nova demanda
-        return resp(201, demandaCriacao); // Retorna a demanda criada
-    }
+    
+   
 
     // Método para mostrar as demandas de uma empresa
-    async getMostrarDemandasEmpresas(idEmpresa: number) {
+    async getMostrarDemandasEmpresasPorId(idEmpresa: number) {
         // Chama o método estático 'visualizarMeusProjetos' da classe Demanda,
         // que recebe o ID da empresa e busca suas demandas relacionadas.
         return resp(200, await Demanda.visualizarMeusProjetos(idEmpresa)); // Retorna a empresa com suas demandas
     }
 
-    // Método para mostrar todas as demandas
-    async getMostrarDemandas() {
-        let empresas = await this.modelDemanda.findAll(); // Busca todas as demandas
-        return resp(200, empresas); // Retorna as demandas
-    }
-
-    // Método para mostrar empresas pertencentes a uma demanda
-    async getMostrarEmpresasPertencenteHaDemanda(idDemanda: number) {
-        let empresaPorDemanda = await Demanda.visualizarEmpresasDemandas(idDemanda); // Busca empresas relacionadas à demanda
-        return resp(200, empresaPorDemanda); // Retorna empresas encontradas
-    }
-
-    // Método para atualizar uma demanda
-    async putAtualizarDemanda(idDemanda: number, demandaDados: any) {
-        let demandaDB = await this.acharDemandaPorId(idDemanda); // Busca a demanda pelo ID
-
-        let dataFinal = Demanda.formatarData(demandaDados.data_final); // Formata a data final
-        await demandaDB.update(Demanda.preencherDemanda(dataFinal, demandaDB.empresaId, demandaDados)); // Atualiza a demanda
-
-        return resp(200, demandaDB); // Retorna a demanda atualizada
-    }
-
-    // Método para mudar a data de uma demanda
-    async patchMudarData(idDemanda: number, novaData: any) {
-        let demandaDB = await this.acharDemandaPorId(idDemanda); // Busca a demanda pelo ID
-        let dataFinalFormatada = Demanda.formatarData(novaData.data_final); // Formata a nova data
-
-        await demandaDB.update({
-            dataFinal: dataFinalFormatada // Atualiza a data final da demanda
-        });
-
-        return resp(200, demandaDB); // Retorna a demanda atualizada
-    }
-
-    // Método para deletar uma demanda
-    async deletarDemandaServico(idDemanda: number) {
-        let empresaDeletada = await this.acharDemandaPorId(idDemanda); // Busca a demanda pelo ID
-
-        await empresaDeletada.destroy(); // Deleta a demanda
-        return resp(200, 'Demanda deletada com sucesso'); // Retorna sucesso
-    }
-
-    // Método para mostrar demandas a partir das primeiras letras do título
-    async MostrarDemandasHaPartirDasPrimeirasLetras(busca: string) {
-        // Faz uma busca no banco de dados procurando demandas cujo nome começa com as letras fornecidas
-        let demandas = await this.modelDemanda.findAll({
-            where: {
-                titulo: {
-                    [Op.like]: `${busca}%` // Utiliza o operador LIKE para encontrar títulos que começam com as letras especificadas
-                }
-            }
-        });
-
-        if (demandas.length == 0) {
-            return resp(200, "Demandas's não encontrada!!!"); // Retorna mensagem se não houver demandas
-        } else {
-            return resp(200, demandas); // Retorna demandas encontradas
-        }
-    }
+    
 }
 
 // Exporta a classe EmpresaService

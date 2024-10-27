@@ -9,7 +9,7 @@ class EmpresaController {
         try {
 
             // Chama o método post do serviço e desestrutura o resultado
-            let { status, mensagem } = await this.servico.post(req.body);
+            let { status, mensagem } = await this.servico.postCadastrarEmpresa(req.body);
             resp.status(status).json(mensagem); // Retorna a resposta com o status e a mensagem
         } catch (error) {
             next(error); // Passa o erro para o middleware de tratamento de erros
@@ -58,20 +58,9 @@ class EmpresaController {
             next(error); // Passa o erro para o middleware de tratamento de erros
         }
     }
-   async postMostrarEmpresasComPrimeirasLetras(req: Request, resp: Response, next: NextFunction){
-    try {
-        let { status, mensagem } = await this.servico.MostrarEmpresasHaPartirDasPrimeirasLetras(req.body.busca.trim()); // Chama o método 
-        resp.status(status).json(mensagem); // Retorna a resposta com o status e a mensagem
-    } catch (error) {
-        next(error); // Passa o erro para o middleware de tratamento de erros
-    }
-   }
-    /////////////////////////////////// CHAMADA METODOS DE DEMANDAS //////////////////////////////////////////////////////////////
-    // Método para cadastrar uma nova demanda para uma empresa
-    async postCadastrarDemanda(req: Request, resp: Response, next: NextFunction) {
+    async postMostrarEmpresasComPrimeirasLetras(req: Request, resp: Response, next: NextFunction) {
         try {
-
-            let { status, mensagem } = await this.servico.postCadastrarDemanda(Number(req.params.id), req.body); // Chama o método para cadastrar demanda
+            let { status, mensagem } = await this.servico.MostrarEmpresasHaPartirDasPrimeirasLetras(req.body.busca.trim()); // Chama o método 
             resp.status(status).json(mensagem); // Retorna a resposta com o status e a mensagem
         } catch (error) {
             next(error); // Passa o erro para o middleware de tratamento de erros
@@ -79,75 +68,18 @@ class EmpresaController {
     }
 
     // Método para mostrar as demandas de uma empresa
-    async getMostrarDemandasEmpresas(req: Request, resp: Response, next: NextFunction) {
+    async getMostrarDemandasEmpresasPorId(req: Request, resp: Response, next: NextFunction) {
         try {
 
-            let { status, mensagem } = await this.servico.getMostrarDemandasEmpresas(Number(req.params.id)); // Chama o método para mostrar demandas da empresa
-            resp.status(status).json(mensagem); // Retorna a resposta com o status e a mensagem
-        } catch (error) {
-            next(error); // Passa o erro para o middleware de tratamento de erros
-        }
-    }
-    async getMostraEmpresaPorDemanda(req: Request, resp: Response, next: NextFunction) {
-        try {
-
-            let { status, mensagem } = await this.servico.getMostrarEmpresasPertencenteHaDemanda(Number(req.params.id));// Chama o método para mostrar empresa da demanda
-            resp.status(status).json(mensagem); // Retorna a resposta com o status e a mensagem
-        } catch (error) {
-            next(error);
-        }
-    }
-
-    // Método para mostrar todas as demandas
-    async getMostrarDemandas(req: Request, resp: Response, next: NextFunction) {
-        try {
-            let { status, mensagem } = await this.servico.getMostrarDemandas(); // Chama o método para mostrar todas as demandas
+            let { status, mensagem } = await this.servico.getMostrarDemandasEmpresasPorId(Number(req.params.id)); // Chama o método para mostrar demandas da empresa
             resp.status(status).json(mensagem); // Retorna a resposta com o status e a mensagem
         } catch (error) {
             next(error); // Passa o erro para o middleware de tratamento de erros
         }
     }
 
-    // Método para atualizar uma demanda
-    async putAtualizarDemanda(req: Request, resp: Response, next: NextFunction) {
-        try {
 
-            let { status, mensagem } = await this.servico.putAtualizarDemanda(Number(req.params.id), req.body); // Chama o método para atualizar a demanda
-            resp.status(status).json(mensagem); // Retorna a resposta com o status e a mensagem
-        } catch (error) {
-            next(error); // Passa o erro para o middleware de tratamento de erros
-        }
-    }
 
-    // Método para mudar a data de uma demanda
-    async patchMudarData(req: Request, resp: Response, next: NextFunction) {
-        try {
-
-            let { status, mensagem } = await this.servico.patchMudarData(Number(req.params.id), req.body); // Chama o método para mudar a data da demanda
-            resp.status(status).json(mensagem); // Retorna a resposta com o status e a mensagem
-        } catch (error) {
-            next(error); // Passa o erro para o middleware de tratamento de erros
-        }
-    }
-
-    // Método para deletar uma demanda
-    async deletarDemanda(req: Request, resp: Response, next: NextFunction) {
-        try {
-
-            let { status, mensagem } = await this.servico.deletarDemandaServico(Number(req.params.id)); // Chama o método para deletar a demanda
-            resp.status(status).json(mensagem); // Retorna a resposta com o status e a mensagem
-        } catch (error) {
-            next(error); // Passa o erro para o middleware de tratamento de erros
-        }
-    }
-    async postMostrarDemandasComPrimeirasLetras(req: Request, resp: Response, next: NextFunction){
-        try {
-            let { status, mensagem } = await this.servico.MostrarDemandasHaPartirDasPrimeirasLetras(req.body.busca.trim()); // Chama o método 
-            resp.status(status).json(mensagem); // Retorna a resposta com o status e a mensagem
-        } catch (error) {
-            next(error); // Passa o erro para o middleware de tratamento de erros
-        }
-    }
     ////////////////////////////// LOGIN EMPRESA//////////////////////////////////////////////////////////////
     // Método para realizar o login da empresa
     async postLoginEmpresa(req: Request, resp: Response, next: NextFunction) {
@@ -164,7 +96,7 @@ class EmpresaController {
         }
     }
 
-    
+
 }
 
 export default EmpresaController; // Exporta a classe EmpresaController
