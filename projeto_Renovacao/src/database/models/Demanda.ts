@@ -3,6 +3,7 @@ import db from "."; // Importa a instância do banco de dados
 import sequelize from "sequelize"; // Importa o Sequelize
 import Empresa from "./Empresa"; // Importa o modelo Empresa
 import DTOHelper from "../../utils/DTOHelp";
+import DemandaPega from "./DemandaPega";
 
 
 // Define a classe Demanda que estende Model
@@ -132,5 +133,4 @@ Demanda.belongsTo(Empresa, {
     onUpdate: 'CASCADE', // Atualiza a demanda se o ID da empresa for atualizado
     as: 'empresa' // Define um alias para o relacionamento
 });
-
 export default Demanda; // Exporta o modelo Demanda

@@ -81,7 +81,54 @@ class DemandaPega extends Model {
         }
     }
 
-    
+    static async visualizarAndamentoDemanda(idDemanda: number) {
+        // Busca todas as entradas na tabela intermediária 'DemandaPega' onde 'demandaId' corresponde ao 'idDemanda' fornecido.
+        // Inclui os dados associados de 'Demanda' e 'Professor' de acordo com o relacionamento configurado.
+        let demandas = await DemandaPega.findAll({
+            where: { demandaId: idDemanda },
+            include: [
+                {
+                    model: Demanda,
+                    as: 'Demandas' // Usa o alias configurado para incluir os dados da tabela 'Demanda' relacionados.
+                },
+                {
+                    model: Professor,
+                    as: 'Professores' // Usa o alias configurado para incluir os dados da tabela 'Professor' relacionados.
+                }
+            ]
+        });
+
+        // Verifica se não encontrou nenhum registro correspondente para o 'idDemanda' fornecido. 
+        // Caso a busca retorne um array vazio, lança um erro indicando que a Demanda ou Professor(a) não foram encontrados.
+        if (!demandas || demandas.length == 0) {
+            throw new Error('Demanda ou Professor(a) não encontrado(s)!');
+        }
+
+        // Retorna um objeto contendo:
+        // 1. Uma lista de objetos 'DemandaPega', formatados a partir da lista 'demandas' usando o método 'getDemandaPegasListaDTO' do helper 'DTOHelper'.
+        // 2. Uma lista de objetos 'Demanda', sem duplicações, extraídos de cada item em 'demandas' usando 'getDataValue'. Esses objetos são então formatados pelo método 'getDemandaDTO'.
+        // 3. Uma lista de objetos 'Professor', extraídos de cada item em 'demandas' usando 'getDataValue' e formatados pelo método 'getProfessorDTO'.
+        return {
+            DemandaPega: DTOHelper.getDemandaPegasListaDTO(demandas),
+            Demanda: DTOHelper.getDemandaListaDTO(
+                Array.from(
+                    // Cria um Map onde cada par [chave, valor] representa um item único com base no 'id' da demanda
+                    new Map(
+                        // Mapeia cada demanda para um par [id, demanda], onde 'id' é a chave única e 'demanda' é o valor
+                        demandas.map(demanda => [
+                            demanda.getDataValue('Demandas').id, // Chave: 'id' da demanda, usado para eliminar duplicatas
+                            demanda.getDataValue('Demandas')     // Valor: o próprio objeto 'Demanda'
+                        ])
+                    ).values() // Extrai apenas os valores únicos (objetos 'Demanda' sem duplicatas) do Map
+                )
+            ),
+            Professor: demandas.map(professor => DTOHelper.getProfessorDTO(professor.getDataValue('Professores')))
+        };
+
+    }
+
+
+
 }
 
 // Inicializa o modelo DemandaPega com as configurações de atributos e relacionamentos
@@ -137,22 +184,30 @@ DemandaPega.init({
 
 // Configura o relacionamento muitos-para-muitos entre Professor e Demanda através de DemandaPega
 Professor.belongsToMany(Demanda, {
-    foreignKey: 'professorId', // Chave estrangeira em DemandaPega associada ao Professor
-    otherKey: 'demandaId', // Outra chave em DemandaPega associada à Demanda
-    through: DemandaPega, // Define a tabela intermediária como DemandaPega
-    onDelete: 'CASCADE', // Exclui as demandas associadas ao professor ao deletá-lo
-    onUpdate: 'CASCADE', // Atualiza a associação ao alterar id do professor
-    as: 'Demandas' // Define o alias 'Demandas' para o relacionamento
+    foreignKey: 'professorId',
+    otherKey: 'demandaId',
+    through: DemandaPega,
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+    as: 'Demandas' // Alias para o relacionamento
 });
 
 // Configura o relacionamento muitos-para-muitos entre Demanda e Professor através de DemandaPega
 Demanda.belongsToMany(Professor, {
-    foreignKey: 'demandaId', // Chave estrangeira em DemandaPega associada à Demanda
-    otherKey: 'professorId', // Outra chave em DemandaPega associada ao Professor
-    through: DemandaPega, // Define a tabela intermediária como DemandaPega
-    onDelete: 'CASCADE', // Exclui os professores associados à demanda ao deletá-la
-    onUpdate: 'CASCADE', // Atualiza a associação ao alterar id de demanda
-    as: 'Professores' // Define o alias 'Professores' para o relacionamento
+    foreignKey: 'demandaId',
+    otherKey: 'professorId',
+    through: DemandaPega,
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+    as: 'Professores' // Alias para o relacionamento
 });
 
+DemandaPega.belongsTo(Professor, {
+    foreignKey: 'professorId',
+    as: 'Professores'
+});
+DemandaPega.belongsTo(Demanda, {
+    foreignKey: 'demandaId',
+    as: 'Demandas'
+});
 export default DemandaPega; // Exporta o modelo DemandaPega

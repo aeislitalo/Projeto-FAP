@@ -4,6 +4,7 @@ import sequelize from "sequelize";
 import Instituicao from "./Instituicao";
 import Curso from "./Curso";
 import DTOHelper from "../../utils/DTOHelp";
+import DemandaPega from "./DemandaPega";
 
 class Professor extends Model {
 

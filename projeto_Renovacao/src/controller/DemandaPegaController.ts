@@ -100,6 +100,20 @@ class DemandaPegaController {
             next(error); // Passa o erro para o middleware de tratamento de erros
         }
     }
+    // Método para exibir o andamento de uma demanda para um professor específico
+    async mostrarAndamentoDemanda(req: Request, resp: Response, next: NextFunction) {
+    try {
+        // Chama o serviço para obter o andamento das demandas de um professor, convertendo o ID da URL para número
+        const { status, mensagem } = await this.servico.mostrarAndamentoDemanda(Number(req.params.id));
+        
+        // Envia a resposta com o status e a mensagem retornados pelo serviço
+        resp.status(status).json(mensagem);
+    } catch (error) {
+        // Encaminha qualquer erro ocorrido para o middleware de tratamento de erros
+        next(error);
+    }
+}
+
   
 }
 
