@@ -5,9 +5,10 @@ import MetodosTratamento from "./MetodosTratamentoAuxiliares"; // Importa métod
 import { Op } from "sequelize"; // Importa operadores do Sequelize
 import DTOHelper from "../utils/DTOHelp";
 
+
 class EmpresaService extends MetodosTratamento {
 
-    
+
     // Método para criar uma nova empresa
     async postCadastrarEmpresa(reqBody: any) {
         // Valida o formato do email utilizando o método 'tratarEmail', que verifica se o email é válido
@@ -15,7 +16,7 @@ class EmpresaService extends MetodosTratamento {
 
         // Valida a senha utilizando o método 'tratarSenha', que verifica se a senha atende aos critérios (letra e número)
         this.tratarSenha(reqBody.senha.trim());
-       
+
         // Cria uma instância de 'EmpresaRequestDTO' usando os dados do corpo da requisição (reqBody)
         let empresaReqDTO = await this.tratarEndereco(reqBody, reqBody.cep.trim());
 
@@ -29,15 +30,15 @@ class EmpresaService extends MetodosTratamento {
 
     //////////////////////////////////////////////// LOGIN //////////////////////////////////////////////////////////
     // Método para realizar o login
-    async postLoginEmpresa(email: string, senha: string) {
+    async getLoginEmpresa(email: string, senha: string) {
         try {
             // Verifica se o email e a senha são válidos
             this.tratarEmail(email);
             this.tratarSenha(senha);
 
             // Retorna uma resposta de sucesso com a empresa encontrada
-            
-            return resp(200, DTOHelper.getEmpresasDto( await this.fazerLoginEmpresa(email, senha)));
+
+            return resp(200, DTOHelper.getEmpresasDto(await this.fazerLoginEmpresa(email, senha)));
         } catch (error: any) {
             // Lança o erro capturado
             return resp(400, { mensagem: error.message || 'Erro desconhecido.' });
@@ -106,14 +107,14 @@ class EmpresaService extends MetodosTratamento {
         let empresasDTO = empresas.map((empresa) => DTOHelper.getEmpresasDto(empresa)); // Mapeia resultados para DTO
 
         if (empresasDTO.length == 0) {
-            return resp(200, {erro: "Empresa's não existe!!!"}); // Retorna mensagem se não houver empresas
+            return resp(200, { erro: "Empresa's não existe!!!" }); // Retorna mensagem se não houver empresas
         } else {
             return resp(200, empresasDTO); // Retorna empresas encontradas
         }
     }
 
-    
-   
+
+
 
     // Método para mostrar as demandas de uma empresa
     async getMostrarDemandasEmpresasPorId(idEmpresa: number) {
@@ -122,7 +123,7 @@ class EmpresaService extends MetodosTratamento {
         return resp(200, await Demanda.visualizarMeusProjetos(idEmpresa)); // Retorna a empresa com suas demandas
     }
 
-    
+
 }
 
 // Exporta a classe EmpresaService

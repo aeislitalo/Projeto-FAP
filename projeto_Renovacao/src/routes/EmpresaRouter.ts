@@ -4,19 +4,19 @@ import EmpresaController from "../controller/EmpresaController"; // Importa a cl
 // Cria uma nova instância do controlador de empresa
 let API = new EmpresaController();
 // Cria uma nova instância do roteador
-let empresaRota = Router();
+let rota = Router();
 
 // Define as rotas para as operações de empresa
-empresaRota.post('/', API.postCadastrarEmpresa.bind(API)); // Rota para cadastrar uma nova empresa
-empresaRota.get('/', API.getMostrarEmpresas.bind(API)); // Rota para listar todas as empresas
-empresaRota.put('/:id', API.putMudarDadosEmpresas.bind(API)); // Rota para atualizar dados de uma empresa pelo ID
-empresaRota.patch('/:id', API.patchMudarSenha.bind(API)); // Rota para mudar a senha de uma empresa pelo ID
-empresaRota.delete('/:id', API.deletarEmpresa.bind(API)); // Rota para deletar uma empresa pelo ID
-empresaRota.get('/busca',API.postMostrarEmpresasComPrimeirasLetras.bind(API));
+rota.post('/', API.postCadastrarEmpresa.bind(API)); // Rota para cadastrar uma nova empresa
+rota.get('/', API.getMostrarEmpresas.bind(API)); // Rota para listar todas as empresas
+rota.put('/:id', API.putMudarDadosEmpresas.bind(API)); // Rota para atualizar dados de uma empresa pelo ID
+rota.patch('/:id', API.patchMudarSenha.bind(API)); // Rota para mudar a senha de uma empresa pelo ID
+rota.delete('/:id', API.deletarEmpresa.bind(API)); // Rota para deletar uma empresa pelo ID
+rota.get('/busca',API.postMostrarEmpresasComPrimeirasLetras.bind(API));
 
-empresaRota.get('/demandas/:id', API.getMostrarDemandasEmpresasPorId.bind(API)); // Rota para mostrar as demandas de uma empresa pelo ID
+rota.get('/demandas/:id', API.getMostrarDemandasEmpresasPorId.bind(API)); // Rota para mostrar as demandas de uma empresa pelo ID
 
 ///////////////////////////////////////////////////////// ROTA LOGIN /////////////////////////////////////////////////////////////////////////////////////////////////////
-empresaRota.post('/empresasLogin', API.postLoginEmpresa.bind(API));
+rota.get('/login', API.getLoginEmpresa.bind(API));
 // Exporta as rotas de empresa
-export default empresaRota;
+export default rota;

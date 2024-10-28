@@ -5,6 +5,7 @@ import { Op } from "sequelize"; // Importa operadores do Sequelize
 import DTOHelper from "../utils/DTOHelp";
 
 class DemandaService extends MetodosTratamento {
+    
 
 
     // Método para cadastrar uma nova demanda

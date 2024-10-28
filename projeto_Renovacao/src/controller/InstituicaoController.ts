@@ -1,11 +1,11 @@
 // Importa os tipos Request, Response e NextFunction do Express para manipulação de requisições e respostas
 import { Request, Response, NextFunction } from "express";
 // Importa o serviço de instituições
-import InstituicaoService from "../service/InstituicaoService";
+import Service from "../service/InstituicaoService";
 
 // Classe InstituicaoController para gerenciar as rotas relacionadas a instituições
 class InstituicaoController {
-    private servico = new InstituicaoService(); // Instância do serviço de instituições
+    private servico = new Service(); // Instância do serviço de instituições
 
     // Método para mostrar todas as instituições
     async getMostrarInstituicoes(req: Request, resp: Response, next: NextFunction) {
@@ -66,17 +66,16 @@ class InstituicaoController {
             next(error); // Passa o erro para o middleware de tratamento de erros
         }
     }
+
     // Método de busca por caracter
     async buscarInstituicoesPorCaracter(req: Request, resp: Response, next: NextFunction) {
         try {
-            const { status, mensagem } = await this.servico.buscarInstituicoesHaPartirDasPrimeirasLetras(req.body.busca.trim()); // Realiza o login da instituição
+            const { status, mensagem } = await this.servico.buscarInstituicoesHaPartirDasPrimeirasLetras(req.body.busca.trim()); // Busca instituições a partir das primeiras letras fornecidas
             resp.status(status).json(mensagem); // Retorna a resposta com status e mensagem
         } catch (error) {
             next(error); // Passa o erro para o middleware de tratamento de erros
         }
     }
-
-
 
     // Método para mostrar todos os cursos de uma determinada instituição
     async getMostrarTodosOsCursosDeDeterminadaInstituicao(req: Request, resp: Response, next: NextFunction) {
@@ -87,12 +86,6 @@ class InstituicaoController {
             next(error); // Passa o erro para o middleware de tratamento de erros
         }
     }
-
-
-
-
-
-
 }
 
 // Exporta a classe InstituicaoController para ser utilizada em outras partes do aplicativo

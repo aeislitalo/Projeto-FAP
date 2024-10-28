@@ -1,11 +1,15 @@
-
+// Importa o modelo Curso da camada de banco de dados
 import Curso from "../database/models/Curso";
-
+// Importa a função de resposta personalizada
 import resp from "../utils/resp";
+// Importa métodos auxiliares para tratamento de dados
 import MetodosTratamentoAuxiliares from "./MetodosTratamentoAuxiliares";
+// Importa um helper para transformar objetos em DTOs
 import DTOHelper from "../utils/DTOHelp";
+// Importa operadores do Sequelize para consultas
 import { Op } from "sequelize";
 
+// Classe que representa o serviço de cursos, estendendo métodos auxiliares
 class CursoService extends MetodosTratamentoAuxiliares {
 
     // Método assíncrono para cadastrar um curso na instituição
@@ -13,7 +17,7 @@ class CursoService extends MetodosTratamentoAuxiliares {
         // Cria o objeto de dados de entrada do curso
         let cursoDTO = this.criarObjetoCurso(idInstituicao, nomeCurso); // Invoca o método para criar o objeto de curso
         await this.modelCurso.create(this.preencherCurso(cursoDTO)); // Cadastra o curso no banco de dados
-        return resp(201, "Curso Cadastrado com sucesso!!!!"); // Retorna uma resposta de sucesso
+        return resp(201, ""); // Retorna uma resposta de sucesso
     }
 
     // Método assíncrono para mostrar todos os cursos cadastrados
@@ -44,6 +48,26 @@ class CursoService extends MetodosTratamentoAuxiliares {
         return resp(204, ""); // Retorna uma resposta de sucesso sem conteúdo
     }
 
+    // Método assíncrono para buscar cursos por nome
+    async buscarCursoPorNome(busca: string) {
+        let cursos = await this.modelCurso.findAll({
+            where: {
+                nome: {
+                    [Op.like]: `${busca}%` // Utiliza o operador LIKE para encontrar nomes que começam com as letras especificadas
+                }
+            }
+        });
+
+        let cursoDTO = cursos.map((curso) => DTOHelper.getCursosDTO(curso)); // Mapeia resultados para DTO
+
+        if (cursoDTO.length == 0) {
+            return resp(200, { erro: "Curso's não existe!!!" }); // Retorna mensagem se não houver cursos
+        } else {
+            return resp(200, cursoDTO); // Retorna cursos encontrados
+        }
+    }
+
 }
 
+// Exporta a classe CursoService para ser usada em outras partes do aplicativo
 export default CursoService;

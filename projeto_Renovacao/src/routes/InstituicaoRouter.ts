@@ -1,25 +1,40 @@
-import { Router } from "express"; // Importa a função Router do Express
-import InstituicaoController from "../controller/InstituicaoController"; // Importa a classe InstituicaoController
+// Importa a função Router do Express para criar rotas
+import { Router } from "express"; 
+// Importa a classe InstituicaoController que contém a lógica de negócios para instituições
+import Controller from "../controller/InstituicaoController"; 
 
-// Cria uma nova instância do controlador de Instituição
-let API = new InstituicaoController();
-// Cria uma nova instância do roteador
-let instituicaoRota = Router();
+// Cria uma nova instância do controlador de Instituições
+let API = new Controller();
+// Cria uma nova instância do roteador do Express
+let rota = Router();
 
-// Define as rotas para as operações de instituicao
-instituicaoRota.get('/', API.getMostrarInstituicoes.bind(API));
-instituicaoRota.post('/', API.postCadastrarInstituicao.bind(API));
-instituicaoRota.put('/:id',API.putAtualizarInstituicao.bind(API));
-instituicaoRota.patch('/:id',API.patchAtualizarSenhaInstituicao.bind(API));
-instituicaoRota.delete('/:id',API.deletarInstituicao.bind(API));
-instituicaoRota.get('/cursos/:id', API.getMostrarTodosOsCursosDeDeterminadaInstituicao.bind(API));
-instituicaoRota.get('/busca', API.buscarInstituicoesPorCaracter.bind(API));
+// Define as rotas para as operações relacionadas a instituições
 
-/////////////////////////////////LOGIN/////////////////////////////////////////
-instituicaoRota.post('/login',API.loginControllerInstituicao.bind(API));
-/////////////////////////////////LOGIN/////////////////////////////////////////
+// Rota para obter todas as instituições
+rota.get('/', API.getMostrarInstituicoes.bind(API));
 
+// Rota para cadastrar uma nova instituição
+rota.post('/', API.postCadastrarInstituicao.bind(API));
 
+// Rota para atualizar uma instituição existente
+rota.put('/:id', API.putAtualizarInstituicao.bind(API));
 
+// Rota para atualizar a senha de uma instituição
+rota.patch('/:id', API.patchAtualizarSenhaInstituicao.bind(API));
 
-export default instituicaoRota;
+// Rota para deletar uma instituição
+rota.delete('/:id', API.deletarInstituicao.bind(API));
+
+// Rota para mostrar todos os cursos de uma determinada instituição
+rota.get('/cursos/:id', API.getMostrarTodosOsCursosDeDeterminadaInstituicao.bind(API));
+
+// Rota para buscar instituições a partir de caracteres iniciais
+rota.get('/busca', API.buscarInstituicoesPorCaracter.bind(API));
+
+// ///////////////////////////////////LOGIN/////////////////////////////////////////
+// Rota para login de uma instituição
+rota.get('/login', API.loginControllerInstituicao.bind(API));
+// ///////////////////////////////////LOGIN/////////////////////////////////////////
+
+// Exporta as rotas para serem utilizadas em outras partes do aplicativo
+export default rota;

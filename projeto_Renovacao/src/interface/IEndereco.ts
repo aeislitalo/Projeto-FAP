@@ -1,15 +1,17 @@
+// Interface IEndereco representa a estrutura de dados para um endereço
 interface IEndereco {
-    cep: string;
-    address_type: string;
-    address_name: string;
-    address: string;
-    state: string;
-    district: string;
-    city: string;
-    lat: string;
-    lng: string;
-    city_ibge: string;
-    ddd: string;
-  }
+  cep: string; // Código de Endereçamento Postal
+  address_type: string; // Tipo de endereço (ex: residencial, comercial)
+  address_name: string; // Nome do endereço
+  address: string; // Endereço completo
+  state: string; // Estado
+  district: string; // Bairro ou distrito
+  city: string; // Cidade
+  lat: string; // Latitude
+  lng: string; // Longitude
+  city_ibge: string; // Código IBGE da cidade
+  ddd: string; // Código de Discagem Direta à Distância
+}
 
-  export default IEndereco;
+// Exporta a interface IEndereco para ser utilizada em outras partes do aplicativo
+export default IEndereco;

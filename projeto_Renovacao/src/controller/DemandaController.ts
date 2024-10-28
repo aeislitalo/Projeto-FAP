@@ -1,84 +1,87 @@
 import { Request, Response, NextFunction } from "express"; // Importa os tipos Request, Response e NextFunction do Express
-import DemandaService from "../service/DemandaService"; // Importa a classe EmpresaService
+import Service from "../service/DemandaService"; // Importa a classe DemandaService
 
 class DemandaController {
-
-    private servico = new DemandaService();
     
+    private servico = new Service(); // Instância do serviço de demandas para uso nos métodos do controlador
+
     // Método para cadastrar uma nova demanda para uma empresa
     async postCadastrarDemanda(req: Request, resp: Response, next: NextFunction) {
         try {
-
-            let { status, mensagem } = await this.servico.postCadastrarDemanda(Number(req.params.id), req.body); // Chama o método para cadastrar demanda
-            resp.status(status).json(mensagem); // Retorna a resposta com o status e a mensagem
+            // Chama o método do serviço para cadastrar uma nova demanda
+            let { status, mensagem } = await this.servico.postCadastrarDemanda(Number(req.params.id), req.body);
+            resp.status(status).json(mensagem); // Retorna a resposta com status e mensagem
         } catch (error) {
             next(error); // Passa o erro para o middleware de tratamento de erros
         }
     }
 
+    // Método para mostrar a empresa associada a uma demanda específica
     async getMostraEmpresaPorDemanda(req: Request, resp: Response, next: NextFunction) {
         try {
-
-            let { status, mensagem } = await this.servico.getMostrarEmpresasPertencenteHaDemanda(Number(req.params.id));// Chama o método para mostrar empresa da demanda
-            resp.status(status).json(mensagem); // Retorna a resposta com o status e a mensagem
-        } catch (error) {
-            next(error);
-        }
-    }
-
-       // Método para mostrar todas as demandas
-       async getMostrarDemandas(req: Request, resp: Response, next: NextFunction) {
-        try {
-            let { status, mensagem } = await this.servico.getMostrarDemandas(); // Chama o método para mostrar todas as demandas
-            resp.status(status).json(mensagem); // Retorna a resposta com o status e a mensagem
+            // Chama o método do serviço para obter a empresa associada a uma demanda
+            let { status, mensagem } = await this.servico.getMostrarEmpresasPertencenteHaDemanda(Number(req.params.id));
+            resp.status(status).json(mensagem); // Retorna a resposta com status e mensagem
         } catch (error) {
             next(error); // Passa o erro para o middleware de tratamento de erros
         }
     }
 
-    // Método para atualizar uma demanda
+    // Método para mostrar todas as demandas
+    async getMostrarDemandas(req: Request, resp: Response, next: NextFunction) {
+        try {
+            // Chama o método do serviço para obter todas as demandas
+            let { status, mensagem } = await this.servico.getMostrarDemandas();
+            resp.status(status).json(mensagem); // Retorna a resposta com status e mensagem
+        } catch (error) {
+            next(error); // Passa o erro para o middleware de tratamento de erros
+        }
+    }
+
+    // Método para atualizar uma demanda específica
     async putAtualizarDemanda(req: Request, resp: Response, next: NextFunction) {
         try {
-
-            let { status, mensagem } = await this.servico.putAtualizarDemanda(Number(req.params.id), req.body); // Chama o método para atualizar a demanda
-            resp.status(status).json(mensagem); // Retorna a resposta com o status e a mensagem
+            // Chama o método do serviço para atualizar uma demanda com base no id
+            let { status, mensagem } = await this.servico.putAtualizarDemanda(Number(req.params.id), req.body);
+            resp.status(status).json(mensagem); // Retorna a resposta com status e mensagem
         } catch (error) {
             next(error); // Passa o erro para o middleware de tratamento de erros
         }
     }
 
-    // Método para mudar a data de uma demanda
+    // Método para alterar a data de uma demanda específica
     async patchMudarData(req: Request, resp: Response, next: NextFunction) {
         try {
-
-            let { status, mensagem } = await this.servico.patchMudarData(Number(req.params.id), req.body); // Chama o método para mudar a data da demanda
-            resp.status(status).json(mensagem); // Retorna a resposta com o status e a mensagem
+            // Chama o método do serviço para mudar a data da demanda
+            let { status, mensagem } = await this.servico.patchMudarData(Number(req.params.id), req.body);
+            resp.status(status).json(mensagem); // Retorna a resposta com status e mensagem
         } catch (error) {
             next(error); // Passa o erro para o middleware de tratamento de erros
         }
     }
 
-    // Método para deletar uma demanda
+    // Método para deletar uma demanda específica
     async deletarDemanda(req: Request, resp: Response, next: NextFunction) {
         try {
-
-            let { status, mensagem } = await this.servico.deletarDemandaServico(Number(req.params.id)); // Chama o método para deletar a demanda
-            resp.status(status).json(mensagem); // Retorna a resposta com o status e a mensagem
+            // Chama o método do serviço para deletar uma demanda com base no id
+            let { status, mensagem } = await this.servico.deletarDemandaServico(Number(req.params.id));
+            resp.status(status).json(mensagem); // Retorna a resposta com status e mensagem
         } catch (error) {
             next(error); // Passa o erro para o middleware de tratamento de erros
         }
     }
-    async postBuscarDemandasComPrimeirasLetras(req: Request, resp: Response, next: NextFunction){
-        console.log(req.body);
+
+    // Método para buscar demandas com base nas primeiras letras do título
+    async postBuscarDemandasComPrimeirasLetras(req: Request, resp: Response, next: NextFunction) {
+        console.log(req.body); // Exibe o corpo da requisição no console para depuração
         try {
-          
-            let { status, mensagem } = await this.servico.MostrarDemandasHaPartirDasPrimeirasLetras(req.body.busca.trim()); // Chama o método 
-            resp.status(status).json(mensagem); // Retorna a resposta com o status e a mensagem
+            // Chama o método do serviço para buscar demandas com base nas primeiras letras fornecidas
+            let { status, mensagem } = await this.servico.MostrarDemandasHaPartirDasPrimeirasLetras(req.body.busca.trim());
+            resp.status(status).json(mensagem); // Retorna a resposta com status e mensagem
         } catch (error) {
             next(error); // Passa o erro para o middleware de tratamento de erros
         }
     }
 }
 
-export default DemandaController;
-
+export default DemandaController; // Exporta a classe DemandaController para uso em outras partes da aplicação

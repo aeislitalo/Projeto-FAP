@@ -38,8 +38,9 @@ module.exports = {
       },
       // Definição da coluna 'contato' como string com tamanho máximo de 50 caracteres
       contato:{
-        type:Sequelize.STRING(50) // Pode ser nula, pois não há 'allowNull' definido
-      },
+        type:Sequelize.STRING(50), // Pode ser nula, pois não há 'allowNull' definido
+        allowNull:false
+       },
       // Definição da coluna 'curso_id' como inteiro, com referência à tabela 'curso'
       curso_id:{
         type:Sequelize.INTEGER,

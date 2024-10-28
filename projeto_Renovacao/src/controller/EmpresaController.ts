@@ -1,8 +1,8 @@
 import { Request, Response, NextFunction } from "express"; // Importa os tipos Request, Response e NextFunction do Express
-import EmpresaService from "../service/EmpresaService"; // Importa a classe EmpresaService
+import Service from "../service/EmpresaService"; // Importa a classe EmpresaService
 
 class EmpresaController {
-    private servico = new EmpresaService(); // Cria uma instância do serviço de empresa
+    private servico = new Service(); // Cria uma instância do serviço de empresa
 
     // Método para cadastrar uma nova empresa
     async postCadastrarEmpresa(req: Request, resp: Response, next: NextFunction) {
@@ -82,11 +82,11 @@ class EmpresaController {
 
     ////////////////////////////// LOGIN EMPRESA//////////////////////////////////////////////////////////////
     // Método para realizar o login da empresa
-    async postLoginEmpresa(req: Request, resp: Response, next: NextFunction) {
+    async getLoginEmpresa(req: Request, resp: Response, next: NextFunction) {
         try {
             // Chama o serviço responsável por validar o login, passando o email e a senha como parâmetros
             // O serviço retorna um objeto com o status HTTP e uma mensagem de resposta
-            let { status, mensagem } = await this.servico.postLoginEmpresa(req.body.email.trim(), req.body.senha.trim());
+            let { status, mensagem } = await this.servico.getLoginEmpresa(req.body.email.trim(), req.body.senha.trim());
 
             // Envia a resposta ao cliente com o código de status apropriado e a mensagem em formato JSON
             resp.status(status).json(mensagem);

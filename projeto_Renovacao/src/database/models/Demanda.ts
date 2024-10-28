@@ -2,8 +2,6 @@ import { Model} from "sequelize"; // Importa a classe Model do Sequelize
 import db from "."; // Importa a instância do banco de dados
 import sequelize from "sequelize"; // Importa o Sequelize
 import Empresa from "./Empresa"; // Importa o modelo Empresa
-import empresaDTO from "../../dto/EmpresaDTO/EmpresaInstituicaoResponsetDTO";
-import demandaDTO from "../../dto/EmpresaDTO/IDemandaResponseDTO";
 import DTOHelper from "../../utils/DTOHelp";
 
 
@@ -70,30 +68,12 @@ class Demanda extends Model {
         if (!demanda) {
             throw new Error('Demanda não encontrada'); // Lança um erro se a demanda não existir
         }
+        
        
         // Retorna a demanda encontrada com suas demandas associadas
         return { demanda: DTOHelper.getDemandaDTO(demanda), empresa:  DTOHelper.getEmpresasDto(demanda.getDataValue('empresa'))};
     }
-     // Método auxiliar para formatar os dados da empresa para retorno ao cliente
-     static getEmpresasInstituicoesDto(empresa: Empresa): empresaDTO {
-       // Cria e retorna um objeto que representa a resposta da empresa com os campos id, nome e email
-        return {
-            id: empresa.id,       // Acessa o ID da empresa fornecida como parâmetro
-            nome: empresa.nome,   // Acessa o nome da empresa fornecida como parâmetro
-            email: empresa.email   // Acessa o email da empresa fornecida como parâmetro
-        };
-    }
-     // Método auxiliar para formatar os dados de uma demanda para retorno ao cliente
-    static getDemandaDTO(demanda: Demanda): demandaDTO {
-        // Cria e retorna um objeto que representa a resposta da demanda com os campos id, titulo, descricao, dataEnvio e dataFinal
-        return {
-            id: demanda.id,        // Acessa o ID da demanda fornecida como parâmetro
-            titulo: demanda.titulo, // Acessa o título da demanda fornecida como parâmetro
-            descricao: demanda.descricao, // Acessa a descrição da demanda fornecida como parâmetro
-            dataEnvio: demanda.dataEnvio, // Acessa a data de envio da demanda fornecida como parâmetro
-            dataFinal: demanda.dataFinal // Acessa a data final da demanda fornecida como parâmetro
-        };
-    }
+     
     
 }
 

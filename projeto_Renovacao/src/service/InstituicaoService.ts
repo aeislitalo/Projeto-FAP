@@ -1,12 +1,11 @@
-
 import Curso from "../database/models/Curso";
-
 import resp from "../utils/resp";
 import MetodosTratamentoAuxiliares from "./MetodosTratamentoAuxiliares";
 import DTOHelper from "../utils/DTOHelp";
 import { Op } from "sequelize";
-class InstituicaoService extends MetodosTratamentoAuxiliares {
 
+// Classe de serviço para gerenciar operações relacionadas a instituições
+class InstituicaoService extends MetodosTratamentoAuxiliares {
     // Método assíncrono para obter todas as instituições cadastradas
     async get() {
         let instituicoes = await this.modelInstituicao.findAll(); // Busca todas as instituições no banco de dados
@@ -55,8 +54,6 @@ class InstituicaoService extends MetodosTratamentoAuxiliares {
         return resp(204, ""); // Retorna uma resposta de sucesso sem conteúdo
     }
 
-    /////////////////////////////////LOGIN/////////////////////////////////////////
-
     // Método assíncrono para login da instituição
     async loginInstituicao(email: string, senha: string) {
         try {
@@ -68,21 +65,15 @@ class InstituicaoService extends MetodosTratamentoAuxiliares {
             return resp(400, { mensagem: error.message || 'Erro desconhecido.' }); // Retorna um erro se houver falha no login
         }
     }
-    /////////////////////////////////LOGIN/////////////////////////////////////////
-
-    
 
     // Método assíncrono para mostrar os cursos de uma instituição específica
     async getMostrarCursosInstituicao(idInstituicao: number) {
-
         return resp(200, await Curso.visualizarCursos(idInstituicao)); // Retorna os cursos encontrados com status 200
     }
 
-    
-
-    //Método para buscar instituicao por caracteres
+    // Método para buscar instituições por caracteres iniciais
     async buscarInstituicoesHaPartirDasPrimeirasLetras(busca: string) {
-        // Faz uma busca no banco de dados procurando Instituicoes cujo nome começa com as letras fornecidas
+        // Faz uma busca no banco de dados procurando instituições cujo nome começa com as letras fornecidas
         let instituicoes = await this.modelInstituicao.findAll({
             where: {
                 nome: {
@@ -93,14 +84,12 @@ class InstituicaoService extends MetodosTratamentoAuxiliares {
 
         let instituicoesDTO = instituicoes.map((instituicao) => DTOHelper.getEmpresasDto(instituicao)); // Mapeia resultados para DTO
 
-        if (instituicoesDTO.length == 0) {
-            return resp(200, {erro:"Instituicao's não existe!!!"}); // Retorna mensagem se não houver Instituicoes
+        if (instituicoesDTO.length === 0) {
+            return resp(200, { erro: "Instituições não existem!!!" }); // Retorna mensagem se não houver instituições
         } else {
-            return resp(200, instituicoesDTO); // Retorna Instituicoes encontradas
+            return resp(200, instituicoesDTO); // Retorna instituições encontradas
         }
     }
-
-
 }
 
-export default InstituicaoService;
+export default InstituicaoService; // Exporta a classe para uso em outras partes da aplicação
