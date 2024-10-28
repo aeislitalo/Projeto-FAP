@@ -14,7 +14,7 @@ class Demanda extends Model {
     declare dataFinal: Date; // Declaração do campo dataFinal
     declare empresaId: number; // Declaração do campo empresaId
     declare titulo: string; // Declaração do campo titulo
-
+    
     
     // Método estático para formatar uma string de data no formato 'dd/mm/yyyy'
     static formatarData(dateString: string): Date {

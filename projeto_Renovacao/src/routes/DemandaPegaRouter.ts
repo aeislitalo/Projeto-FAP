@@ -16,4 +16,5 @@ rota.get('/demandas/:id',API.mostrarProfessoresPorDemanda.bind(API));
 rota.get('/professores/:id',API.mostrarDemandasPorProfessor.bind(API));
 
 
+
 export default rota;

@@ -81,7 +81,7 @@ class Professor extends Model {
 }
 Professor.init({
 
-  id_professor: {
+  idProfessor: {
     type: sequelize.INTEGER,
     autoIncrement: true,  // A coluna irá incrementar automaticamente
     allowNull: false,     // Não pode ser nula

@@ -100,6 +100,7 @@ class DemandaPegaController {
             next(error); // Passa o erro para o middleware de tratamento de erros
         }
     }
+  
 }
 
 // Exporta a classe DemandaPegaController

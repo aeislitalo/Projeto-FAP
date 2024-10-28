@@ -17,8 +17,8 @@ class DemandaPega extends Model {
     declare professorId: number; // Declaração do atributo professorId como número, chave estrangeira
 
     // Método estático para visualizar todas as demandas associadas aos professores
-    static async visualizarDemandasDosProfessores(){
-        let demandasEProfessores = await Professor.findAll({            
+    static async visualizarDemandasDosProfessores() {
+        let demandasEProfessores = await Professor.findAll({
             include: [
                 {
                     model: Demanda, // Inclui o modelo Demanda na consulta
@@ -26,13 +26,13 @@ class DemandaPega extends Model {
                 }
             ]
         });
-        
+
         // Retorna os professores e suas respectivas demandas em formato DTO
-        return {professores: DTOHelper.getProfessorListaDTO(demandasEProfessores), demandas: demandasEProfessores.map(demanda => DTOHelper.getDemandaListaDTO(demanda.getDataValue('Demandas')))};
+        return { professores: DTOHelper.getProfessorListaDTO(demandasEProfessores), demandas: demandasEProfessores.map(demanda => DTOHelper.getDemandaListaDTO(demanda.getDataValue('Demandas'))) };
     }
 
     // Método estático para visualizar os professores de uma demanda específica
-    static async visualizarProfessoresDeUmaDemanda(demandaId: number){
+    static async visualizarProfessoresDeUmaDemanda(demandaId: number) {
         try {
             // Busca a demanda específica e inclui os professores associados
             let demanda = await Demanda.findOne({
@@ -50,14 +50,14 @@ class DemandaPega extends Model {
                 throw new Error('Demanda não encontrada'); // Lança um erro se a demanda não existir
             }
             // Retorna a demanda e os professores associados em formato DTO
-            return { demanda: DTOHelper.getDemandaDTO(demanda), Professores: DTOHelper.getProfessorListaDTO(demanda.getDataValue('Professores'))}; 
+            return { demanda: DTOHelper.getDemandaDTO(demanda), Professores: DTOHelper.getProfessorListaDTO(demanda.getDataValue('Professores')) };
         } catch (error) {
             throw error; // Lança o erro para ser tratado em outro lugar
         }
     }
 
     // Método estático para visualizar as demandas de um professor específico
-    static async visualizarDemandasDeUmProfessor(idProfessor:number){
+    static async visualizarDemandasDeUmProfessor(idProfessor: number) {
         try {
             // Busca o professor específico e inclui suas demandas associadas
             let professor = await Professor.findOne({
@@ -75,11 +75,13 @@ class DemandaPega extends Model {
                 throw new Error('Professor(a) não encontrado!!!'); // Lança um erro se o professor não existir
             }
             // Retorna o professor e suas demandas em formato DTO
-            return { professor: DTOHelper.getProfessorDTO(professor), demandas: DTOHelper.getDemandaListaDTO(professor.getDataValue('Demandas'))}; 
+            return { professor: DTOHelper.getProfessorDTO(professor), demandas: DTOHelper.getDemandaListaDTO(professor.getDataValue('Demandas')) };
         } catch (error) {
             throw error; // Lança o erro para ser tratado em outro lugar
         }
     }
+
+    
 }
 
 // Inicializa o modelo DemandaPega com as configurações de atributos e relacionamentos
@@ -112,7 +114,7 @@ DemandaPega.init({
         type: sequelize.INTEGER, // Define demandaId como inteiro
         allowNull: false, // Define que demandaId não pode ser nulo
         references: {
-            model: 'demanda', // Define a tabela referenciada como 'demanda'
+            model: 'Demanda', // Define a tabela referenciada como 'demanda'
             key: 'id' // Define a chave referenciada como 'id' na tabela 'demanda'
         },
         onDelete: 'CASCADE', // Aplica exclusão em cascata (delete associado caso demanda seja deletada)

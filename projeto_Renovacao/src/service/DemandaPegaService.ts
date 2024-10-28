@@ -54,6 +54,7 @@ class DemandaPegaService extends MetodosTratamentoAuxiliares { // Define a class
     async mostrarTodasAsDemandasDeUmProfessor(idProfessor: number) {
         return resp(200, await DemandaPega.visualizarDemandasDeUmProfessor(idProfessor)); // Retorna a lista de demandas do professor com status 200 (OK).
     }
+   
 }
 
 export default DemandaPegaService; // Exporta a classe DemandaPegaService como padrão.
