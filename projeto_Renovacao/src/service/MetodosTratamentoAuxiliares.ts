@@ -151,7 +151,7 @@ abstract class MetodosTratamentoAuxiliares {
         }
        
     }
-    private async CalcularDataPrazo(prazo:number):Promise<Date>{
+    protected async CalcularDataPrazo(prazo:number):Promise<Date>{
         return new Date(new Date().getTime() + prazo * 86400000);
     }
 

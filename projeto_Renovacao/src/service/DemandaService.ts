@@ -1,8 +1,9 @@
 import resp from "../utils/resp"; // Importa uma função utilitária de resposta
 import Demanda from "../database/models/Demanda"; // Importa o modelo Demanda
 import MetodosTratamento from "./MetodosTratamentoAuxiliares"; // Importa métodos auxiliares para tratamento
-import { Op } from "sequelize"; // Importa operadores do Sequelize
+import { Op, where } from "sequelize"; // Importa operadores do Sequelize
 import DTOHelper from "../utils/DTOHelp";
+import DemandaPega from "../database/models/DemandaPega";
 
 class DemandaService extends MetodosTratamento {
     
@@ -53,6 +54,12 @@ class DemandaService extends MetodosTratamento {
         await demandaDB.update({
             prazo:novoPrazo
         });
+        await DemandaPega.update(
+            
+           { dataPrazo: await this.CalcularDataPrazo(novoPrazo)},
+           {where:{demandaId:demandaDB.id}} 
+        );
+        
         return resp(204,"");
     }
 
