@@ -7,7 +7,7 @@ import { Op } from "sequelize";
 // Classe de serviço para gerenciar operações relacionadas a instituições
 class InstituicaoService extends MetodosTratamentoAuxiliares {
     // Método assíncrono para obter todas as instituições cadastradas
-    async get() {
+    async getMostrasTodasAsInstituicoes() {
         let instituicoes = await this.modelInstituicao.findAll(); // Busca todas as instituições no banco de dados
         return resp(200, instituicoes.map((instituicao) => DTOHelper.getInstituicoesDto(instituicao))); // Retorna as instituições formatadas com status 200
     }
@@ -19,22 +19,30 @@ class InstituicaoService extends MetodosTratamentoAuxiliares {
 
         let instituicaoReqDTO = this.tratarEndereco(reqBody, reqBody.cep.trim()); // Trata o endereço com base no CEP
         await this.modelInstituicao.create(this.preencherDados(await instituicaoReqDTO)); // Cadastra a nova instituição no banco de dados
-        return resp(201, "Instituição cadastrada com sucesso!!!"); // Retorna uma resposta de sucesso
+        return resp(201, ""); // Retorna uma resposta de sucesso
     }
 
     // Método assíncrono para atualizar uma instituição existente
     async putAtualizarInstituicao(idInstituicao: number, reqBody: any) {
-        if (reqBody.email) {
+        
+        if (reqBody.email != null) {
             this.tratarEmail(reqBody.email.trim()); // Valida e trata o email, se fornecido
         }
-        if (reqBody.senha) {
+        if (reqBody.senha != null) {
             this.tratarSenha(reqBody.senha.trim()); // Valida e trata a senha, se fornecida
         }
-
         let instituicaoDB = await this.acharInstituicaoPorId(idInstituicao); // Busca a instituição pelo ID
-        let instituicaoReqDTO = this.tratarEndereco(reqBody, reqBody.cep.trim()); // Trata o endereço com base no CEP
-
+        let instituicaoReqDTO;
+        if(reqBody.cep && reqBody.cep.trim() !== ""){
+            instituicaoReqDTO = this.tratarEndereco(reqBody, reqBody.cep.trim()); // Trata o endereço com base no CEP
+        }else{
+            instituicaoReqDTO = this.tratarEndereco(reqBody,instituicaoDB.cep);
+       
+      
+        }
+        
         await instituicaoDB.update(this.preencherDados(await instituicaoReqDTO)); // Atualiza os dados da instituição no banco de dados
+       
         return resp(204, ""); // Retorna uma resposta de sucesso sem conteúdo
     }
 

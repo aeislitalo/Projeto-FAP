@@ -39,7 +39,8 @@ class DTOHelper {
             titulo: demanda.titulo, // Acessa o título da demanda fornecida como parâmetro
             descricao: demanda.descricao, // Acessa a descrição da demanda fornecida como parâmetro
             dataEnvio: this.formatarDatasDemandasComHora(demanda.dataEnvio), // Acessa a data de envio da demanda fornecida como parâmetro
-            dataFinal: this.formatarDatasDemandasComHora(demanda.dataFinal) // Acessa a data final da demanda fornecida como parâmetro
+            dataLimiteParaFicarDisponivel: this.formatarDatasDemandasComHora(demanda.dataLimiteParaFicarDisponivel), // Acessa a data final da demanda fornecida como parâmetro
+            prazo:demanda.prazo
         }
     }
     ;
@@ -50,7 +51,8 @@ class DTOHelper {
             titulo: demanda.titulo, // Acessa o título da demanda fornecida como parâmetro
             descricao: demanda.descricao, // Acessa a descrição da demanda fornecida como parâmetro
             dataEnvio: this.formatarDatasDemandasComHora(demanda.dataEnvio), // Acessa a data de envio da demanda fornecida como parâmetro
-            dataFinal: this.formatarDatasDemandasComHora(demanda.dataFinal) // Acessa a data final da demanda fornecida como parâmetro
+            dataLimiteParaFicarDisponivel: this.formatarDatasDemandasComHora(demanda.dataLimiteParaFicarDisponivel), // Acessa a data final da demanda fornecida como parâmetro
+            prazo:demanda.prazo
         }))
     };
     static getCursosListaDTO(cursos: Curso[]): ICursoResponseDTO[] {

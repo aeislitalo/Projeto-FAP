@@ -6,7 +6,8 @@ class DemandaPegaRequestDTO{
      
     private demandaId: number; // Atributo demandaId como número, chave estrangeira
     private professorId: number; // Atributo professorId como número, chave estrangeira
-    private dataEntrega: Date; // Atributo dataEntrega como data
+    
+    private  dataPrazo:Date;
     // Construtor da classe Demanda
     constructor(
         descricao: string,
@@ -15,13 +16,13 @@ class DemandaPegaRequestDTO{
         dataUltimaAtualizacao: Date,
         demandaId: number,
         professorId: number,
-        dataEntrega:Date,
+        dataPrazo:Date,
     ) {
         this.descricao = descricao;
         this.status = status;
         this.dataDemandaPega = dataDemandaPega;
         this.dataUltimaAtualizacao = dataUltimaAtualizacao;
-        this.dataEntrega = dataEntrega;
+        this.dataPrazo = dataPrazo;
         this.demandaId = demandaId;
         this.professorId = professorId;
     }
@@ -42,19 +43,15 @@ class DemandaPegaRequestDTO{
     public getDataUltimaAtualizacao(): Date {
         return this.dataUltimaAtualizacao;
     }
-
-    public getDataEntrega(): Date { // Retorna undefined se não estiver definido
-        return this.dataEntrega;
-    }
-    public setDataEntrega(dataEntrega: Date):void{
-        this.dataEntrega = dataEntrega;
-    }
     public getDemandaId(): number {
         return this.demandaId;
     }
 
     public getProfessorId(): number {
         return this.professorId;
+    }
+    public getDataPrazo():Date{
+        return this.dataPrazo;
     }
 }
 export default DemandaPegaRequestDTO;

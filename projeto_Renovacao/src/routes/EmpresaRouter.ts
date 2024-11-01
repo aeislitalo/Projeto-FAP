@@ -12,7 +12,7 @@ rota.get('/', API.getMostrarEmpresas.bind(API)); // Rota para listar todas as em
 rota.put('/:id', API.putMudarDadosEmpresas.bind(API)); // Rota para atualizar dados de uma empresa pelo ID
 rota.patch('/:id', API.patchMudarSenha.bind(API)); // Rota para mudar a senha de uma empresa pelo ID
 rota.delete('/:id', API.deletarEmpresa.bind(API)); // Rota para deletar uma empresa pelo ID
-rota.get('/busca',API.postMostrarEmpresasComPrimeirasLetras.bind(API));
+rota.get('/busca',API.getMostrarEmpresasComPrimeirasLetras.bind(API));
 
 rota.get('/demandas/:id', API.getMostrarDemandasEmpresasPorId.bind(API)); // Rota para mostrar as demandas de uma empresa pelo ID
 

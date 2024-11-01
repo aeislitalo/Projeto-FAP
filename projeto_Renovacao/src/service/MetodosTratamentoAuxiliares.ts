@@ -132,15 +132,27 @@ abstract class MetodosTratamentoAuxiliares {
     // Método para criar um objeto DemandaPegaRequestDTO a partir dos dados recebidos
     protected async criarObjetoDemandaPegaDTO(idDemanda: number, idProfessor: number, reqBody: any): Promise<DemandaPegaRequestDTO> {
         // Certifique-se de que está retornando as datas corretamente
-        return new DemandaPegaRequestDTO(
-            reqBody.descricao,
-            "Pega", // Status fixo para a demanda
-            new Date(),  // dataDemandaPega
-            new Date(),  // dataUltimaAtualizacao
-            idDemanda,
-            idProfessor,
-            (await this.acharDemandaPorId(idDemanda)).dataFinal // Obtém a data final da demanda correspondente
-        );
+        let demandaDb = await this.acharDemandaPorId(idDemanda);
+
+        if(demandaDb.dataLimiteParaFicarDisponivel <= new Date()){
+            throw new Error("Demanda Expirada!!!");
+        }else{
+           
+            return new DemandaPegaRequestDTO(
+                reqBody.descricao,
+                "Pega", // Status fixo para a demanda
+                new Date(),  // dataDemandaPega
+                new Date(),  // dataUltimaAtualizacao
+                idDemanda,
+                idProfessor,
+               await this.CalcularDataPrazo(demandaDb.prazo) // Obtém a data do prazo da demanda correspondente
+     
+            );
+        }
+       
+    }
+    private async CalcularDataPrazo(prazo:number):Promise<Date>{
+        return new Date(new Date().getTime() + prazo * 86400000);
     }
 
     // Método para preencher os dados do Professor antes de salvar no banco de dados
@@ -176,12 +188,13 @@ abstract class MetodosTratamentoAuxiliares {
 
     // Método para preencher os dados da Demanda Pega antes de salvar no banco de dados
     protected preencherDemandaPega(demandaPegaDTO:DemandaPegaRequestDTO):any {
+        
         return {
             descricao:demandaPegaDTO.getDescricao(),
             status:demandaPegaDTO.getStatus(),
             dataDemandaPega:demandaPegaDTO.getDataDemandaPega(),
             dataUltimaAtualizacao:demandaPegaDTO.getDataUltimaAtualizacao(),
-            dataEntrega:demandaPegaDTO.getDataEntrega(),
+            dataPrazo:demandaPegaDTO.getDataPrazo(),
             demandaId:demandaPegaDTO.getDemandaId(),
             professorId:demandaPegaDTO.getProfessorId()
         }

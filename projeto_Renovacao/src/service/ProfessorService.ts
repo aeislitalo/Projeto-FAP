@@ -15,12 +15,15 @@ class ProfessorService extends MetodosTratamentoAuxiliares {
 
     // Método para adicionar um novo professor
     async postAdicionarProfessor(reqBody: any, idCurso: number, idInstituicao: number) {
+        if(reqBody.email == null || reqBody.senha == null){
+            throw new Error("O Email ou a senha não podem nula")
+        }
         this.tratarEmail(reqBody.email.trim()); // Valida o email
         this.tratarSenha(reqBody.senha.trim()); // Valida a senha
 
         let cadastraDTO = await this.criarObjetoProfessorDTO(reqBody, idCurso, idInstituicao); // Cria DTO do professor
         await this.modelProfessor.create(this.preencherDadosProfessor(cadastraDTO)); // Cadastra no banco de dados
-        return resp(201, "Professor cadastrado com sucesso!!!"); // Retorna resposta com status 201
+        return resp(201, ""); // Retorna resposta com status 201
     }
 
     // Método para atualizar os dados de um professor
@@ -35,7 +38,7 @@ class ProfessorService extends MetodosTratamentoAuxiliares {
         let professorDb = await this.acharProfessorPorId(idProfessor); // Busca o professor pelo ID
         let professorDTO = await this.criarObjetoProfessorDTO(reqBody, Number((await professorDb).cursoId), Number((await professorDb).instituicaoId)); // Cria DTO atualizado
         (await professorDb).update(this.preencherDadosProfessor(professorDTO)); // Atualiza os dados no banco
-        return resp(200, "Professor atualizado com sucesso!"); // Retorna resposta com status 200
+        return resp(204, ""); // Retorna resposta com status 200
     }
 
     // Método para mudar a senha de um professor
@@ -43,14 +46,14 @@ class ProfessorService extends MetodosTratamentoAuxiliares {
         this.tratarSenha(novaSenha); // Valida a nova senha
         let professorDb = await this.acharProfessorPorId(idProfessor); // Busca o professor pelo ID
         (await professorDb).update({ senha: novaSenha }); // Atualiza a senha
-        return resp(204, "Senha alterada com sucesso!"); // Retorna resposta com status 204
+        return resp(204, ""); // Retorna resposta com status 204
     }
 
     // Método para apagar um professor
     async deleteApagarProfessor(idProfessor: number) {
         let professorDb = await this.acharProfessorPorId(idProfessor); // Busca o professor pelo ID
         await (professorDb).destroy(); // Remove o professor do banco de dados
-        return resp(204, "Professor apagado com sucesso!"); // Retorna resposta com status 204
+        return resp(204, ""); // Retorna resposta com status 204
     }
 
     // Método para buscar professores pelo nome

@@ -25,7 +25,7 @@ class EmpresaService extends MetodosTratamento {
         await this.model.create(this.preencherDados(empresaReqDTO)); // Cria a empresa no banco de dados
 
         // Retorna uma resposta com status 201 (Criado) e uma mensagem de sucesso
-        return resp(201, "Empresa cadastrada com sucesso!!!");
+        return resp(201, "");
     }
 
     //////////////////////////////////////////////// LOGIN //////////////////////////////////////////////////////////
@@ -41,13 +41,13 @@ class EmpresaService extends MetodosTratamento {
             return resp(200, DTOHelper.getEmpresasDto(await this.fazerLoginEmpresa(email, senha)));
         } catch (error: any) {
             // Lança o erro capturado
-            return resp(400, { mensagem: error.message || 'Erro desconhecido.' });
+            return resp(400, { erro: error.message || 'Erro desconhecido.' });
         }
     }
     //////////////////////////////////////////////// LOGIN //////////////////////////////////////////////////////////
 
     // Método para obter todas as empresas
-    async get() {
+    async getMostrarTodasAsEmpresas() {
         let empresas = await this.model.findAll(); // Busca todas as empresas
 
         // Mapeia os resultados para o formato do DTO
@@ -57,25 +57,29 @@ class EmpresaService extends MetodosTratamento {
     }
 
     // Método para atualizar os dados de uma empresa
-    async put(idEmpresa: number, reqBody: any) {
-        if (reqBody.email) {
-            this.tratarEmail(reqBody.email.trim()); // Valida o email
+    async putAtualizarEmpresa(idEmpresa: number, reqBody: any) {
+        if (reqBody.email != null) {
+            this.tratarEmail(reqBody.email.trim()); // Valida e trata o email, se fornecido
         }
-        if (reqBody.senha) {
-            this.tratarSenha(reqBody.senha.trim()); // Valida a senha
+        if (reqBody.senha != null) {
+            this.tratarSenha(reqBody.senha.trim()); // Valida e trata a senha, se fornecida
         }
-
-        let empresaDB = await this.acharEmpresaPorId(idEmpresa); // Busca a empresa pelo ID
-
-        // Cria uma instância de 'EmpresaRequestDTO' usando os dados do corpo da requisição (reqBody)
-        let empresaReqDTO = this.tratarEndereco(reqBody, reqBody.cep.trim());
-
-        await empresaDB.update(this.preencherDados(await empresaReqDTO)); // Atualiza os dados da empresa
-        return resp(200, empresaDB); // Retorna a empresa atualizada
+        let empresaDB = await this.acharEmpresaPorId(idEmpresa); // Busca a instituição pelo ID
+        let empresaReqDTO;
+        if(reqBody.cep && reqBody.cep.trim() !== ""){
+            empresaReqDTO = this.tratarEndereco(reqBody, reqBody.cep.trim()); // Trata o endereço com base no CEP
+        }else{
+            empresaReqDTO = this.tratarEndereco(reqBody,empresaDB.cep);
+       
+      
+        }
+        
+        await empresaDB.update(this.preencherDados(await empresaReqDTO)); // Atualiza os dados da instituição no banco de dados
+        return resp(204, ""); // Retorna a empresa atualizada
     }
 
     // Método para mudar a senha de uma empresa
-    async patch(idEmpresa: number, empresaNovaSenha: any) {
+    async patchAtualizarApenasSenha(idEmpresa: number, empresaNovaSenha: any) {
         this.tratarSenha(empresaNovaSenha.nova_senha.trim()); // Valida a nova senha
         let empresaDB = await this.acharEmpresaPorId(idEmpresa); // Busca a empresa pelo ID
 
@@ -83,14 +87,14 @@ class EmpresaService extends MetodosTratamento {
             senha: empresaNovaSenha.nova_senha // Atualiza a senha da empresa
         });
 
-        return resp(200, empresaDB); // Retorna a empresa com a senha atualizada
+        return resp(204, empresaDB); // Retorna a empresa com a senha atualizada
     }
 
     // Método para deletar uma empresa
     async deletar(idEmpresa: number) {
         let empresaDeletada = await this.acharEmpresaPorId(idEmpresa); // Busca a empresa pelo ID
         await empresaDeletada.destroy(); // Deleta a empresa
-        return resp(200, 'Empresa deletada com sucesso'); // Retorna sucesso
+        return resp(204, ""); // Retorna sucesso
     }
 
     // Método para mostrar empresas a partir das primeiras letras do nome

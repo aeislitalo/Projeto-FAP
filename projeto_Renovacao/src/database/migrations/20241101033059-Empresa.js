@@ -2,9 +2,7 @@
 
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
-  // Função que será chamada ao aplicar a migração
   async up (queryInterface, Sequelize) {
-    // Cria a tabela 'Empresa'
     await queryInterface.createTable('Empresa', {
       id: {
         type: Sequelize.INTEGER, // Tipo de dado para o ID
@@ -66,9 +64,7 @@ module.exports = {
     });
   },
 
-  // Função que será chamada ao reverter a migração
   async down (queryInterface, Sequelize) {
-    // Deleta a tabela 'Empresa'
     await queryInterface.dropTable('Empresa');
   }
 };

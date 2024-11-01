@@ -2,9 +2,7 @@
 
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
-  // Método para aplicar a migração
   async up (queryInterface, Sequelize) {
-    // Cria a tabela 'Curso' no banco de dados
     await queryInterface.createTable('Curso', {
       id: {
         type: Sequelize.INTEGER, // Tipo do atributo id como inteiro
@@ -29,9 +27,9 @@ module.exports = {
     });
   },
 
-  // Método para reverter a migração
   async down (queryInterface, Sequelize) {
-    // Deleta a tabela 'Curso' do banco de dados
-    await queryInterface.dropTable('Curso');
+   
+      await queryInterface.dropTable('Curso');
+     
   }
 };

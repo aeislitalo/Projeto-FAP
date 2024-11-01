@@ -33,8 +33,8 @@ class CursoService extends MetodosTratamentoAuxiliares {
     }
 
     // Método assíncrono para mudar o nome de um curso existente
-    async patchMudarNome(idInstituicao: number, novoNome: string) {
-        let cursoDB = this.acharCursoPorId(idInstituicao); // Busca o curso pelo ID da instituição
+    async patchMudarNome(idCurso: number, novoNome: string) {
+        let cursoDB = this.acharCursoPorId(idCurso); // Busca o curso pelo ID da instituição
         (await cursoDB).update({
             nome: novoNome // Atualiza o nome do curso
         });

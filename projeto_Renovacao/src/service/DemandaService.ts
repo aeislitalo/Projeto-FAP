@@ -10,9 +10,9 @@ class DemandaService extends MetodosTratamento {
 
     // Método para cadastrar uma nova demanda
     async postCadastrarDemanda(id: number, demanda: any) {
-        let dataFinal = Demanda.formatarData(demanda.dataFinal); // Formata a data final
-        let demandaCriacao = await this.modelDemanda.create(Demanda.preencherDemanda(dataFinal, id, demanda)); // Cria a nova demanda
-        return resp(201, demandaCriacao); // Retorna a demanda criada
+        let data_limite = Demanda.formatarData(demanda.data_limite); // Formata a data final
+         await this.modelDemanda.create(Demanda.preencherDemanda(data_limite, id, demanda)); // Cria a nova demanda
+        return resp(201, ""); // Retorna a demanda criada
     }
     // Método para mostrar todas as demandas
     async getMostrarDemandas() {

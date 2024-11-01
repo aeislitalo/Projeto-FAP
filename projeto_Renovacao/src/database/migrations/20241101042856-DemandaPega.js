@@ -29,6 +29,11 @@ module.exports = {
       data_entrega: {
         type: Sequelize.DATE,
       },
+      data_prazo:{
+        type:Sequelize.DATE,
+        allowNull:false
+      }
+      ,
       demanda_id: {
         type: Sequelize.INTEGER,
         allowNull: false,
@@ -56,7 +61,7 @@ module.exports = {
 
   async down (queryInterface, Sequelize) {
    
-      await queryInterface.dropTable('DemandaPega');
-    
+     await queryInterface.dropTable('DemandaPega');
+     
   }
 };

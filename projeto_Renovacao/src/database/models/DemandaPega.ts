@@ -15,7 +15,7 @@ class DemandaPega extends Model {
     declare dataEntrega: Date; // Declaração do atributo dataEntrega como data
     declare demandaId: number; // Declaração do atributo demandaId como número, chave estrangeira
     declare professorId: number; // Declaração do atributo professorId como número, chave estrangeira
-
+    declare dataPrazo:Date;
     // Método estático para visualizar todas as demandas associadas aos professores
     static async visualizarDemandasDosProfessores() {
         let demandasEProfessores = await Professor.findAll({
@@ -133,50 +133,56 @@ class DemandaPega extends Model {
 
 // Inicializa o modelo DemandaPega com as configurações de atributos e relacionamentos
 DemandaPega.init({
+ 
     id: {
-        type: sequelize.INTEGER, // Define o tipo id como inteiro
-        autoIncrement: true, // Define id como auto-incrementável
-        allowNull: false, // Define que id não pode ser nulo
-        primaryKey: true // Define id como chave primária
-    },
-    descricao: {
-        type: sequelize.TEXT, // Define descricao como texto longo
-        allowNull: false // Define que descricao não pode ser nulo
-    },
-    status: {
-        type: sequelize.STRING(35) // Define o tipo de status como String
-    },
-    dataDemandaPega: {
-        type: sequelize.DATE, // Define data_demanda_pega como data
-        allowNull: false // Define que data_demanda_pega não pode ser nulo
-    },
-    dataUltimaAtualizacao: {
-        type: sequelize.DATE, // Define data_ultima_atualizacao como data
-        allowNull: false // Define que data_ultima_atualizacao não pode ser nulo
-    },
-    dataEntrega: {
-        type: sequelize.DATE, // Define data_entrega como data
-    },
-    demandaId: {
-        type: sequelize.INTEGER, // Define demandaId como inteiro
-        allowNull: false, // Define que demandaId não pode ser nulo
+        type: sequelize.INTEGER,
+        autoIncrement: true,
+        allowNull: false,
+        primaryKey: true
+      },
+      descricao: {
+        type: sequelize.TEXT,
+        allowNull: false
+      },
+      status: {
+        type: sequelize.STRING(35)
+      },
+      dataDemandaPega: {
+        type: sequelize.DATE,
+        allowNull: false
+      },
+      dataUltimaAtualizacao: {
+        type: sequelize.DATE,
+        allowNull: false
+      },
+      dataEntrega: {
+        type: sequelize.DATE,
+      },
+      dataPrazo:{
+        type:sequelize.DATE,
+        allowNull:false
+      }
+      ,
+      demandaId: {
+        type: sequelize.INTEGER,
+        allowNull: false,
         references: {
-            model: 'Demanda', // Define a tabela referenciada como 'demanda'
-            key: 'id' // Define a chave referenciada como 'id' na tabela 'demanda'
+          model: 'demanda',
+          key: 'id'
         },
-        onDelete: 'CASCADE', // Aplica exclusão em cascata (delete associado caso demanda seja deletada)
-        onUpdate: 'CASCADE' // Aplica atualização em cascata (atualiza chave estrangeira se id de demanda mudar)
-    },
-    professorId: {
-        type: sequelize.INTEGER, // Define professorId como inteiro
-        allowNull: false, // Define que professorId não pode ser nulo
-        references: {
-            model: 'Professor', // Define a tabela referenciada como 'Professor'
-            key: 'id_professor' // Define a chave referenciada como 'id_professor' na tabela 'Professor'
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE'
+      },
+      professorId:{
+        type:sequelize.INTEGER,
+        allowNull:false,
+        references:{
+          model:'Professor',
+          key:'id_professor'
         },
-        onDelete: 'CASCADE', // Aplica exclusão em cascata
-        onUpdate: 'CASCADE' // Aplica atualização em cascata
-    }
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE'
+      }
 }, {
     sequelize: db, // Usa a instância do banco de dados
     tableName: 'demandapega' // Define o nome da tabela no banco de dados

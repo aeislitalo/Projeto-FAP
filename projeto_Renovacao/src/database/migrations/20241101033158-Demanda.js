@@ -2,10 +2,8 @@
 
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
-  // Função que será chamada ao aplicar a migração
   async up (queryInterface, Sequelize) {
-    // Cria a tabela 'Demanda'
-    await queryInterface.createTable('Demanda', {
+    await queryInterface.createTable('Demanda',{
       id: {
         type: Sequelize.INTEGER, // Tipo de dado para o ID
         autoIncrement: true, // O ID será gerado automaticamente
@@ -20,10 +18,15 @@ module.exports = {
         type: Sequelize.DATE, // Tipo de dado para a data de envio
         allowNull: false // Não permite valores nulos
       },
-      data_final: {
+      data_limite_para_ficar_disponivel: {
         type: Sequelize.DATE, // Tipo de dado para a data final da demanda
         allowNull: false // Não permite valores nulos
       },
+      prazo:{
+        type: Sequelize.INTEGER,
+        allowNull:false
+      }
+      ,
       empresa_id: {
         type: Sequelize.INTEGER, // Tipo de dado para o ID da empresa
         allowNull: false, // Não permite valores nulos
@@ -39,12 +42,11 @@ module.exports = {
         allowNull: false, // Não permite valores nulos
         unique: true // O título deve ser único
       }
-    });
+
+    })
   },
 
-  // Função que será chamada ao reverter a migração
   async down (queryInterface, Sequelize) {
-    // Deleta a tabela 'Demanda'
     await queryInterface.dropTable('Demanda');
   }
 };

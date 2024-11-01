@@ -10,7 +10,7 @@ class InstituicaoController {
     // Método para mostrar todas as instituições
     async getMostrarInstituicoes(req: Request, resp: Response, next: NextFunction) {
         try {
-            const { status, mensagem } = await this.servico.get(); // Chama o serviço para obter instituições
+            const { status, mensagem } = await this.servico.getMostrasTodasAsInstituicoes(); // Chama o serviço para obter instituições
             resp.status(status).json(mensagem); // Retorna a resposta com status e mensagem
         } catch (error) {
             next(error); // Passa o erro para o middleware de tratamento de erros

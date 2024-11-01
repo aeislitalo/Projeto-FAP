@@ -20,7 +20,7 @@ class EmpresaController {
     async getMostrarEmpresas(req: Request, resp: Response, next: NextFunction) {
         try {
             // Chama o método get do serviço e desestrutura o resultado
-            let { status, mensagem } = await this.servico.get();
+            let { status, mensagem } = await this.servico.getMostrarTodasAsEmpresas();
             resp.status(status).json(mensagem); // Retorna a resposta com o status e a mensagem
         } catch (error) {
             next(error); // Passa o erro para o middleware de tratamento de erros
@@ -31,7 +31,7 @@ class EmpresaController {
     async putMudarDadosEmpresas(req: Request, resp: Response, next: NextFunction) {
         try {
 
-            let { status, mensagem } = await this.servico.put(Number(req.params.id), req.body); // Chama o método put do serviço
+            let { status, mensagem } = await this.servico.putAtualizarEmpresa(Number(req.params.id), req.body); // Chama o método put do serviço
             resp.status(status).json(mensagem); // Retorna a resposta com o status e a mensagem
         } catch (error) {
             next(error); // Passa o erro para o middleware de tratamento de erros
@@ -42,7 +42,7 @@ class EmpresaController {
     async patchMudarSenha(req: Request, resp: Response, next: NextFunction) {
         try {
 
-            let { status, mensagem } = await this.servico.patch(Number(req.params.id), req.body); // Chama o método patch do serviço
+            let { status, mensagem } = await this.servico.patchAtualizarApenasSenha(Number(req.params.id), req.body); // Chama o método patch do serviço
             resp.status(status).json(mensagem); // Retorna a resposta com o status e a mensagem
         } catch (error) {
             next(error); // Passa o erro para o middleware de tratamento de erros
@@ -58,7 +58,7 @@ class EmpresaController {
             next(error); // Passa o erro para o middleware de tratamento de erros
         }
     }
-    async postMostrarEmpresasComPrimeirasLetras(req: Request, resp: Response, next: NextFunction) {
+    async getMostrarEmpresasComPrimeirasLetras(req: Request, resp: Response, next: NextFunction) {
         try {
             let { status, mensagem } = await this.servico.MostrarEmpresasHaPartirDasPrimeirasLetras(req.body.busca.trim()); // Chama o método 
             resp.status(status).json(mensagem); // Retorna a resposta com o status e a mensagem

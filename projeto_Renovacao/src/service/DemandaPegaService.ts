@@ -1,3 +1,4 @@
+import { de } from "date-fns/locale";
 import DemandaPega from "../database/models/DemandaPega"; // Importa o modelo DemandaPega, que representa a entidade no banco de dados.
 import DTOHelper from "../utils/DTOHelp"; // Importa um helper para manipular objetos de transferência de dados (DTOs).
 import resp from "../utils/resp"; // Importa uma função para formatar respostas da API.
@@ -19,9 +20,19 @@ class DemandaPegaService extends MetodosTratamentoAuxiliares { // Define a class
 
     // Método para atualizar a data de entrega de uma demanda pega.
     async patchAtualizarEntregaDemandaPega(idDemandaPega: number) {
-        (await this.acharDemandaPegaPorId(idDemandaPega)).update({ // Atualiza a data de entrega da demanda correspondente ao ID.
-            dataEntrega: Date.now() // Define a data de entrega como o timestamp atual.
-        });
+        let demandaPegaDb = await this.acharDemandaPegaPorId(idDemandaPega);
+        if(new Date() <= demandaPegaDb.dataPrazo){
+            demandaPegaDb.update({ // Atualiza a data de entrega da demanda correspondente ao ID.
+                status:"Entregue no prazo",
+                dataEntrega: Date.now() // Define a data de entrega como o timestamp atual.
+            });
+        }else{
+            demandaPegaDb.update({ // Atualiza a data de entrega da demanda correspondente ao ID.
+                status:"Entregue após o Prazo",
+                dataEntrega: Date.now() // Define a data de entrega como o timestamp atual.
+            });
+        }
+        
         return resp(204, ""); // Retorna uma resposta com status 204 (Sem conteúdo).
     }
 
