@@ -14,5 +14,6 @@ rota.put('/:id', API.putAtualizarDemanda.bind(API)); // Rota para atualizar uma 
 rota.patch('/:id', API.patchMudarData.bind(API)); // Rota para mudar a data de uma demanda pelo ID
 rota.delete('/:id', API.deletarDemanda.bind(API)); // Rota para deletar uma demanda pelo ID
 rota.get('/empresa/:id', API.getMostraEmpresaPorDemanda.bind(API)); // Rota para mostrar empresa associada há demanda
+rota.patch('/prazo/:id',API.patchAtualizarPrazo.bind(API));
 
 export default rota;

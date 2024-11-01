@@ -48,6 +48,13 @@ class DemandaService extends MetodosTratamento {
 
         return resp(200, demandaDB); // Retorna a demanda atualizada
     }
+    async patchAtualizarPrazo(idDemanda:number,novoPrazo:number){
+        let demandaDB = await this.acharDemandaPorId(idDemanda);
+        await demandaDB.update({
+            prazo:novoPrazo
+        });
+        return resp(204,"");
+    }
 
     // Método para deletar uma demanda
     async deletarDemandaServico(idDemanda: number) {

@@ -38,9 +38,9 @@ class DTOHelper {
             id: demanda.id,        // Acessa o ID da demanda fornecida como parâmetro
             titulo: demanda.titulo, // Acessa o título da demanda fornecida como parâmetro
             descricao: demanda.descricao, // Acessa a descrição da demanda fornecida como parâmetro
-            dataEnvio: this.formatarDatasDemandasComHora(demanda.dataEnvio), // Acessa a data de envio da demanda fornecida como parâmetro
-            dataLimiteParaFicarDisponivel: this.formatarDatasDemandasComHora(demanda.dataLimiteParaFicarDisponivel), // Acessa a data final da demanda fornecida como parâmetro
-            prazo:demanda.prazo
+            dataEnvio: this.formatarDatasDemandas(demanda.dataEnvio), // Acessa a data de envio da demanda fornecida como parâmetro
+            dataLimiteParaFicarDisponivel: this.formatarDatasDemandas(demanda.dataLimiteParaFicarDisponivel), // Acessa a data final da demanda fornecida como parâmetro
+            prazo:String(demanda.prazo) + " Dias"
         }
     }
     ;
@@ -50,9 +50,9 @@ class DTOHelper {
             id: demanda.id,        // Acessa o ID da demanda fornecida como parâmetro
             titulo: demanda.titulo, // Acessa o título da demanda fornecida como parâmetro
             descricao: demanda.descricao, // Acessa a descrição da demanda fornecida como parâmetro
-            dataEnvio: this.formatarDatasDemandasComHora(demanda.dataEnvio), // Acessa a data de envio da demanda fornecida como parâmetro
-            dataLimiteParaFicarDisponivel: this.formatarDatasDemandasComHora(demanda.dataLimiteParaFicarDisponivel), // Acessa a data final da demanda fornecida como parâmetro
-            prazo:demanda.prazo
+            dataEnvio: this.formatarDatasDemandas(demanda.dataEnvio), // Acessa a data de envio da demanda fornecida como parâmetro
+            dataLimiteParaFicarDisponivel: this.formatarDatasDemandas(demanda.dataLimiteParaFicarDisponivel), // Acessa a data final da demanda fornecida como parâmetro
+            prazo:String(demanda.prazo) + " Dias"
         }))
     };
     static getCursosListaDTO(cursos: Curso[]): ICursoResponseDTO[] {
@@ -83,26 +83,31 @@ class DTOHelper {
     }
 
     static getDemandaPegasDTO(demandasPegas: DemandaPega): IDemandaPegaResponseDTO {
+       if(this.formatarDatasDemandas(demandasPegas.dataEntrega) == "31/12/1969"){
         return {
             id: demandasPegas.id,
             status: demandasPegas.status,
             descricao: demandasPegas.descricao,
-            data_ultima_atualizacao: this.formatarDatasDemandasComHora(demandasPegas.dataUltimaAtualizacao),
-            data_demanda_pega: this.formatarDatasDemandasComHora(demandasPegas.dataDemandaPega),
-            data_entrega: this.formatarDatasDemandas(demandasPegas.dataDemandaPega)
+            data_ultima_atualizacao: this.formatarDatasDemandas(demandasPegas.dataUltimaAtualizacao),
+            data_demanda_pega: this.formatarDatasDemandas(demandasPegas.dataDemandaPega),
+            data_entrega: " ",
+            prazo:this.formatarDatasDemandas(demandasPegas.dataPrazo) 
         }
+       }else{
+        return {
+            id: demandasPegas.id,
+            status: demandasPegas.status,
+            descricao: demandasPegas.descricao,
+            data_ultima_atualizacao: this.formatarDatasDemandas(demandasPegas.dataUltimaAtualizacao),
+            data_demanda_pega: this.formatarDatasDemandas(demandasPegas.dataDemandaPega),
+            data_entrega: this.formatarDatasDemandas(demandasPegas.dataEntrega),
+            prazo:this.formatarDatasDemandas(demandasPegas.dataPrazo) 
+        }
+       }
+        
     }
 
-    static getDemandaPegasListaDTO(demandasPegas: DemandaPega[]): IDemandaPegaResponseDTO[] {
-        return demandasPegas.map(demandaPega => (  {
-            id: demandaPega.id,
-            status: demandaPega.status,
-            descricao: demandaPega.descricao,
-            data_ultima_atualizacao: this.formatarDatasDemandasComHora(demandaPega.dataUltimaAtualizacao),
-            data_demanda_pega: this.formatarDatasDemandasComHora(demandaPega.dataDemandaPega),
-            data_entrega: this.formatarDatasDemandas(demandaPega.dataDemandaPega)
-        }))
-    }
+   
     private static formatarDatasDemandas(data: Date): string {
         let dataConvertida = new Date(data);
         // Verifica se a data é válida antes de tentar formatá-la
@@ -112,14 +117,7 @@ class DTOHelper {
         return "Data inválida"; // Retorna um valor padrão caso a data seja inválida
     }
 
-    private static formatarDatasDemandasComHora(data: Date): string {
-        let dataConvertida = new Date(data);
-        // Verifica se a data é válida antes de tentar formatá-la
-        if (isValid(dataConvertida)) {
-            return format(dataConvertida, 'dd/MM/yyyy HH:mm:ss', { locale: ptBR });
-        }
-        return "Data inválida"; // Retorna um valor padrão caso a data seja inválida
-    }
+   
 
 
 

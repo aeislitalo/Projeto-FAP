@@ -6,6 +6,7 @@ interface IDemandaPegaResponseDTO {
     data_ultima_atualizacao: string; // Data da última atualização da demanda pega (formato string)
     data_demanda_pega: string; // Data em que a demanda foi pega (formato string)
     data_entrega: string; // Data de entrega da demanda (formato string)
+    prazo:string;
 }
 
 // Exporta a interface para que possa ser utilizada em outras partes do aplicativo

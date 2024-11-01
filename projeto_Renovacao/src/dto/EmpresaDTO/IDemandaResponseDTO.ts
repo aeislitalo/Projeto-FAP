@@ -4,7 +4,7 @@ interface IDemandaResponseDTO {
     descricao: string; // Descrição da demanda
     dataEnvio: string; // Data de envio da demanda
     dataLimiteParaFicarDisponivel: string; // Data final da demanda
-    prazo:number;
+    prazo:string;
 
 }
 export default IDemandaResponseDTO;

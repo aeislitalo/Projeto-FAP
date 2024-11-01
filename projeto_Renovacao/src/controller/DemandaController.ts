@@ -59,6 +59,15 @@ class DemandaController {
             next(error); // Passa o erro para o middleware de tratamento de erros
         }
     }
+    async patchAtualizarPrazo(req: Request, resp: Response, next: NextFunction){
+        try {
+            // Chama o método do serviço para mudar a data da demanda
+            let { status, mensagem } = await this.servico.patchAtualizarPrazo(Number(req.params.id), req.body.novo_prazo);
+            resp.status(status).json(mensagem); // Retorna a resposta com status e mensagem
+        } catch (error) {
+            next(error); // Passa o erro para o middleware de tratamento de erros
+        }
+    }
 
     // Método para deletar uma demanda específica
     async deletarDemanda(req: Request, resp: Response, next: NextFunction) {

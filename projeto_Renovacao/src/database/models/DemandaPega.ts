@@ -18,17 +18,24 @@ class DemandaPega extends Model {
     declare dataPrazo:Date;
     // Método estático para visualizar todas as demandas associadas aos professores
     static async visualizarDemandasDosProfessores() {
-        let demandasEProfessores = await Professor.findAll({
+        let demandasEProfessores = await this.findAll({
             include: [
                 {
                     model: Demanda, // Inclui o modelo Demanda na consulta
                     as: 'Demandas' // Usa o alias definido na associação
+                },
+                {
+                    model:Professor,
+                    as:"Professores"
                 }
             ]
+            
         });
 
         // Retorna os professores e suas respectivas demandas em formato DTO
-        return { professores: DTOHelper.getProfessorListaDTO(demandasEProfessores), demandas: demandasEProfessores.map(demanda => DTOHelper.getDemandaListaDTO(demanda.getDataValue('Demandas'))) };
+        return { professores: demandasEProfessores.map(professor => DTOHelper.getProfessorDTO(professor.getDataValue("Professores")))
+            , demandas: demandasEProfessores.map(demanda => DTOHelper.getDemandaDTO(demanda.getDataValue('Demandas')))
+            ,demandas_Pegas: demandasEProfessores.map(demandaPega => DTOHelper.getDemandaPegasDTO(demandaPega))};
     }
 
     // Método estático para visualizar os professores de uma demanda específica
@@ -109,7 +116,7 @@ class DemandaPega extends Model {
         // 2. Uma lista de objetos 'Demanda', sem duplicações, extraídos de cada item em 'demandas' usando 'getDataValue'. Esses objetos são então formatados pelo método 'getDemandaDTO'.
         // 3. Uma lista de objetos 'Professor', extraídos de cada item em 'demandas' usando 'getDataValue' e formatados pelo método 'getProfessorDTO'.
         return {
-            DemandaPega: DTOHelper.getDemandaPegasListaDTO(demandas),
+            DemandaPega: demandas.map(demanda => DTOHelper.getDemandaPegasDTO(demanda)),
             Demanda: DTOHelper.getDemandaListaDTO(
                 Array.from(
                     // Cria um Map onde cada par [chave, valor] representa um item único com base no 'id' da demanda
