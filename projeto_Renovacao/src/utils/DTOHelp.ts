@@ -18,8 +18,12 @@ class DTOHelper {
         return {
             id: empresa.id,       // Acessa o ID da empresa fornecida como parâmetro
             nome: empresa.nome,   // Acessa o nome da empresa fornecida como parâmetro
-            email: empresa.email  // Acessa o email da empresa fornecida como parâmetro
-
+            email: empresa.email,  // Acessa o email da empresa fornecida como parâmetro
+            cidade:empresa.cidade,
+            bairro:empresa.bairro,
+            estado:empresa.estado,
+            pais:empresa.pais,
+            contato:empresa.contato
         }
     };
     // Método auxiliar para formatar os dados de instituicao para retorno ao cliente
@@ -28,7 +32,12 @@ class DTOHelper {
         return {
             id: instituicao.id,       // Acessa o ID da empresa fornecida como parâmetro
             nome: instituicao.nome,   // Acessa o nome da empresa fornecida como parâmetro
-            email: instituicao.email   // Acessa o email da empresa fornecida como parâmetro
+            email: instituicao.email,   // Acessa o email da empresa fornecida como parâmetro
+            cidade:instituicao.cidade,
+            bairro:instituicao.bairro,
+            estado:instituicao.estado,
+            pais:instituicao.pais,
+            contato:instituicao.contato
         }
     };
     // Método auxiliar para formatar os dados da instituição para retorno ao cliente
