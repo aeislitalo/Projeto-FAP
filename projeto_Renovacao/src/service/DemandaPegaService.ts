@@ -37,10 +37,12 @@ class DemandaPegaService extends MetodosTratamentoAuxiliares { // Define a class
     }
 
     // Método para atualizar a descrição e a data da última atualização de uma demanda pega.
-    async putAtualizarDemandaPega(descricao: string, idDemandaPega: number) {
-        (await this.acharDemandaPegaPorId(idDemandaPega)).update({ // Busca a demanda pelo ID e atualiza os campos.
+    async putAtualizarDemandaPega(novaDescricao: string, idDemandaPega: number) {
+        let demandaPegaDb = await this.acharDemandaPegaPorId(idDemandaPega);
+        let descricaoParaArmazenar = `${demandaPegaDb.descricao}\n${novaDescricao}`;
+        (demandaPegaDb).update({ // Busca a demanda pelo ID e atualiza os campos.
             dataUltimaAtualizacao: Date.now(), // Atualiza a data da última atualização.
-            descricao: descricao // Atualiza a descrição.
+            descricao: descricaoParaArmazenar // Atualiza a descrição.
         });
         return resp(204, ""); // Retorna uma resposta com status 204 (Sem conteúdo).
     }
