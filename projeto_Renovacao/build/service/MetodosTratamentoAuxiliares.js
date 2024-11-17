@@ -3,139 +3,205 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const validator_1 = __importDefault(require("validator")); // Importa a biblioteca de validação
-const Empresa_1 = __importDefault(require("../database/models/Empresa")); // Importa o modelo Empresa
-const Demanda_1 = __importDefault(require("../database/models/Demanda")); // Importa o modelo Demanda
-const EmpresaInstituicaoRequestDTO_1 = __importDefault(require("../dto/EmpresaInstituicaoRequestDTO")); // Importa o DTO de requisição para Empresa
-const Instituicao_1 = __importDefault(require("../database/models/Instituicao")); // Importa o modelo Instituicao
+// Importa a biblioteca de validação
+const validator_1 = __importDefault(require("validator"));
+// Importa os modelos da base de dados
+const Empresa_1 = __importDefault(require("../database/models/Empresa"));
+const Demanda_1 = __importDefault(require("../database/models/Demanda"));
+const Instituicao_1 = __importDefault(require("../database/models/Instituicao"));
+const Curso_1 = __importDefault(require("../database/models/Curso"));
+const Professor_1 = __importDefault(require("../database/models/Professor"));
+const DemandaPega_1 = __importDefault(require("../database/models/DemandaPega"));
+// Importa DTOs
+const EmpresaInstituicaoRequestDTO_1 = __importDefault(require("../dto/EmpresaDTO/EmpresaInstituicaoRequestDTO"));
+const CursoRequestDTO_1 = __importDefault(require("../dto/CursoDTO/CursoRequestDTO"));
+const ProfessorRequestDTO_1 = __importDefault(require("../dto/ProfessorDTO/ProfessorRequestDTO"));
+const DemandaPegaRequestDTO_1 = __importDefault(require("../dto/DemandaPegaDTO/DemandaPegaRequestDTO"));
+// Importa o serviço de Endereço
 const EnderecoService_1 = __importDefault(require("./EnderecoService"));
 // Classe abstrata que contém métodos auxiliares para o tratamento de dados relacionados a empresas e instituições
 class MetodosTratamentoAuxiliares {
-    // Define modelos estáticos para as classes Empresa, Demanda e Instituicao
-    model = Empresa_1.default;
-    modelDemanda = Demanda_1.default;
-    modelInstituicao = Instituicao_1.default;
-    enderecoService = new EnderecoService_1.default();
+    // Declaração de modelos estáticos para interagir com as entidades do banco de dados
+    model = Empresa_1.default; // Modelo para Empresas
+    modelDemanda = Demanda_1.default; // Modelo para Demandas
+    modelInstituicao = Instituicao_1.default; // Modelo para Instituições
+    enderecoService = new EnderecoService_1.default(); // Serviço de Endereço
+    modelCurso = Curso_1.default; // Modelo para Cursos
+    modelProfessor = Professor_1.default; // Modelo para Professores
+    modelDemandaPega = DemandaPega_1.default; // Modelo para Demandas Pegas
     // Método para encontrar uma Empresa pelo ID
     async acharEmpresaPorId(idEmpresa) {
-        let empresa = await this.model.findByPk(idEmpresa); // Busca a empresa pelo ID
+        const empresa = await this.model.findByPk(idEmpresa); // Busca a empresa pelo ID
         if (!empresa)
             throw new Error('Empresa não encontrada'); // Lança erro se não encontrar
         return empresa; // Retorna a empresa encontrada
     }
     // Método para encontrar uma Instituição pelo ID
     async acharInstituicaoPorId(idInstituicao) {
-        let instituicao = await this.modelInstituicao.findByPk(idInstituicao); // Busca a instituição pelo ID
+        const instituicao = await this.modelInstituicao.findByPk(idInstituicao); // Busca a instituição pelo ID
         if (!instituicao)
             throw new Error('Instituição não encontrada'); // Lança erro se não encontrar
         return instituicao; // Retorna a instituição encontrada
     }
     // Método para encontrar uma Demanda pelo ID
     async acharDemandaPorId(idDemanda) {
-        let demanda = await this.modelDemanda.findByPk(idDemanda); // Busca a demanda pelo ID
+        const demanda = await this.modelDemanda.findByPk(idDemanda); // Busca a demanda pelo ID
         if (!demanda)
             throw new Error('Demanda não encontrada'); // Lança erro se não encontrar
         return demanda; // Retorna a demanda encontrada
     }
+    // Método assíncrono para encontrar um curso pelo ID da instituição
+    async acharCursoPorId(idCurso) {
+        const curso = await this.modelCurso.findByPk(idCurso); // Busca o curso no banco de dados pelo ID
+        if (!curso)
+            throw new Error('Curso não encontrado'); // Lança um erro se o curso não for encontrado
+        return curso; // Retorna o curso encontrado
+    }
+    // Método para encontrar um Professor pelo ID
+    async acharProfessorPorId(idProfessor) {
+        const professor = await this.modelProfessor.findByPk(idProfessor); // Busca o professor pelo ID
+        if (!professor)
+            throw new Error('Professor(a) não encontrado'); // Lança erro se não encontrar
+        return professor; // Retorna o professor encontrado
+    }
+    // Método para encontrar uma Demanda Pega pelo ID
+    async acharDemandaPegaPorId(idDemandaPega) {
+        let demandaPega = await this.modelDemandaPega.findByPk(idDemandaPega); // Busca a demanda pega pelo ID
+        if (!demandaPega)
+            throw new Error("Demanda não encontrada!!!"); // Lança erro se não encontrar
+        return demandaPega; // Retorna a demanda pega encontrada
+    }
     // Método para tratar o email, validando seu formato
     tratarEmail(email) {
-        // Verifica se o email está inválido
         if (!validator_1.default.isEmail(email)) {
-            throw new Error('Email Invalido!!!'); // Lança erro se o email for inválido
+            throw new Error('Email Inválido!!!'); // Lança erro se o email for inválido
         }
     }
     // Método para tratar a senha, verificando suas condições
     tratarSenha(senha) {
-        // Expressão regular que verifica se a senha contém pelo menos uma letra e um número
-        const expressaoRegularSenha = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]*$/;
-        // Se a senha não for válida, lança uma exceção
+        const expressaoRegularSenha = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]*$/; // Expressão regular para validação da senha
         if (!senha || !expressaoRegularSenha.test(senha)) {
             throw new Error('A senha deve conter pelo menos uma letra e um número.'); // Lança erro se a senha não for válida
         }
     }
-    tratarEndereco(ReqBody, cep) {
-        let endereco;
+    // Método assíncrono para tratar o endereço baseado no CEP
+    async tratarEndereco(reqBody, cep) {
         if (cep?.trim()) {
-            endereco = this.enderecoService.buscarEnderecoPeloCep(cep.trim());
-            console.log(endereco);
-            if (endereco) { // Verifica se o endereço não é null ou undefined
-                return this.criarObjetoEmpresaInstituicaoDTO(ReqBody, endereco);
+            const endereco = await this.enderecoService.buscarEnderecoPeloCep(cep); // Busca o endereço pelo CEP
+            if (endereco) {
+                return this.criarObjetoEmpresaInstituicaoDTO(reqBody, endereco); // Cria e retorna o objeto DTO
             }
         }
-        throw new Error("Endereço não encontrado");
+        throw new Error("Endereço não encontrado"); // Lança erro se o endereço não for encontrado
     }
     // Método para criar um objeto DTO a partir dos dados recebidos
     criarObjetoEmpresaInstituicaoDTO(reqBody, endereco) {
-        return new EmpresaInstituicaoRequestDTO_1.default(reqBody.nome, // Nome da empresa
-        reqBody.cnpj, // CNPJ da empresa
-        reqBody.pais, // País da empresa
-        endereco.state, // Estado da empresa
-        endereco.city, // Cidade da empresa
-        endereco.district, // Bairro da empresa
-        endereco.address, // Rua da empresa
-        reqBody.numero, // Número do endereço da empresa
-        endereco.cep, // CEP da empresa
-        reqBody.email, // Email da empresa
-        reqBody.senha, // Senha da empresa
-        reqBody.contato // Contato da empresa
-        );
+        return new EmpresaInstituicaoRequestDTO_1.default(reqBody.nome, reqBody.cnpj, reqBody.pais, endereco.state, endereco.city, endereco.district, endereco.address, reqBody.numero, endereco.cep, reqBody.email, reqBody.senha, reqBody.contato);
     }
-    // Método auxiliar para formatar os dados da empresa para retorno ao cliente
-    getEmpresasDto(empresa) {
-        // Cria e retorna um objeto que representa a resposta da empresa com os campos id, nome e email
+    // Método para criar um objeto ProfessorRequestDTO a partir dos dados recebidos
+    criarObjetoProfessorDTO(reqBody, idCurso, idInstituicao) {
+        return new ProfessorRequestDTO_1.default(reqBody.nome, reqBody.cpf, reqBody.email, reqBody.senha, reqBody.contato, idCurso, idInstituicao);
+    }
+    // Método para criar um objeto DemandaPegaRequestDTO a partir dos dados recebidos
+    async criarObjetoDemandaPegaDTO(idDemanda, idProfessor, reqBody) {
+        // Certifique-se de que está retornando as datas corretamente
+        let demandaDb = await this.acharDemandaPorId(idDemanda);
+        if (demandaDb.dataLimiteParaFicarDisponivel <= new Date()) {
+            throw new Error("Demanda Expirada!!!");
+        }
+        else {
+            return new DemandaPegaRequestDTO_1.default(reqBody.descricao, "Pega", // Status fixo para a demanda
+            new Date(), // dataDemandaPega
+            new Date(), // dataUltimaAtualizacao
+            idDemanda, idProfessor, await this.CalcularDataPrazo(demandaDb.prazo) // Obtém a data do prazo da demanda correspondente
+            );
+        }
+    }
+    async CalcularDataPrazo(prazo) {
+        return new Date(new Date().getTime() + prazo * 86400000);
+    }
+    // Método para preencher os dados do Professor antes de salvar no banco de dados
+    preencherDadosProfessor(dadosProfessor) {
         return {
-            id: empresa.id, // Acessa o ID da empresa fornecida como parâmetro
-            nome: empresa.nome, // Acessa o nome da empresa fornecida como parâmetro
-            email: empresa.email // Acessa o email da empresa fornecida como parâmetro
+            nome: dadosProfessor.getNome(),
+            cpf: dadosProfessor.getCpf(),
+            cursoId: dadosProfessor.getCursoId(),
+            instituicaoId: dadosProfessor.getInstituicaoId(),
+            email: dadosProfessor.getEmail(),
+            senha: dadosProfessor.getSenha(),
+            contato: dadosProfessor.getContato()
         };
     }
     // Método para preencher os dados antes de salvar no banco de dados
-    preencherDados(Dados) {
+    preencherDados(dados) {
         return {
-            nome: Dados.getNome(), // Recebe o nome da empresa
-            cnpj: Dados.getCnpj(), // Recebe o CNPJ da empresa
-            pais: Dados.getPais(), // Recebe o país da empresa
-            estado: Dados.getEstado(), // Recebe o estado da empresa
-            cidade: Dados.getCidade(), // Recebe a cidade da empresa
-            bairro: Dados.getBairro(), // Recebe o bairro da empresa
-            rua: Dados.getRua(), // Recebe a rua da empresa
-            numero: Dados.getNumero(), // Recebe o número da empresa
-            cep: Dados.getCep(), // Recebe o CEP da empresa
-            email: Dados.getEmail(), // Recebe o email da empresa
-            senha: Dados.getSenha(), // Recebe a senha da empresa
-            contato: Dados.getContato(), // Recebe o contato da empresa
+            nome: dados.getNome(),
+            cnpj: dados.getCnpj(),
+            pais: dados.getPais(),
+            estado: dados.getEstado(),
+            cidade: dados.getCidade(),
+            bairro: dados.getBairro(),
+            rua: dados.getRua(),
+            numero: dados.getNumero(),
+            cep: dados.getCep(),
+            email: dados.getEmail(),
+            senha: dados.getSenha(),
+            contato: dados.getContato()
+        };
+    }
+    // Método para preencher os dados da Demanda Pega antes de salvar no banco de dados
+    preencherDemandaPega(demandaPegaDTO) {
+        return {
+            descricao: demandaPegaDTO.getDescricao(),
+            status: demandaPegaDTO.getStatus(),
+            dataDemandaPega: demandaPegaDTO.getDataDemandaPega(),
+            dataUltimaAtualizacao: demandaPegaDTO.getDataUltimaAtualizacao(),
+            dataPrazo: demandaPegaDTO.getDataPrazo(),
+            demandaId: demandaPegaDTO.getDemandaId(),
+            professorId: demandaPegaDTO.getProfessorId()
         };
     }
     // Método para realizar login da empresa
     async fazerLoginEmpresa(email, senha) {
-        // Busca a empresa pelo email fornecido
-        let empresa = await this.model.findOne({ where: { email } });
-        // Verifica se a empresa foi encontrada
+        const empresa = await this.model.findOne({ where: { email } }); // Busca a empresa pelo email
         if (!empresa) {
             throw new Error("Email não existe"); // Lança um erro se o email não for encontrado
         }
-        // Verifica se a senha está correta em relação à empresa encontrada
         if (empresa.senha !== senha) {
             throw new Error("Senha incorreta"); // Lança um erro se a senha estiver incorreta
         }
-        // Retorna a empresa se o login for bem-sucedido, convertendo-a para o formato DTO
-        return this.getEmpresasDto(empresa);
+        return empresa; // Retorna a empresa se o login for bem-sucedido
     }
     // Método para realizar login da instituição
     async fazerLoginInstituicao(email, senha) {
-        // Busca a instituição pelo email fornecido
-        let instituicao = await this.modelInstituicao.findOne({ where: { email } });
-        // Verifica se a instituição foi encontrada
+        const instituicao = await this.modelInstituicao.findOne({ where: { email } }); // Busca a instituição pelo email
         if (!instituicao) {
             throw new Error("Email não existe"); // Lança um erro se o email não for encontrado
         }
-        // Verifica se a senha está correta em relação à instituição encontrada
         if (instituicao.senha !== senha) {
             throw new Error("Senha incorreta"); // Lança um erro se a senha estiver incorreta
         }
-        // Retorna a instituição se o login for bem-sucedido, convertendo-a para o formato DTO
-        return this.getEmpresasDto(instituicao);
+        return instituicao; // Retorna a instituição se o login for bem-sucedido
+    }
+    // Método para criar um objeto CursoRequestDTO a partir do ID da instituição e do nome do curso
+    criarObjetoCurso(idInstituicao, nomeCurso) {
+        return new CursoRequestDTO_1.default(nomeCurso, idInstituicao);
+    }
+    // Método para converter um objeto Curso em um objeto CursoResponseDTO
+    cursoDTO(curso) {
+        return {
+            id: curso.id, // Acessa o ID do curso
+            nome: curso.nome // Acessa o nome do curso
+        };
+    }
+    // Método para preencher um objeto com os dados do CursoRequestDTO
+    preencherCurso(curso) {
+        return {
+            nome: curso.getNome(), // Obtém o nome do curso
+            instituicaoId: curso.getInstituicaoId() // Obtém o ID da instituição associada
+        };
     }
 }
-exports.default = MetodosTratamentoAuxiliares; // Exporta a classe MetodosTratamentoAuxiliares para uso em outras partes da aplicação
+// Exporta a classe para uso em outras partes da aplicação
+exports.default = MetodosTratamentoAuxiliares;
 //# sourceMappingURL=MetodosTratamentoAuxiliares.js.map

@@ -42,7 +42,7 @@ class DemandaPegaController {
     }
 
     // Método assíncrono para atualizar uma demanda
-    async putAtualizoDemanda(req: Request, resp: Response, next: NextFunction) {
+    async putAtualizarDemanda(req: Request, resp: Response, next: NextFunction) {
         try {
             // Chama o serviço para atualizar a descrição da demanda pegada
             const { status, mensagem } = await this.servico.putAtualizarDemandaPega(req.body.descricao, Number(req.params.id));

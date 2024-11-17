@@ -30,7 +30,7 @@ class EmpresaService extends MetodosTratamento {
 
     //////////////////////////////////////////////// LOGIN //////////////////////////////////////////////////////////
     // Método para realizar o login
-    async getLoginEmpresa(email: string, senha: string) {
+    async postLoginEmpresa(email: string, senha: string) {
         try {
             // Verifica se o email e a senha são válidos
             this.tratarEmail(email);
@@ -58,21 +58,23 @@ class EmpresaService extends MetodosTratamento {
 
     // Método para atualizar os dados de uma empresa
     async putAtualizarEmpresa(idEmpresa: number, reqBody: any) {
+       
         if (reqBody.email != null) {
             this.tratarEmail(reqBody.email.trim()); // Valida e trata o email, se fornecido
         }
         if (reqBody.senha != null) {
             this.tratarSenha(reqBody.senha.trim()); // Valida e trata a senha, se fornecida
         }
+        
         let empresaDB = await this.acharEmpresaPorId(idEmpresa); // Busca a instituição pelo ID
         let empresaReqDTO;
         if(reqBody.cep && reqBody.cep.trim() !== ""){
             empresaReqDTO = this.tratarEndereco(reqBody, reqBody.cep.trim()); // Trata o endereço com base no CEP
         }else{
             empresaReqDTO = this.tratarEndereco(reqBody,empresaDB.cep);
-       
-      
         }
+         
+        
         
         await empresaDB.update(this.preencherDados(await empresaReqDTO)); // Atualiza os dados da instituição no banco de dados
         return resp(204, ""); // Retorna a empresa atualizada
@@ -111,7 +113,7 @@ class EmpresaService extends MetodosTratamento {
         let empresasDTO = empresas.map((empresa) => DTOHelper.getEmpresasDto(empresa)); // Mapeia resultados para DTO
 
         if (empresasDTO.length == 0) {
-            return resp(200, { erro: "Empresa's não existe!!!" }); // Retorna mensagem se não houver empresas
+            return resp(500, { erro: "Empresa's não existe!!!" }); // Retorna mensagem se não houver empresas
         } else {
             return resp(200, empresasDTO); // Retorna empresas encontradas
         }

@@ -13,6 +13,11 @@ let app = (0, express_1.default)();
 app.use(express_1.default.json());
 // Utiliza as rotas importadas
 app.use(routes_1.default);
+// Configura o Swagger UI
+const swaggerUi = require('swagger-ui-express');
+const swaggerDocument = require('../swagger.json'); // Certifique-se de que esse arquivo exista
+// Registra a rota para acessar o Swagger UI
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 // Middleware de tratamento de erros
 app.use((err, req, resp, next) => {
     // Responde com um código de status 500 e a mensagem de erro

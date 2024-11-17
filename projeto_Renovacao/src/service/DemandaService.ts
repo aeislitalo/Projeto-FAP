@@ -31,11 +31,21 @@ class DemandaService extends MetodosTratamento {
     // Método para atualizar uma demanda
     async putAtualizarDemanda(idDemanda: number, demandaDados: any) {
         let demandaDB = await this.acharDemandaPorId(idDemanda); // Busca a demanda pelo ID
+        let dataFinal;
+     
+        if(demandaDados.data_final && demandaDados.data_final.trim() !=""){
+            dataFinal = Demanda.formatarData(demandaDados.data_final); // Formata a data final
+        }else{
+            dataFinal = demandaDB.dataLimiteParaFicarDisponivel;
+        }
+        
+        if(demandaDados.prazo == undefined){
+            demandaDados.prazo = demandaDB.prazo;
+        }
 
-        let dataFinal = Demanda.formatarData(demandaDados.data_final); // Formata a data final
         await demandaDB.update(Demanda.preencherDemanda(dataFinal, demandaDB.empresaId, demandaDados)); // Atualiza a demanda
 
-        return resp(200, demandaDB); // Retorna a demanda atualizada
+        return resp(204, ""); // Retorna a demanda atualizada
     }
 
     // Método para mudar a data de uma demanda
@@ -44,10 +54,10 @@ class DemandaService extends MetodosTratamento {
         let dataFinalFormatada = Demanda.formatarData(novaData.data_final); // Formata a nova data
 
         await demandaDB.update({
-            dataFinal: dataFinalFormatada // Atualiza a data final da demanda
+            dataLimiteParaFicarDisponivel: dataFinalFormatada // Atualiza a data final da demanda
         });
 
-        return resp(200, demandaDB); // Retorna a demanda atualizada
+        return resp(204, ""); // Retorna a demanda atualizada
     }
     async patchAtualizarPrazo(idDemanda:number,novoPrazo:number){
         let demandaDB = await this.acharDemandaPorId(idDemanda);
@@ -68,7 +78,7 @@ class DemandaService extends MetodosTratamento {
         let empresaDeletada = await this.acharDemandaPorId(idDemanda); // Busca a demanda pelo ID
 
         await empresaDeletada.destroy(); // Deleta a demanda
-        return resp(200, 'Demanda deletada com sucesso'); // Retorna sucesso
+        return resp(204,""); // Retorna sucesso
     }
 
     // Método para mostrar demandas a partir das primeiras letras do título
@@ -83,7 +93,7 @@ class DemandaService extends MetodosTratamento {
         });
 
         if (demandas.length == 0) {
-            return resp(200, { erro: "Demandas's não encontrada!!!" }); // Retorna mensagem se não houver demandas
+            return resp(500, { erro: "Demandas's não encontrada!!!" }); // Retorna mensagem se não houver demandas
         } else {
             return resp(200, demandas); // Retorna demandas encontradas
         }

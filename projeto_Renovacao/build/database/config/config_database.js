@@ -6,6 +6,7 @@ let config = {
     database: "database_Re9_Acao", // Nome do banco de dados
     host: "localhost", // Endereço do host do banco de dados
     dialect: "mysql", // Tipo de banco de dados (MySQL neste caso)
+    timezone: '-03:00',
     define: {
         timestamps: false, // Desabilita a adição automática de timestamps (createdAt, updatedAt) nas tabelas
         underscored: true, // Define que os nomes das colunas serão em formato snake_case

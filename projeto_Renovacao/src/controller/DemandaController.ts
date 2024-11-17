@@ -82,7 +82,7 @@ class DemandaController {
 
     // Método para buscar demandas com base nas primeiras letras do título
     async postBuscarDemandasComPrimeirasLetras(req: Request, resp: Response, next: NextFunction) {
-        console.log(req.body); // Exibe o corpo da requisição no console para depuração
+        console.log(req.body.busca); // Exibe o corpo da requisição no console para depuração
         try {
             // Chama o método do serviço para buscar demandas com base nas primeiras letras fornecidas
             let { status, mensagem } = await this.servico.MostrarDemandasHaPartirDasPrimeirasLetras(req.body.busca.trim());

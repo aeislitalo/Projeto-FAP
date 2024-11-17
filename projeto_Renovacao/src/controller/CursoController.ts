@@ -62,7 +62,7 @@ class CursoController {
     }
 
     // Método para buscar um curso pelo nome
-    async getBuscarCursoPorNome(req: Request, resp: Response, next: NextFunction) {
+    async postBuscarCursoPorNome(req: Request, resp: Response, next: NextFunction) {
         try {
             // Busca o curso pelo nome fornecido no corpo da requisição
             const { status, mensagem } = await this.servico.buscarCursoPorNome(req.body.busca.trim());

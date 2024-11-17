@@ -61,7 +61,7 @@ class CursoService extends MetodosTratamentoAuxiliares {
         let cursoDTO = cursos.map((curso) => DTOHelper.getCursosDTO(curso)); // Mapeia resultados para DTO
 
         if (cursoDTO.length == 0) {
-            return resp(200, { erro: "Curso's não existe!!!" }); // Retorna mensagem se não houver cursos
+            return resp(500, { erro: "Curso's não existe!!!" }); // Retorna mensagem se não houver cursos
         } else {
             return resp(200, cursoDTO); // Retorna cursos encontrados
         }

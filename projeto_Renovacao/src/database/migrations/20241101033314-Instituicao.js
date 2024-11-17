@@ -38,7 +38,7 @@ module.exports = {
         allowNull: false 
       },
       rua: {
-        type: Sequelize.STRING(30), 
+        type: Sequelize.STRING(150), 
         allowNull: false 
       },
       numero: {

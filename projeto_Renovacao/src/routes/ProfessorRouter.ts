@@ -26,7 +26,7 @@ rota.patch('/:id', API.patchMudarSenha.bind(API));
 rota.delete('/:id', API.deleteExcluirProfessor.bind(API));
 
 // Rota para buscar professores pelo nome
-rota.get('/busca', API.buscarPorNome.bind(API));
+rota.post('/busca', API.buscarPorNome.bind(API));
 
 // Rota para mostrar os cursos de um professor
 rota.get('/cursos/:id', API.mostrarCursosProfessor.bind(API));

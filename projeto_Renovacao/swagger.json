@@ -1,0 +1,2313 @@
+{
+    "openapi": "3.0.1",
+    "info": {
+      "title": "API de Gerenciamento de Empresas, Cursos e Demandas",
+      "description": "API para gerenciamento de empresas, instituições, cursos, professores e demandas, com funcionalidades CRUD e integração de processos educacionais e empresariais.",
+      "version": "1.0.0"
+    },
+    "basePath": "/",
+    "paths": {
+      "/empresas/": {
+        "post": {
+            "tags":["Empresas"],
+          "summary": "Criação de uma nova empresa",
+          "description": "Este endpoint cria uma nova empresa com as informações fornecidas.",
+          "operationId": "criarEmpresa",
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "nome": {
+                      "type": "string",
+                      "description": "Nome da empresa"
+                    },
+                    "cnpj": {
+                      "type": "string",
+                      "description": "CNPJ da empresa"
+                    },
+                    "numero": {
+                      "type": "string",
+                      "description": "Número onde a empresa está localizada" 
+                    },
+                    "email": {
+                      "type": "string",
+                      "description": "Email de contato da empresa"
+                    },
+                    "pais": {
+                      "type": "string",
+                      "description": "País onde a empresa está localizada"
+                    },
+                    "contato": {
+                      "type": "string",
+                      "description": "Contato da empresa"
+                    },
+                    "senha": {
+                      "type": "string",
+                      "description": "Senha para acesso administrativo. A senha deve conter pelo menos uma letra e um número.",
+                      "pattern": "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{6,}$"
+                    },
+                    "cep": {
+                      "type": "string",
+                      "description": "CEP da empresa"
+                    }
+                  },
+                  "required": ["numero", "nome", "cnpj", "email", "senha","cep"]
+                }
+              }
+            }
+          },
+          "responses": {
+            "201": {
+              "description": "Empresa criada com sucesso, sem corpo na resposta."
+            },
+            "500": {
+              "description": "Erro no servidor interno"
+            }
+          }
+        },
+        "get":{
+            "tags": ["Empresas"],
+            "summary": "Listagem de empresas",
+            "description": "Este endpoint retorna a lista de todas as empresas cadastradas.",
+            "operationId": "listarEmpresas",
+                "responses": {
+                    "200": {
+                        "description": "Lista de empresas retornada com sucesso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                     "$ref": "#/components/schemas/Empresa"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                "description": "Erro no servidor interno"
+              }
+                }
+            
+           
+        }
+
+      },
+   "/empresas/login": {
+      "post": {
+        "tags": ["Empresas"],
+        "summary": "Login de empresas",
+        "description": "Este endpoint realiza o login de uma empresa, autenticando-a com o email e a senha fornecidos.",
+        "operationId": "loginEmpresa",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "description": "Email de contato da empresa"
+                  },
+                  "senha": {
+                    "type": "string",
+                    "description": "Senha da empresa"
+                  }
+                },
+                "required": ["email", "senha"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Login realizado com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                "$ref": "#/components/schemas/Empresa"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Erro de validação - Email ou senha inválidos",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "erro": {
+                      "type": "string",
+                      "description": "Mensagem de erro detalhada"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Erro no servidor interno"
+          }
+        }
+      }
+    },
+    "/empresas/busca":{
+        "post":{
+          "tags": ["Empresas"],
+          "summary": "Busca de empresas pelas primeiras letras do nome",
+          "description": "Este endpoint retorna empresas cujo nome começa com as letras especificadas no corpo de consulta.",
+          "operationId": "mostrarEmpresasComPrimeirasLetras",
+          "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "busca": {
+                    "type": "string",
+                    "description": "Buscar baseado nas letras colocadas aqui"
+                  }
+                },
+                "required": ["busca"]
+              }
+            }
+          }
+        },
+          "responses": {
+            "200":{
+              "description": "Empresas encontradas com base nas primeiras letras fornecidas.",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "array",
+                    "properties": {
+                     "$ref": "#/components/schemas/Empresa"
+                    }
+                  }
+                }
+              }
+            },
+            "500":{
+               "description": "Erro no servidor interno"
+            }
+          }
+
+        }
+    },
+    "/empresas/{id}":{
+      "put":{
+        "tags":["Empresas"],
+        "summary": "Atualiza os dados de uma empresa existente",
+        "description": "Este endpoint atualiza os dados de uma empresa com as informações fornecidas.",
+        "operationId": "atualizarEmpresa",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID da empresa a ser atualizada.",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "nome": {
+                      "type": "string",
+                      "description": "Nome da empresa a ser atualizado"
+                    },
+                    "email": {
+                      "type": "string",
+                      "description": "Email da empresa"
+                    },
+                    "cep": {
+                      "type": "string",
+                      "description": "CEP da empresa"
+                    },
+                    "pais": {
+                "type": "string",
+                "description": "País da empresa"
+              },  "contato": {
+                "type": "string",
+                "description": "Contato da empresa"
+              },
+              "cnpj": {
+                "type": "string",
+                "description": "CNPJ da empresa"
+              },
+              "senha": {
+                "type": "string",
+                "description": "Senha da empresa"
+              }
+
+                  }
+                }
+                
+            }
+          }
+        },
+        "responses":{
+          "204":{
+            "description": "Empresa atualizada com sucesso, sem corpo na resposta."
+  
+          },
+          "500": {
+            "description": "Erro no servidor interno."
+          }
+        }
+        
+      },
+
+      "patch":{
+        "tags":["Empresas"],
+        "summary": "Atualiza a senha de uma empresa existente",
+        "description": "Este endpoint atualiza a senha de uma empresa com as informações fornecidas.",
+        "operationId": "patchMudarSenha",
+        "parameters": [
+          {
+              "name": "id",
+              "in": "path",
+              "description": "ID da empresa cuja senha será atualizada.",
+              "required": true,
+              "schema": {
+                  "type": "integer"
+              }
+          }
+      ],
+      "requestBody": {
+        "required": true,
+        "content": {
+          "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "nova_senha": {
+                    "type": "string",
+                    "description": "Nova senha para a empresa"
+                }
+                }
+              }
+              }
+            }
+      },
+      "responses": {
+        "204":{
+          "description": "Senha da empresa atualizada com sucesso, sem corpo na resposta."
+
+        }
+        , "500": {
+          "description": "Erro no servidor interno."
+      }
+      }
+      },
+      "delete":{
+        "tags":["Empresas"],
+        "summary": "Deleta uma empresa existente",
+        "description": "Este endpoint deleta uma empresa com o pelo id fornecido.",
+        "operationId": "deletarEmpresa",
+        "parameters": [
+          {
+              "name": "id",
+              "in": "path",
+              "description": "ID da empresa que será deletada.",
+              "required": true,
+              "schema": {
+                  "type": "integer"
+              }
+          }
+      ],
+      "responses": {
+        "204":{
+          "description": "Empresa deletada com sucesso, sem corpo na resposta."
+
+        },
+         "500": {
+          "description": "Erro no servidor interno."
+      }
+      }
+      }
+     
+    },
+    "/empresas/demandas/{id}":{
+      "get":{
+        "tags": ["Empresas"],
+        "summary": "Exibe as demandas de uma empresa pelo ID",
+        "description": "Este endpoint retorna as demandas associadas a uma empresa específica, identificada pelo seu ID.",
+        "operationId": "mostrarDemandasEmpresasPorId",
+        "parameters": [
+          {
+              "name": "id",
+              "in": "path",
+              "description": "ID da empresa cujas demandas devem ser retornadas.",
+              "required": true,
+              "schema": {
+                  "type": "integer"
+              }
+          }
+      ],
+      "responses": {
+        "200": {
+          "description": "Demandas da empresa encontradas.",
+          "content": {
+              "application/json": {
+                  "schema": {
+            "type": "object",
+            "properties": {
+              "empresa": {
+                 "$ref": "#/components/schemas/Empresa"
+              },
+              "demandas": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/components/schemas/Demanda"
+                }
+              }
+            }
+                  }
+                  }
+                }
+        },
+        "500": {
+          "description": "Erro no servidor interno."
+      }
+      }
+
+      }
+    },
+    "/demandas/{id}":{
+      "post":{
+        "tags":["Demandas"],
+        "summary": "Cadastrar uma nova demanda",
+        "description": "Este endpoint cria uma nova demanda com as informações fornecidas.",
+        "operationId": "CadastrarDemanda",
+        "parameters": [
+          {
+              "name": "id",
+              "in": "path",
+              "description": "ID da empresa cuja demanda deve pertencer.",
+              "required": true,
+              "schema": {
+                  "type": "integer"
+              }
+          }
+      ],
+      "requestBody": {
+        "required": true,
+        "content": {
+          "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "data_limite": {
+                    "type": "string",
+                    "description": "Data limite para a demanda ficar disponível"
+                },
+                "prazo": {
+                  "type": "string",
+                  "description": "Prazo da demanda"
+              },
+              "descricao": {
+                "type": "string",
+                "description": "Data limite para a demanda ficar disponível"
+            },
+            "titulo": {
+              "type": "string",
+              "description": "Data limite para a demanda ficar disponível"
+          }
+                },
+                "required":["titulo","descricao","data_limite"]
+              }
+              }
+            }
+      },
+      "responses":{
+        "201": {
+            "description": "Demanda cadastrada com sucesso, sem corpo na resposta."
+        },
+        "500": {
+          "description": "Erro no servidor interno."
+      }
+
+      }
+      },
+      "put":{
+        "tags":["Demandas"],
+        "summary": "Atualiza os dados de uma demanda existente",
+        "description": "Este endpoint permite atualizar os dados de uma demanda existente, identificada pelo seu ID. Os dados da demanda, como título, descrição, data de envio, entre outros, podem ser alterados conforme as informações fornecidas no corpo da requisição.",
+        "operationId": "atualizarDemanda",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID da demanda a ser atualizada.",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data_limite": {
+                      "type": "string",
+                      "description": "Data limite para a demanda ficar disponível"
+                  },
+                  "prazo": {
+                    "type": "string",
+                    "description": "Prazo da demanda"
+                },
+                "descricao": {
+                  "type": "string",
+                  "description": "Data limite para a demanda ficar disponível"
+              },
+              "titulo": {
+                "type": "string",
+                "description": "Data limite para a demanda ficar disponível"
+            }
+
+                  }
+                }
+                
+            }
+          }
+        },
+        "responses":{
+          "204":{
+            "description": "Demanda atualizada com sucesso, sem corpo na resposta."
+  
+          },
+          "500": {
+            "description": "Erro no servidor interno."
+          }
+        }
+
+      },
+      "patch":{
+        "tags":["Demandas"],
+        "summary": "Atualiza a data de uma demanda existente",
+        "description": "Este endpoint permite atualizar a data de uma demanda existente, identificada pelo seu ID.",
+        "operationId": "atualizarData",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID da demanda a ser atualizada.",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "data_final": {
+                    "type": "string",
+                    "description": "Nova data"
+                }
+                }
+              }
+            }
+          }
+        },
+        "responses":{
+          "204":{
+            "description": "Demanda atualizada com sucesso, sem corpo na resposta."
+  
+          },
+          "500": {
+            "description": "Erro no servidor interno."
+          }
+        }
+      },
+      "delete":{
+        "tags":["Demandas"],
+        "summary": "Deleta uma demanda existente",
+        "description": "Este endpoint permite deletar uma demanda existente, identificada pelo seu ID.",
+        "operationId": "deletaData",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID da demanda para ser deletada.",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses":{
+          "204":{
+            "description": "Demanda deletada com sucesso, sem corpo na resposta."
+  
+          },
+          "500": {
+            "description": "Erro no servidor interno."
+          }
+        }
+
+      }
+      
+    },
+    "/demandas/empresa/{id}":{
+      "get":{
+        "tags": ["Demandas"],
+        "summary": "Exibe as empresa de uma demanda pelo ID",
+        "description": "Este endpoint retorna a empresa associadas a uma demanda específica, identificada pelo seu ID.",
+        "operationId": "mostrarEmpresasDemandasPorId",
+        "parameters": [
+          {
+              "name": "id",
+              "in": "path",
+              "description": "ID da demanda deve retornar as empresa que ela pertence.",
+              "required": true,
+              "schema": {
+                  "type": "integer"
+              }
+          }
+      ],
+      "responses": {
+        "200": {
+          "description": "Empresa de demanda encontrada.",
+          "content": {
+              "application/json": {
+                  "schema": {
+            "type": "object",
+            "properties": {
+              "demanda": {
+                 "$ref": "#/components/schemas/Demanda"
+              },
+              "empresa": {
+                "type": "object",
+                    "$ref": "#/components/schemas/Empresa"
+              }
+            }
+                  }
+                  }
+                }
+        },
+        "500": {
+          "description": "Erro no servidor interno."
+      }
+      }
+
+      }
+    }
+    ,
+
+    "/demandas/":{
+      "get":{
+        "tags":["Demandas"],
+        "summary": "Mostrar todas as demanda",
+        "description": "Este endpoint mostrar todas as demanda cadastradas.",
+        "operationId": "Listar demandas",
+        "responses": {
+          "200":{
+            "description": "Lista de empresas retornada com sucesso",
+            "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "array",
+                    "items": {
+                       "$ref": "#/components/schemas/Demanda"
+                    }
+                  }
+                }
+              }
+          },
+          "500":{
+              "description": "Erro no servidor interno."
+          }
+        }
+        
+      }
+    },
+
+   "/demandas/busca":{
+    "post":{
+      "tags": ["Demandas"],
+      "summary": "Busca demandas pelas primeiras letras do título",
+    "description": "Este endpoint permite realizar uma busca de demandas cujo título começa com as letras especificadas no corpo da requisição. O parâmetro de entrada deve ser uma string com as primeiras letras do título desejado, e a resposta será uma lista de demandas que atendem ao critério.",
+    "operationId": "buscarDemandasComPrimeirasLetras",
+    "requestBody": {
+      "required": true,
+      "content": {
+        "application/json": {
+          "schema": {
+            "type": "object",
+            "properties": {
+              "busca": {
+                "type": "string",
+                "description": "Buscar baseado nas letras colocadas aqui"
+              }
+            },
+            "required": ["busca"]
+          }
+        }
+      }
+    },
+    "responses":{
+      "200":{
+        "description": "Demandas encontradas com base nas primeiras letras fornecidas.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "array",
+              "properties": {
+               "$ref": "#/components/schemas/Demanda"
+              }
+            }
+          }
+        }
+      },
+      "500":{
+         "description": "Erro no servidor interno"
+      }
+    }
+    }
+   },
+   "/demandas/prazo/{id}":{
+    "patch":{
+    "tags": ["Demandas"],
+    "summary": "Atualiza o prazo de uma demanda existente",
+    "description": "Este endpoint permite atualizar o prazo de uma demanda existente, identificada pelo seu ID. A requisição deve incluir o novo prazo para a demanda, que será alterado no banco de dados.",
+    "operationId": "atualizarPrazoDemanda",
+    "parameters": [
+      {
+        "name": "id",
+        "in": "path",
+        "description": "ID da demanda cujo prazo será atualizado",
+        "required": true,
+        "schema": {
+          "type": "integer"
+        }
+      }
+    ],
+    "requestBody": {
+      "required": true,
+      "content": {
+        "application/json": {
+          "schema": {
+            "type": "object",
+            "properties": {
+              "novo_prazo": {
+                "type": "string",
+                "description": "Novo prazo da demanda"
+              }
+            },
+            "required": ["prazo"]
+          }
+        }
+      }
+    },
+    "responses":{
+      "204":{
+        "description": "Prazo da Demanda atualizado com sucesso, sem corpo na resposta."
+      },
+      "500":{
+         "description": "Erro no servidor interno"
+      }
+    }
+    }
+   },
+   "/instituicoes/": {
+        "post": {
+            "tags":["Instituição"],
+          "summary": "Criação de uma nova instituição",
+          "description": "Este endpoint cria uma nova instituição com as informações fornecidas.",
+          "operationId": "criarInstituição",
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "nome": {
+                      "type": "string",
+                      "description": "Nome da empresa"
+                    },
+                    "cnpj": {
+                      "type": "string",
+                      "description": "CNPJ da empresa"
+                    },
+                    "numero": {
+                      "type": "string",
+                      "description": "Número onde a empresa está localizada" 
+                    },
+                    "email": {
+                      "type": "string",
+                      "description": "Email de contato da empresa"
+                    },
+                    "pais": {
+                      "type": "string",
+                      "description": "País onde a empresa está localizada"
+                    },
+                    "contato": {
+                      "type": "string",
+                      "description": "Contato da empresa"
+                    },
+                    "senha": {
+                      "type": "string",
+                      "description": "Senha para acesso administrativo. A senha deve conter pelo menos uma letra e um número.",
+                      "pattern": "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{6,}$"
+                    },
+                    "cep": {
+                      "type": "string",
+                      "description": "CEP da empresa"
+                    }
+                  },
+                  "required": ["numero", "nome", "cnpj", "email", "senha","cep"]
+                }
+              }
+            }
+          },
+          "responses": {
+            "201": {
+              "description": "Instituição criada com sucesso, sem corpo na resposta."
+            },
+            "500": {
+              "description": "Erro no servidor interno"
+            }
+          }
+        },
+        "get":{
+            "tags": ["Instituição"],
+            "summary": "Listagem de empresas",
+            "description": "Este endpoint retorna a lista de todas as instituições cadastradas.",
+            "operationId": "listarInstituições",
+                "responses": {
+                    "200": {
+                        "description": "Lista de instituições retornada com sucesso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                     "$ref": "#/components/schemas/Instituicao"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                "description": "Erro no servidor interno"
+              }
+                }
+            
+           
+        }
+
+      },
+      "/instituicoes/login": {
+        "post": {
+          "tags": ["Instituição"],
+          "summary": "Login de Instituição",
+          "description": "Este endpoint realiza o login de uma Instituição, autenticando-a com o email e a senha fornecidos.",
+          "operationId": "loginInstituição",
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "email": {
+                      "type": "string",
+                      "description": "Email de contato da empresa"
+                    },
+                    "senha": {
+                      "type": "string",
+                      "description": "Senha da empresa"
+                    }
+                  },
+                  "required": ["email", "senha"]
+                }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "Login realizado com sucesso",
+              "content": {
+                "application/json": {
+                  "schema": {
+                  "$ref": "#/components/schemas/Instituicao"
+                  }
+                }
+              }
+            },
+            "400": {
+              "description": "Erro de validação - Email ou senha inválidos",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "erro": {
+                        "type": "string",
+                        "description": "Mensagem de erro detalhada"
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "500": {
+              "description": "Erro no servidor interno"
+            }
+          }
+        }
+      },
+      "/instituicoes/{id}":{
+        "put":{
+          "tags":["Instituição"],
+          "summary": "Atualiza os dados de uma instituição existente",
+          "description": "Este endpoint atualiza os dados de uma Instituição com as informações fornecidas.",
+          "operationId": "atualizarEmpresa",
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "description": "ID de uma Instituição a ser atualizada.",
+              "required": true,
+              "schema": {
+                "type": "integer"
+              }
+            }
+          ],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "nome": {
+                        "type": "string",
+                        "description": "Nome da instituiçãoa ser atualizado"
+                      },
+                      "email": {
+                        "type": "string",
+                        "description": "Email da instituição"
+                      },
+                      "cep": {
+                        "type": "string",
+                        "description": "CEP da instituição"
+                      },
+                      "pais": {
+                  "type": "string",
+                  "description": "País da instituição"
+                },  "contato": {
+                  "type": "string",
+                  "description": "Contato da instituição"
+                },
+                "cnpj": {
+                  "type": "string",
+                  "description": "CNPJ da instituição"
+                },
+                "senha": {
+                  "type": "string",
+                  "description": "Senha da instituição"
+                }
+  
+                    }
+                  }
+                  
+              }
+            }
+          },
+          "responses":{
+            "204":{
+              "description": "Instituição atualizada com sucesso, sem corpo na resposta."
+    
+            },
+            "500": {
+              "description": "Erro no servidor interno."
+            }
+          }
+          
+        },
+  
+        "patch":{
+          "tags":["Instituição"],
+          "summary": "Atualiza a senha de uma instituição existente",
+          "description": "Este endpoint atualiza a senha de uma instituição com as informações fornecidas.",
+          "operationId": "patchMudarSenha",
+          "parameters": [
+            {
+                "name": "id",
+                "in": "path",
+                "description": "ID da instituição cuja senha será atualizada.",
+                "required": true,
+                "schema": {
+                    "type": "integer"
+                }
+            }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "nova_senha": {
+                      "type": "string",
+                      "description": "Nova senha para a instituição"
+                  }
+                  }
+                }
+                }
+              }
+        },
+        "responses": {
+          "204":{
+            "description": "Senha da instituição atualizada com sucesso, sem corpo na resposta."
+  
+          }
+          , "500": {
+            "description": "Erro no servidor interno."
+        }
+        }
+        },
+        "delete":{
+          "tags":["Instituição"],
+          "summary": "Deleta uma instituição existente",
+          "description": "Este endpoint deleta uma instituição com o pelo id fornecido.",
+          "operationId": "deletarInstituição",
+          "parameters": [
+            {
+                "name": "id",
+                "in": "path",
+                "description": "ID da empresa que será deletada.",
+                "required": true,
+                "schema": {
+                    "type": "integer"
+                }
+            }
+        ],
+        "responses": {
+          "204":{
+            "description": "Empresa deletada com sucesso, sem corpo na resposta."
+  
+          },
+           "500": {
+            "description": "Erro no servidor interno."
+        }
+        }
+        }
+       
+      },
+     
+    "/instituicoes/cursos/{id}":{
+      "get":{
+      "tags": ["Instituição"],
+      "summary": "Busca de cursos relacionando a uma instituição",
+      "description": "Este endpoint retorna uma lista de cursos relacionada uma instituição.",
+      "operationId": "mostrarCursosInstituições",
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "description": "ID da instituicao cujo está relacionado com curso",
+          "required": true,
+          "schema": {
+            "type": "integer"
+          }
+        }
+      ],
+      "responses": {
+            "200":{
+              "description": "Cursos encontradas com base no id de uma instituição.",
+             "content": {
+              "application/json": {
+                  "schema": {
+            "type": "object",
+            "properties": {
+              "instituicao": {
+                 "$ref": "#/components/schemas/Instituicao"
+              },
+              "cursos": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/components/schemas/Curso"
+                }
+              }
+            }
+                  }
+                  }
+                }
+            },
+            "500":{
+               "description": "Erro no servidor interno"
+            }
+          }
+      }
+      
+    },
+
+   "/instituicoes/busca": {
+  "post": {
+    "tags": ["Instituição"],
+    "summary": "Busca de instituição pelas primeiras letras do nome",
+    "description": "Este endpoint retorna instituições cujo nome começa com as letras especificadas no corpo da consulta.",
+    "operationId": "mostrarInstituiçõesComPrimeirasLetras",
+    "requestBody": {
+      "required": true,
+      "content": {
+        "application/json": {
+          "schema": {
+            "type": "object",
+            "properties": {
+              "busca": {
+                "type": "string",
+                "description": "As primeiras letras do nome da instituição."
+              }
+            },
+            "required": ["busca"]
+          }
+        }
+      }
+    },
+    "responses": {
+      "200": {
+        "description": "Instituições encontradas com base nas primeiras letras fornecidas.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "instituicoes": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Instituicao"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "500": {
+        "description": "Erro no servidor interno"
+      }
+    }
+  }
+},
+"/professores/": {
+  "get": {
+    "tags": ["Professor"],
+    "summary": "Listar professores",
+    "description": "Este endpoint retorna uma lista de todos os professores cadastrados no sistema.",
+    "operationId": "mostrarProfessores",
+    "responses": {
+      "200": {
+        "description": "Lista de professores retornada com sucesso.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/Professor"
+              }
+            }
+          }
+        }
+      },
+      "500": {
+        "description": "Erro no servidor interno."
+      }
+    }
+  }
+},
+"/professores/{idCurso}/{idInstituicao}":{
+  "post":{
+    "tags": ["Professor"],
+  "summary": "Cadastrar professores",
+  "description": "Este endpoint permite cadastrar um novo professor associado a um curso e uma instituição específicos.",
+  "operationId": "cadastrarProfessor",
+  "parameters": [
+    {
+      "name": "idCurso",
+      "in": "path",
+      "description": "ID do curso ao qual o professor será associado.",
+      "required": true,
+      "schema": {
+        "type": "integer"
+      }
+    },
+    {
+      "name": "idInstituicao",
+      "in": "path",
+      "description": "ID da instituição à qual o professor será associado.",
+      "required": true,
+      "schema": {
+        "type": "integer"
+      }
+    }
+  ],"requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "nome": {
+                      "type": "string",
+                      "description": "Nome do Professor(a)"
+                    },
+                    "cpf": {
+                      "type": "string",
+                      "description": "CPF do Professor(a)"
+                    },
+                    "contato": {
+                      "type": "string",
+                      "description": "Contato do Professor(a)" 
+                    },
+                    "email": {
+                      "type": "string",
+                      "description": "Email do Professor(a)"
+                    },
+                    "senha": {
+                      "type": "string",
+                      "description": "Senha para acesso administrativo. A senha deve conter pelo menos uma letra e um número.",
+                      "pattern": "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{6,}$"
+                    }
+                  },
+                  "required": [ "nome", "cpf", "email", "senha","contato"]
+                }
+              }
+            }
+          },
+          "responses": {
+            "201":{
+              "description": "Professor(a) cadastrado com sucesso, sem corpo na resposta."
+    
+            },
+             "500": {
+              "description": "Erro no servidor interno."
+          }
+          }
+
+
+  }
+},
+"/professores/{id}":{
+"put":{
+  "tags": ["Professor"],
+  "summary": "Atualiza os dados de um professor existente",
+  "description": "Este endpoint atualiza os dados de um professor existente com as informações fornecidas no corpo da requisição.",
+  "operationId": "atualizarProfessor",
+  "parameters": [
+    {
+      "name": "id",
+      "in": "path",
+      "description": "ID do professor para atualizar os dados.",
+      "required": true,
+      "schema": {
+        "type": "integer"
+      }
+    }],
+    "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "nome": {
+                      "type": "string",
+                      "description": "Nome do Professor(a)"
+                    },
+                    "cpf": {
+                      "type": "string",
+                      "description": "CPF do Professor(a)"
+                    },
+                    "contato": {
+                      "type": "string",
+                      "description": "Contato do Professor(a)" 
+                    },
+                    "email": {
+                      "type": "string",
+                      "description": "Email do Professor(a)"
+                    },
+                    "senha": {
+                      "type": "string",
+                      "description": "Senha para acesso administrativo. A senha deve conter pelo menos uma letra e um número.",
+                      "pattern": "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{6,}$"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "responses": {
+            "201":{
+              "description": "Professor(a) cadastrado com sucesso, sem corpo na resposta."
+    
+            },
+             "500": {
+              "description": "Erro no servidor interno."
+          }
+          }
+
+},
+"patch":{
+          "tags":["Professor"],
+          "summary": "Atualiza a senha de um professor(a) existente",
+          "description": "Este endpoint atualiza a senha de um professor(a) com as informações fornecidas.",
+          "operationId": "patchMudarSenhaProfessor",
+          "parameters": [
+            {
+                "name": "id",
+                "in": "path",
+                "description": "ID do professor(a) cuja senha será atualizada.",
+                "required": true,
+                "schema": {
+                    "type": "integer"
+                }
+            }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "nova_senha": {
+                      "type": "string",
+                      "description": "Nova senha para o professor(a)"
+                  }
+                  }
+                }
+                }
+              }
+        },
+        "responses": {
+          "204":{
+            "description": "Senha do professor(a) atualizada com sucesso, sem corpo na resposta."
+  
+          }
+          , "500": {
+            "description": "Erro no servidor interno."
+        }
+        }
+        },
+        "delete":{
+          "tags":["Professor"],
+          "summary": "Deleta um professor(a) existente",
+          "description": "Este endpoint deleta um professor(a) com o pelo id fornecido.",
+          "operationId": "deletarProfessor",
+          "parameters": [
+            {
+                "name": "id",
+                "in": "path",
+                "description": "ID do professor(a) que será deletada.",
+                "required": true,
+                "schema": {
+                    "type": "integer"
+                }
+            }
+        ],
+        "responses": {
+          "204":{
+            "description": "Professor(a) deletada com sucesso, sem corpo na resposta."
+  
+          },
+           "500": {
+            "description": "Erro no servidor interno."
+        }
+        }
+        }
+},
+"/professores/busca":{
+"post":{
+  "tags": ["Professor"],
+  "summary": "Busca professores por nome",
+  "description": "Este endpoint retorna uma lista de professores cujos nomes começam com as letras especificadas no corpo da requisição.",
+  "operationId": "buscarProfessorPorNome",
+  "requestBody": {
+    "required": true,
+    "content": {
+      "application/json": {
+        "schema": {
+          "type": "object",
+          "properties": {
+            "busca": {
+              "type": "string",
+              "description": "As primeiras letras do nome do professor(a)."
+            }
+          },
+          "required": ["busca"]
+        }
+      }
+    }
+  },
+  "responses":{
+    "200": {
+      "description": "Professores encontradas com base nas primeiras letras fornecidas.",
+      "content": {
+        "application/json": {
+          "schema": {
+            "type": "object",
+            "properties": {
+              "instituicoes": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/Professor"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "500": {
+      "description": "Erro no servidor interno"
+    }
+  }
+
+
+
+}
+},
+"/professores/instituicoes/cursos/{id}": {
+  "get": {
+    "tags": ["Professor"],
+    "summary": "Busca instituição e curso associado ao professor(a)",
+    "description": "Este endpoint retorna instituição e curso associado ao professor de acordo com o parâmetro da requisição.",
+    "operationId": "mostrarInstituicaoECursosAoMesmoTempoProfessor",
+    "parameters": [
+      {
+        "name": "id",
+        "in": "path",
+        "description": "ID do professor para buscar instituição e curso associados.",
+        "required": true,
+        "schema": {
+          "type": "integer"
+        }
+      }
+    ],
+    "responses": {
+      "200": {
+        "description": "Dados do professor, instituição e curso retornados com sucesso.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "professor": {
+                  "$ref": "#/components/schemas/Professor"
+                },
+                "instituicao": {
+                  "$ref": "#/components/schemas/Instituicao"
+                },
+                "curso": {
+                  "$ref": "#/components/schemas/Curso"
+                }
+              }
+            }
+          }
+        }
+      },
+      "500": {
+        "description": "Erro no servidor interno."
+      }
+    }
+  }
+},
+"/professores/cursos/{id}":{
+  "get":{
+    "tags": ["Professor"],
+    "summary": "Busca curso associado ao professor(a)",
+    "description": "Este endpoint retorna  curso associado ao professor de acordo com o parâmetro da requisição.",
+    "operationId": "mostrarCursosProfessor",
+    "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "description": "ID do professor para buscar instituição e curso associados.",
+          "required": true,
+          "schema": {
+            "type": "integer"
+          }
+        }
+      ],
+      "responses": {
+        "200": {
+          "description": "Dados do professor e curso retornados com sucesso.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "professor": {
+                    "$ref": "#/components/schemas/Professor"
+                  },
+                  "curso": {
+                    "$ref": "#/components/schemas/Curso"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "500": {
+          "description": "Erro no servidor interno."
+        }
+      }
+  }
+ 
+
+
+},
+"/professores/instituicoes/{id}":{
+  "get":{
+    "tags": ["Professor"],
+  "summary": "Busca instituição associado ao professor(a)",
+  "description": "Este endpoint retorna instituição associado ao professor de acordo com o parâmetro da requisição.",
+  "operationId": "mostrarInstituicaoProfessor",
+  "parameters": [
+      {
+        "name": "id",
+        "in": "path",
+        "description": "ID do professor para buscar instituição associada.",
+        "required": true,
+        "schema": {
+          "type": "integer"
+        }
+      }
+    ],
+    "responses": {
+      "200": {
+        "description": "Dados do professor e instituição retornados com sucesso.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "professor": {
+                  "$ref": "#/components/schemas/Professor"
+                },
+                "instituicao": {
+                  "$ref": "#/components/schemas/Instituicao"
+                }
+              }
+            }
+          }
+        }
+      },
+      "500": {
+        "description": "Erro no servidor interno."
+      }
+    }
+  }
+  
+
+
+},
+"/demandasPegas/{idProfessor}/{idDemanda}":{
+  "post":{
+    "tags": ["DemandaPega"],
+    "summary": "Demanda pega pelo professor(a)",
+    "description": "Este endpoint cadastra a demanda pega pelo professor de acordo com o parâmetro da requisição.",
+    "operationId": "pegarDemanda",
+    "parameters": [
+        {
+          "name": "idProfessor",
+          "in": "path",
+          "description": "ID do professor para cadastrar a demanda pega.",
+          "required": true,
+          "schema": {
+            "type": "integer"
+          }
+        },
+        {
+          "name": "idDemanda",
+          "in": "path",
+          "description": "ID do professor para cadastrar a demanda pega.",
+          "required": true,
+          "schema": {
+            "type": "integer"
+          }
+        }
+      ],
+      "requestBody": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "descricao": {
+                  "type": "string",
+                  "description": "Descrição inicial ou está fazendo do que professor(a) para concluir a demanda."
+                }
+              }
+            }
+          }
+        }
+      },
+      "responses":{
+        "201":{
+"description": "Demanda pega com secesso, sem corpo na resposta."
+        },
+        "500":{
+           "description": "Erro no servidor interno."
+        }
+
+      }
+  }
+},
+"/demandasPegas/":{
+"get":{
+  "tags": ["DemandaPega"],
+  "summary": "Lista de todas as demandas pegas",
+  "description": "Este endpoint retorna uma lista com todas as demanda pegas.",
+  "operationId": "MostrarTodasAsDemandaPegas",
+  "responses":{
+    "200":{
+      "description": "Todas as demandas pegas com sucesso",
+      "content": {
+        "application/json": {
+          "schema": {
+            "type":"array",
+            "items": {
+              
+                "$ref": "#/components/schemas/DemandaPega"
+              
+            }
+          }
+        }
+      }
+    },
+    "500":{
+       "description": "Erro no servidor interno."
+    }
+  }
+}
+},
+"/demandasPegas/{id}": {
+  "put": {
+    "tags": ["DemandaPega"],
+    "summary": "Atualizar as demandas pegas",
+    "description": "Este endpoint atualiza as demandas pegas.",
+    "operationId": "AtualizarDemandaPegas",
+    "parameters": [
+      {
+        "name": "id",
+        "in": "path",
+        "description": "ID da demanda pega que será atualizada.",
+        "required": true,
+        "schema": {
+          "type": "integer"
+        }
+      }
+    ],
+    "requestBody": {
+      "content": {
+        "application/json": {
+          "schema": {
+            "type": "object",
+            "properties": {
+              "descricao": {
+                "type": "string",
+                "description": "Atualização da descrição do professor(a)."
+              }
+            },
+            "required": ["descricao"]
+          }
+        }
+      }
+    },
+    "responses": {
+      "204": {
+        "description": "Demanda pega atualizada com sucesso, sem corpo na requisição"
+      }
+      ,
+      "500":{
+         "description": "Erro no servidor interno."
+      }
+    }
+  },
+  "patch":{
+    "tags": ["DemandaPega"],
+    "summary": "Entregar demanda",
+    "description": "Este endpoint atualiza data de entrega.",
+    "operationId": "Entregar",
+    "parameters": [
+      {
+        "name": "id",
+        "in": "path",
+        "description": "ID da demanda pega que será entregue.",
+        "required": true,
+        "schema": {
+          "type": "integer"
+        }
+      }
+    ],
+    "responses":{
+"204": {
+        "description": "Demanda pega entregue com sucesso, sem corpo na requisição"
+      }
+      ,
+      "500":{
+         "description": "Erro no servidor interno."
+      }
+    }
+  },
+  "delete":{
+    "tags": ["DemandaPega"],
+    "summary": "Deletar demanda pega",
+    "description": "Este endpoint deleta a demanda pega pelo id.",
+    "operationId": "deletarDemandaPega",
+    "parameters": [
+      {
+        "name": "id",
+        "in": "path",
+        "description": "ID da demanda pega que será deletada.",
+        "required": true,
+        "schema": {
+          "type": "integer"
+        }
+      }
+    ],
+    "responses":{
+      "204": {
+        "description": "Demanda pega entregue com sucesso, sem corpo na requisição"
+      }
+      ,
+      "500":{
+         "description": "Erro no servidor interno."
+      }
+    }
+  }
+},
+"/demandasPegas/professores":{
+"get":{
+  "tags": ["DemandaPega"],
+    "summary": "Listar com demandas pegas e professores(a)",
+    "description": "Este endpoint retorna uma lista com demandas que foram pegas e professores(a) a pegaram.",
+    "operationId": "mostrarDemandasProfessores",
+    "responses":{
+      "200":{
+        "description": "Todas as demandas pegas com sucesso",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type":"object",
+              "properties":{
+                "professor":{
+                  "items": {
+                    "type":"array",
+                      "$ref": "#/components/schemas/Professor"
+                    
+                  }
+                },
+                "demandas":{
+                  "items": {
+                    "type":"array",
+                      "$ref": "#/components/schemas/Demanda"
+                    
+                  }
+                },
+                "demandasPega":{
+                  "items": {
+                    "type":"array",
+                      "$ref": "#/components/schemas/DemandaPega"
+                    
+                  }
+                }
+                
+              }
+             
+            }
+          }
+        }
+      },
+      "500":{
+         "description": "Erro no servidor interno."
+      }
+    }
+}
+},
+"/demandasPegas/demandas/{id}": {
+  "get": {
+    "tags": ["DemandaPega"],
+    "summary": "Mostra todos os professores que pegaram o ID da demanda",
+    "description": "Este endpoint retorna um objeto contendo a demanda especificada e uma lista de professores que pegaram essa demanda.",
+    "operationId": "mostrarProfessoresPorDemanda",
+    "parameters": [
+      {
+        "name": "id",
+        "in": "path",
+        "description": "ID da demanda para buscar os professores relacionados.",
+        "required": true,
+        "schema": {
+          "type": "integer"
+        }
+      }
+    ],
+    "responses": {
+      "200": {
+        "description": "A demanda e os professores associados retornados com sucesso.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "demanda": {
+                  "$ref": "#/components/schemas/Demanda"
+                },
+                "professores": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Professor"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "500":{
+         "description": "Erro no servidor interno."
+      }
+    }
+  }
+},
+"/demandasPegas/professores/{id}":{
+
+  "get":{
+  
+      "tags": ["DemandaPega"],
+      "summary": "Mostra todas demandas que o professor(a) pegou",
+      "description": "Este endpoint retorna um objeto contendo o professor especificada e uma lista de demandas que Id está relacionado.",
+      "operationId": "mostrarDemandasPorProfessor",
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "description": "ID do professor para buscar as demandas relacionados.",
+          "required": true,
+          "schema": {
+            "type": "integer"
+          }
+        }
+      ],
+      "responses": {
+        "200": {
+          "description": "A demanda e os professores associados retornados com sucesso.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "professor": {
+                    "$ref": "#/components/schemas/Professor"
+                  },
+                  "demandas": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/Demanda"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "500":{
+         "description": "Erro no servidor interno."
+      }
+      }
+    
+  }
+},
+"/demandasPegas/professores/demanda/{id}": {
+  "get": {
+    "tags": ["DemandaPega"],
+    "summary": "Lista informações sobre a demanda, professores e demandas pegas",
+    "description": "Este endpoint retorna informações detalhadas sobre a demanda especificada pelo ID, os professores que a pegaram e as demandas pegas associadas.",
+    "operationId": "listarDetalhesDemandaProfessores",
+    "parameters": [
+      {
+        "name": "id",
+        "in": "path",
+        "description": "ID da demanda para buscar informações detalhadas.",
+        "required": true,
+        "schema": {
+          "type": "integer"
+        }
+      }
+    ],
+    "responses": {
+      "200": {
+        "description": "Informações detalhadas da demanda, professores e demandas pegas retornadas com sucesso.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "DemandaPega": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/DemandaPega"
+                  }
+                },
+                "Demanda": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Demanda"
+                  }
+                },
+                "Professor": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Professor"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+"500":{
+         "description": "Erro no servidor interno."
+      }
+    }
+  }
+},
+"/cursos/instituicoes/{id}": {
+  "post": {
+    "tags": ["Cursos"],
+    "summary": "Criar curso para uma instituição",
+    "description": "Este endpoint cria um novo curso associado à instituição especificada pelo ID.",
+    "operationId": "criarCursoParaInstituicao",
+    "parameters": [
+      {
+        "name": "id",
+        "in": "path",
+        "description": "ID da instituição à qual o curso será associado.",
+        "required": true,
+        "schema": {
+          "type": "integer"
+        }
+      }
+    ],
+    "requestBody": {
+      "description": "Informações do curso a ser criado.",
+      "required": true,
+      "content": {
+        "application/json": {
+          "schema": {
+            "type": "object",
+            "properties": {
+              "nome": {
+                "type": "string",
+                "description": "Nome do curso a ser criado.",
+                "example": "adadqdq"
+              }
+            },
+            "required": ["nome"]
+          }
+        }
+      }
+    },
+    "responses": {
+      "201": {
+        "description": "Curso criado com sucesso. Sem corpo na resposta."
+       
+      },
+      "500":{
+         "description": "Erro no servidor interno."
+      }
+    }
+  },
+  "get": {
+    "tags": ["Cursos"],
+    "summary": "Obter curso e sua instituição",
+    "description": "Este endpoint retorna um curso e a instituição associada a ele.",
+    "operationId": "obterCursoEInstituicao",
+    "parameters": [
+      {
+        "name": "id",
+        "in": "path",
+        "description": "ID do curso para obter a instituição associada.",
+        "required": true,
+        "schema": {
+          "type": "integer"
+        }
+      }
+    ],
+    "responses": {
+      "200": {
+        "description": "Curso e instituição encontrados com sucesso.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "curso": {
+                  "$ref": "#/components/schemas/Curso"
+                },
+                "instituicao": {
+                  "$ref": "#/components/schemas/Instituicao"
+                }
+              }
+            }
+          }
+        }
+      },
+      "500":{
+        "description": "Erro no servidor interno."
+     }
+    }
+  }
+},
+"/cursos/": {
+  "get": {
+    "tags": ["Cursos"],
+    "summary": "Obter lista de cursos",
+    "description": "Este endpoint retorna uma lista com todos os cursos disponíveis.",
+    "operationId": "listarCursos",
+    "responses": {
+      "200": {
+        "description": "Lista de cursos recuperada com sucesso.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/curso"
+              }
+            }
+          }
+        }
+      },
+      "500":{
+         "description": "Erro no servidor interno."
+      }
+    }
+  }
+},
+"/cursos/{id}": {
+  "patch": {
+    "tags": ["Cursos"],
+    "summary": "Atualizar o nome de um curso",
+    "description": "Este endpoint permite atualizar o nome de um curso existente.",
+    "operationId": "atualizarCurso",
+    "parameters": [
+      {
+        "name": "id",
+        "in": "path",
+        "description": "ID do curso que será atualizado.",
+        "required": true,
+        "schema": {
+          "type": "integer"
+        }
+      }
+    ],
+    "requestBody": {
+      "content": {
+        "application/json": {
+          "schema": {
+            "type": "object",
+            "properties": {
+              "novo_nome": {
+                "type": "string",
+                "description": "Novo nome do curso."
+              }
+            },
+            "required": ["novo_nome"]
+          }
+        }
+      }
+    },
+    "responses": {
+      "204": {
+        "description": "Nome do Curso atualizado com sucesso, sem corpo na resposta"
+      },
+      "500":{
+         "description": "Erro no servidor interno."
+      }
+    }
+  },
+  "delete": {
+    "tags": ["Cursos"],
+    "summary": "Deletar um curso",
+    "description": "Este endpoint permite deletar um curso existente.",
+    "operationId": "deletarCurso",
+    "parameters": [
+      {
+        "name": "id",
+        "in": "path",
+        "description": "ID do curso que será deletado.",
+        "required": true,
+        "schema": {
+          "type": "integer"
+        }
+      }
+    ],
+    "responses": {
+      "204": {
+        "description": "Curso deletado com sucesso."
+      },
+      "500":{
+         "description": "Erro no servidor interno."
+      }
+    }
+  }
+},
+"/cursos/busca": {
+  "post": {
+    "tags": ["Cursos"],
+    "summary": "Buscar cursos pelo nome",
+    "description": "Este endpoint permite buscar cursos com base em uma string de pesquisa no nome do curso.",
+    "operationId": "buscarCursosPorNome",
+    "requestBody": {
+      "required": true,
+      "content": {
+        "application/json": {
+          "schema": {
+            "type": "object",
+            "properties": {
+              "busca": {
+                "type": "string",
+                "description": "String usada para buscar cursos pelo nome."
+              }
+            },
+            "required": ["busca"]
+          }
+        }
+      }
+    },
+    "responses": {
+      "200": {
+        "description": "Cursos encontrados com sucesso.",
+        "content": {
+          "application/json": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Curso"
+            }
+          }
+        }
+      },
+      "500":{
+        "description": "Erro no servidor interno."
+     }
+    }
+  }
+}
+
+
+
+
+
+
+  },
+  "components": {
+    "schemas": {
+        "Empresa": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer",
+                    "description": "ID da empresa"
+                },
+                "nome": {
+                    "type": "string",
+                    "description": "Nome da empresa"
+                },
+                "email": {
+                    "type": "string",
+                    "description": "Email da empresa"
+                },
+                "cidade": {
+                    "type": "string",
+                    "description": "Cidade da empresa"
+                },
+                "bairro": {
+                    "type": "string",
+                    "description": "Bairro da empresa"
+                },
+                "estado": {
+                    "type": "string",
+                    "description": "Estado da empresa"
+                },
+                "pais": {
+                    "type": "string",
+                    "description": "País da empresa"
+                },
+                "contato": {
+                    "type": "string",
+                    "description": "Contato da empresa"
+                }
+            }
+        },
+        "Demanda": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer",
+                    "description": "ID da demanda"
+                },
+                "titulo": {
+                    "type": "string",
+                    "description": "Título da demanda"
+                },
+                "descricao": {
+                    "type": "string",
+                    "description": "Descrição da demanda"
+                },
+                "dataEnvio": {
+                    "type": "string",
+                    "format": "date",
+                    "description": "Data de envio da demanda"
+                },
+                "dataLimiteParaFicarDisponivel": {
+                    "type": "string",
+                    "format": "date",
+                    "description": "Data limite para a demanda ficar disponível"
+                },
+                "prazo": {
+                    "type": "string",
+                    "description": "Prazo da demanda"
+                }
+            }
+            
+        },
+        "Instituicao": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer",
+                    "description": "ID da instituicao"
+                },
+                "nome": {
+                    "type": "string",
+                    "description": "Nome da instituicao"
+                },
+                "email": {
+                    "type": "string",
+                    "description": "Email da instituicao"
+                },
+                "cidade": {
+                    "type": "string",
+                    "description": "Cidade da instituicao"
+                },
+                "bairro": {
+                    "type": "string",
+                    "description": "Bairro da instituicao"
+                },
+                "estado": {
+                    "type": "string",
+                    "description": "Estado da instituicao"
+                },
+                "pais": {
+                    "type": "string",
+                    "description": "País da instituicao"
+                },
+                "contato": {
+                    "type": "string",
+                    "description": "Contato da instituicao"
+                }
+            }
+        },
+         "Curso":{
+          "type":"object",
+          "properties":{
+            "id": {
+                    "type": "integer",
+                    "description": "ID do curso"
+                },
+                "nome": {
+                    "type": "string",
+                    "description": "Nome do curso"
+                }
+
+          }
+         },
+         "Professor":{
+          "type":"object",
+          "properties":{
+            "id": {
+              "type": "integer",
+              "description": "ID do professor(a)"
+          },
+          "nome": {
+              "type": "string",
+              "description": "Nome do professor(a)"
+          },
+          "email": {
+            "type": "string",
+            "description": "Nome do professor(a)"
+        }
+
+          }
+         },
+         "DemandaPega":{
+          "type":"object",
+          "properties":{
+            "id": {
+              "type": "integer",
+              "description": "ID da demanda pega"
+          },
+          "status": {
+            "type": "string",
+            "description": "Status da demanda pega"
+        },
+        "descricão": {
+          "type": "string",
+          "description": "Descrição da demanda pega"
+      },  
+      "data_ultima_atualizacao": {
+        "type": "string",
+        "description": "Data da ultima da atualizacao da demanda que foi pega"
+    },
+    "data_demanda_pega": {
+        "type": "string",
+        "description": "Data que demanda foi pega"
+    },
+    "data_entrega": {
+        "type": "string",
+        "description": "Data que demanda foi entregue"
+    },"prazo": {
+        "type": "string",
+        "description": "Data do prazo para entregar a demanda pega"
+    }
+          }
+         }
+    }
+}
+}
+
+
+
+
+
+
+
+  
+  

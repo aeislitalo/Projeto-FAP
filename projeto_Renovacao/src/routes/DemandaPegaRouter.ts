@@ -9,7 +9,7 @@ let rota = Router();
 // Define as rotas e as funções correspondentes do controlador
 rota.post('/:idProfessor/:idDemanda', API.postPegarDemanda.bind(API)); // Rota para criar uma nova demanda associada a um professor
 rota.get('/', API.getMostrarTodasAsDemanda.bind(API)); // Rota para listar todas as demandas
-rota.put('/:id', API.putAtualizoDemanda.bind(API)); // Rota para atualizar uma demanda específica
+rota.put('/:id', API.putAtualizarDemanda.bind(API)); // Rota para atualizar uma demanda específica
 rota.patch('/:id', API.patchEntrega.bind(API)); // Rota para marcar uma demanda como entregue
 rota.delete('/:id', API.deleteExcluirDemanda.bind(API)); // Rota para excluir uma demanda específica
 rota.get('/professores', API.mostrarDemandasProfessores.bind(API)); // Rota para mostrar as demandas de todos os professores

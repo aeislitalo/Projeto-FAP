@@ -10,7 +10,7 @@ class EmpresaController {
     async postCadastrarEmpresa(req, resp, next) {
         try {
             // Chama o método post do serviço e desestrutura o resultado
-            let { status, mensagem } = await this.servico.post(req.body);
+            let { status, mensagem } = await this.servico.postCadastrarEmpresa(req.body);
             resp.status(status).json(mensagem); // Retorna a resposta com o status e a mensagem
         }
         catch (error) {
@@ -21,7 +21,7 @@ class EmpresaController {
     async getMostrarEmpresas(req, resp, next) {
         try {
             // Chama o método get do serviço e desestrutura o resultado
-            let { status, mensagem } = await this.servico.get();
+            let { status, mensagem } = await this.servico.getMostrarTodasAsEmpresas();
             resp.status(status).json(mensagem); // Retorna a resposta com o status e a mensagem
         }
         catch (error) {
@@ -31,7 +31,7 @@ class EmpresaController {
     // Método para atualizar os dados de uma empresa
     async putMudarDadosEmpresas(req, resp, next) {
         try {
-            let { status, mensagem } = await this.servico.put(Number(req.params.id), req.body); // Chama o método put do serviço
+            let { status, mensagem } = await this.servico.putAtualizarEmpresa(Number(req.params.id), req.body); // Chama o método put do serviço
             resp.status(status).json(mensagem); // Retorna a resposta com o status e a mensagem
         }
         catch (error) {
@@ -41,7 +41,7 @@ class EmpresaController {
     // Método para mudar a senha de uma empresa
     async patchMudarSenha(req, resp, next) {
         try {
-            let { status, mensagem } = await this.servico.patch(Number(req.params.id), req.body); // Chama o método patch do serviço
+            let { status, mensagem } = await this.servico.patchAtualizarApenasSenha(Number(req.params.id), req.body); // Chama o método patch do serviço
             resp.status(status).json(mensagem); // Retorna a resposta com o status e a mensagem
         }
         catch (error) {
@@ -60,18 +60,7 @@ class EmpresaController {
     }
     async postMostrarEmpresasComPrimeirasLetras(req, resp, next) {
         try {
-            let { status, mensagem } = await this.servico.MostrarEmpresasHaPartirDasPrimeirasLetras(req.body.letras.trim()); // Chama o método 
-            resp.status(status).json(mensagem); // Retorna a resposta com o status e a mensagem
-        }
-        catch (error) {
-            next(error); // Passa o erro para o middleware de tratamento de erros
-        }
-    }
-    /////////////////////////////////// CHAMADA METODOS DE DEMANDAS //////////////////////////////////////////////////////////////
-    // Método para cadastrar uma nova demanda para uma empresa
-    async postCadastrarDemanda(req, resp, next) {
-        try {
-            let { status, mensagem } = await this.servico.postCadastrarDemanda(Number(req.params.id), req.body); // Chama o método para cadastrar demanda
+            let { status, mensagem } = await this.servico.MostrarEmpresasHaPartirDasPrimeirasLetras(req.body.busca.trim()); // Chama o método 
             resp.status(status).json(mensagem); // Retorna a resposta com o status e a mensagem
         }
         catch (error) {
@@ -79,67 +68,9 @@ class EmpresaController {
         }
     }
     // Método para mostrar as demandas de uma empresa
-    async getMostrarDemandasEmpresas(req, resp, next) {
+    async getMostrarDemandasEmpresasPorId(req, resp, next) {
         try {
-            let { status, mensagem } = await this.servico.getMostrarDemandasEmpresas(Number(req.params.id)); // Chama o método para mostrar demandas da empresa
-            resp.status(status).json(mensagem); // Retorna a resposta com o status e a mensagem
-        }
-        catch (error) {
-            next(error); // Passa o erro para o middleware de tratamento de erros
-        }
-    }
-    async getMostraEmpresaPorDemanda(req, resp, next) {
-        try {
-            let { status, mensagem } = await this.servico.getMostrarEmpresasPertencenteHaDemanda(Number(req.params.id)); // Chama o método para mostrar empresa da demanda
-            resp.status(status).json(mensagem); // Retorna a resposta com o status e a mensagem
-        }
-        catch (error) {
-            next(error);
-        }
-    }
-    // Método para mostrar todas as demandas
-    async getMostrarDemandas(req, resp, next) {
-        try {
-            let { status, mensagem } = await this.servico.getMostrarDemandas(); // Chama o método para mostrar todas as demandas
-            resp.status(status).json(mensagem); // Retorna a resposta com o status e a mensagem
-        }
-        catch (error) {
-            next(error); // Passa o erro para o middleware de tratamento de erros
-        }
-    }
-    // Método para atualizar uma demanda
-    async putAtualizarDemanda(req, resp, next) {
-        try {
-            let { status, mensagem } = await this.servico.putAtualizarDemanda(Number(req.params.id), req.body); // Chama o método para atualizar a demanda
-            resp.status(status).json(mensagem); // Retorna a resposta com o status e a mensagem
-        }
-        catch (error) {
-            next(error); // Passa o erro para o middleware de tratamento de erros
-        }
-    }
-    // Método para mudar a data de uma demanda
-    async patchMudarData(req, resp, next) {
-        try {
-            let { status, mensagem } = await this.servico.patchMudarData(Number(req.params.id), req.body); // Chama o método para mudar a data da demanda
-            resp.status(status).json(mensagem); // Retorna a resposta com o status e a mensagem
-        }
-        catch (error) {
-            next(error); // Passa o erro para o middleware de tratamento de erros
-        }
-    }
-    // Método para deletar uma demanda
-    async deletarDemanda(req, resp, next) {
-        try {
-            let { status, mensagem } = await this.servico.deletarDemandaServico(Number(req.params.id)); // Chama o método para deletar a demanda
-            resp.status(status).json(mensagem); // Retorna a resposta com o status e a mensagem
-        }
-        catch (error) {
-            next(error); // Passa o erro para o middleware de tratamento de erros
-        }
-    }
-    async postMostrarDemandasComPrimeirasLetras(req, resp, next) {
-        try {
-            let { status, mensagem } = await this.servico.MostrarDemandasHaPartirDasPrimeirasLetras(req.body.letras.trim()); // Chama o método 
+            let { status, mensagem } = await this.servico.getMostrarDemandasEmpresasPorId(Number(req.params.id)); // Chama o método para mostrar demandas da empresa
             resp.status(status).json(mensagem); // Retorna a resposta com o status e a mensagem
         }
         catch (error) {

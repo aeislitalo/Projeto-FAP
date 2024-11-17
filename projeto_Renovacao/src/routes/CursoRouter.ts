@@ -24,7 +24,7 @@ rota.get('/', API.getMostrarCursos.bind(API));
 rota.get('/instituicoes/:id', API.getMostrarInstituicaoPertencenteAoCurso.bind(API));
 
 // Define a rota para buscar cursos por nome, vinculando ao método getBuscarCursoPorNome do controlador
-rota.get('/busca', API.getBuscarCursoPorNome.bind(API));
+rota.post('/busca', API.postBuscarCursoPorNome.bind(API));
 
 // Exporta as rotas para serem utilizadas em outras partes do aplicativo
 export default rota;

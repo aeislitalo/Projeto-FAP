@@ -10,7 +10,9 @@ import demandasPegasRota from "./DemandaPegaRouter"; // Importa as rotas da Dema
 let router = Router();
 
 // Utiliza as rotas no roteador principal, definindo os prefixos de URL para cada conjunto de rotas
+
 router.use('/professores', professorRota); // Adiciona as rotas de professores sob o prefixo '/professores'
+
 router.use('/empresas', empresaRota); // Adiciona as rotas de empresas sob o prefixo '/empresas'
 router.use('/instituicoes', instituicaoRota); // Adiciona as rotas de instituições sob o prefixo '/instituicoes'
 router.use('/demandas', demandaRota); // Adiciona as rotas de demandas sob o prefixo '/demandas'

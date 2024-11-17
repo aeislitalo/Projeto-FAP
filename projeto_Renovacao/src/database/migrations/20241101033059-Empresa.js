@@ -37,7 +37,7 @@ module.exports = {
         allowNull: false // Não permite valores nulos
       },
       rua: {
-        type: Sequelize.STRING(30), // Tipo de dado para a rua
+        type: Sequelize.STRING(100), // Tipo de dado para a rua
         allowNull: false // Não permite valores nulos
       },
       numero: {
@@ -49,7 +49,7 @@ module.exports = {
         allowNull: false // Não permite valores nulos
       },
       email: {
-        type: Sequelize.STRING(100), // Tipo de dado para o email
+        type: Sequelize.STRING(150), // Tipo de dado para o email
         allowNull: false, // Não permite valores nulos
         unique: true // O email deve ser único
       },

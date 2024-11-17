@@ -5,6 +5,7 @@ class EmpresaController {
     private servico = new Service(); // Cria uma instância do serviço de empresa
 
     // Método para cadastrar uma nova empresa
+    
     async postCadastrarEmpresa(req: Request, resp: Response, next: NextFunction) {
         try {
 
@@ -30,7 +31,7 @@ class EmpresaController {
     // Método para atualizar os dados de uma empresa
     async putMudarDadosEmpresas(req: Request, resp: Response, next: NextFunction) {
         try {
-
+            
             let { status, mensagem } = await this.servico.putAtualizarEmpresa(Number(req.params.id), req.body); // Chama o método put do serviço
             resp.status(status).json(mensagem); // Retorna a resposta com o status e a mensagem
         } catch (error) {
@@ -58,7 +59,7 @@ class EmpresaController {
             next(error); // Passa o erro para o middleware de tratamento de erros
         }
     }
-    async getMostrarEmpresasComPrimeirasLetras(req: Request, resp: Response, next: NextFunction) {
+    async postMostrarEmpresasComPrimeirasLetras(req: Request, resp: Response, next: NextFunction) {
         try {
             let { status, mensagem } = await this.servico.MostrarEmpresasHaPartirDasPrimeirasLetras(req.body.busca.trim()); // Chama o método 
             resp.status(status).json(mensagem); // Retorna a resposta com o status e a mensagem
@@ -82,11 +83,11 @@ class EmpresaController {
 
     ////////////////////////////// LOGIN EMPRESA//////////////////////////////////////////////////////////////
     // Método para realizar o login da empresa
-    async getLoginEmpresa(req: Request, resp: Response, next: NextFunction) {
+    async postLoginEmpresa(req: Request, resp: Response, next: NextFunction) {
         try {
             // Chama o serviço responsável por validar o login, passando o email e a senha como parâmetros
             // O serviço retorna um objeto com o status HTTP e uma mensagem de resposta
-            let { status, mensagem } = await this.servico.getLoginEmpresa(req.body.email.trim(), req.body.senha.trim());
+            let { status, mensagem } = await this.servico.postLoginEmpresa(req.body.email.trim(), req.body.senha.trim());
 
             // Envia a resposta ao cliente com o código de status apropriado e a mensagem em formato JSON
             resp.status(status).json(mensagem);

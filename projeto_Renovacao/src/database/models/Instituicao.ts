@@ -54,7 +54,7 @@ Instituicao.init({
         allowNull: false // Não permite valores nulos
     },
     rua: {
-        type: sequelize.STRING(30), // Tipo de dado para a rua da Instituição
+        type: sequelize.STRING(150), // Tipo de dado para a rua da Instituição
         allowNull: false // Não permite valores nulos
     },
     numero: {

@@ -69,7 +69,7 @@ class ProfessorService extends MetodosTratamentoAuxiliares {
         let professoresDTO = professores.map((professor) => DTOHelper.getProfessorDTO(professor)); // Mapeia resultados para DTO
 
         if (professoresDTO.length === 0) {
-            return resp(200, { erro: "Professore(a)'s não existe!!!" }); // Retorna mensagem se não houver professores
+            return resp(500, { erro: "Professore(a)'s não existe!!!" }); // Retorna mensagem se não houver professores
         } else {
             return resp(200, professoresDTO); // Retorna professores encontrados
         }

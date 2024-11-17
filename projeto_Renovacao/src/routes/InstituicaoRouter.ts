@@ -29,11 +29,11 @@ rota.delete('/:id', API.deletarInstituicao.bind(API));
 rota.get('/cursos/:id', API.getMostrarTodosOsCursosDeDeterminadaInstituicao.bind(API));
 
 // Rota para buscar instituições a partir de caracteres iniciais
-rota.get('/busca', API.buscarInstituicoesPorCaracter.bind(API));
+rota.post('/busca', API.buscarInstituicoesPorCaracter.bind(API));
 
 // ///////////////////////////////////LOGIN/////////////////////////////////////////
 // Rota para login de uma instituição
-rota.get('/login', API.loginControllerInstituicao.bind(API));
+rota.post('/login', API.loginControllerInstituicao.bind(API));
 // ///////////////////////////////////LOGIN/////////////////////////////////////////
 
 // Exporta as rotas para serem utilizadas em outras partes do aplicativo

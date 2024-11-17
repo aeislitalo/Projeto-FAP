@@ -7,6 +7,7 @@ const sequelize_1 = require("sequelize"); // Importa a classe Model do Sequelize
 const _1 = __importDefault(require(".")); // Importa a instância do banco de dados
 const sequelize_2 = __importDefault(require("sequelize")); // Importa o Sequelize
 const Empresa_1 = __importDefault(require("./Empresa")); // Importa o modelo Empresa
+const DTOHelp_1 = __importDefault(require("../../utils/DTOHelp"));
 // Define a classe Demanda que estende Model
 class Demanda extends sequelize_1.Model {
     // Método estático para formatar uma string de data no formato 'dd/mm/yyyy'
@@ -15,11 +16,12 @@ class Demanda extends sequelize_1.Model {
         return new Date(`${ano}-${mes}-${dia}`); // Retorna um objeto Date
     }
     // Método estático para preencher os dados da demanda
-    static preencherDemanda(dataFinalFormatada, id, demanda) {
+    static preencherDemanda(dataLimiteFormatada, id, demanda) {
         return {
             descricao: demanda.descricao,
             dataEnvio: new Date(), // Define a data de envio como a data atual
-            dataFinal: dataFinalFormatada, // Recebe a data final formatada
+            dataLimiteParaFicarDisponivel: dataLimiteFormatada, // Recebe a data final formatada
+            prazo: Number(demanda.prazo),
             empresaId: id, // Recebe o ID da empresa
             titulo: demanda.titulo // Recebe o título da demanda
         };
@@ -41,7 +43,7 @@ class Demanda extends sequelize_1.Model {
             throw new Error('Empresa não encontrada'); // Lança um erro se a empresa não existir
         }
         // Retorna a empresa encontrada com suas demandas associadas
-        return empresa;
+        return { empresa: DTOHelp_1.default.getEmpresasDto(empresa), demandas: DTOHelp_1.default.getDemandaListaDTO(empresa.getDataValue('demandas')) };
     }
     static async visualizarEmpresasDemandas(idDemanda) {
         let demanda = await this.findByPk(idDemanda, {
@@ -57,7 +59,7 @@ class Demanda extends sequelize_1.Model {
             throw new Error('Demanda não encontrada'); // Lança um erro se a demanda não existir
         }
         // Retorna a demanda encontrada com suas demandas associadas
-        return demanda;
+        return { demanda: DTOHelp_1.default.getDemandaDTO(demanda), empresa: DTOHelp_1.default.getEmpresasDto(demanda.getDataValue('empresa')) };
     }
 }
 // Inicializa o modelo Demanda
@@ -69,16 +71,20 @@ Demanda.init({
         allowNull: false // Não permite valores nulos
     },
     descricao: {
-        type: sequelize_2.default.TEXT, // Tipo de dado para a descrição
+        type: sequelize_2.default.TEXT, // Tipo de dado para a descrição da demanda
         allowNull: false // Não permite valores nulos
     },
     dataEnvio: {
         type: sequelize_2.default.DATE, // Tipo de dado para a data de envio
         allowNull: false // Não permite valores nulos
     },
-    dataFinal: {
-        type: sequelize_2.default.DATE, // Tipo de dado para a data final
+    dataLimiteParaFicarDisponivel: {
+        type: sequelize_2.default.DATE, // Tipo de dado para a data final da demanda
         allowNull: false // Não permite valores nulos
+    },
+    prazo: {
+        type: sequelize_2.default.INTEGER,
+        allowNull: false
     },
     empresaId: {
         type: sequelize_2.default.INTEGER, // Tipo de dado para o ID da empresa
@@ -91,7 +97,7 @@ Demanda.init({
         onUpdate: 'CASCADE' // Atualiza as demandas relacionadas se o ID da empresa for atualizado
     },
     titulo: {
-        type: sequelize_2.default.STRING(50), // Tipo de dado para o título
+        type: sequelize_2.default.STRING(50), // Tipo de dado para o título da demanda
         allowNull: false, // Não permite valores nulos
         unique: true // O título deve ser único
     }

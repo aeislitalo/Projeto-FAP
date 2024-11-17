@@ -72,5 +72,6 @@ Empresa.init({
     sequelize: _1.default, // Passa a instância do banco de dados
     tableName: 'empresa', // Define o nome da tabela no banco de dados
 });
-exports.default = Empresa; // Exporta o modelo Empresa
+// Exporta o modelo Empresa
+exports.default = Empresa;
 //# sourceMappingURL=Empresa.js.map
