@@ -37,6 +37,9 @@ class DemandaService extends MetodosTratamentoAuxiliares_1.default {
         else {
             dataFinal = demandaDB.dataLimiteParaFicarDisponivel;
         }
+        if (demandaDados.prazo == undefined) {
+            demandaDados.prazo = demandaDB.prazo;
+        }
         await demandaDB.update(Demanda_1.default.preencherDemanda(dataFinal, demandaDB.empresaId, demandaDados)); // Atualiza a demanda
         return (0, resp_1.default)(204, ""); // Retorna a demanda atualizada
     }

@@ -44,7 +44,7 @@ Empresa.init({
         allowNull: false // Não permite valores nulos
     },
     rua: {
-        type: sequelize_2.default.STRING(30), // Tipo de dado para a rua da empresa
+        type: sequelize_2.default.STRING(150), // Tipo de dado para a rua da empresa
         allowNull: false // Não permite valores nulos
     },
     numero: {

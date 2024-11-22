@@ -82,7 +82,7 @@ class InstituicaoService extends MetodosTratamentoAuxiliares_1.default {
         });
         let instituicoesDTO = instituicoes.map((instituicao) => DTOHelp_1.default.getEmpresasDto(instituicao)); // Mapeia resultados para DTO
         if (instituicoesDTO.length === 0) {
-            return (0, resp_1.default)(200, { erro: "Instituições não existem!!!" }); // Retorna mensagem se não houver instituições
+            return (0, resp_1.default)(500, { erro: "Instituições não existem!!!" }); // Retorna mensagem se não houver instituições
         }
         else {
             return (0, resp_1.default)(200, instituicoesDTO); // Retorna instituições encontradas
